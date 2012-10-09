@@ -202,8 +202,8 @@ MakeMainHeaderFile("wgll_ext", wglSpecData, "wgl", nil, wglbaseData);
 
 MakeMainSourceFile("wgll_ext", wglSpecData, "WGL", "wgl", nil, wglPreceedData,
 	wglbaseData, nil);
-	
-	
+
+
 ---------------------------
 --Create GLX files.
 local glxSpecData = LoadLuaSpec(specFileLoc .. "glxspec.lua");
