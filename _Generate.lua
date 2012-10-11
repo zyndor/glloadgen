@@ -215,11 +215,13 @@ local function WriteFunctionDecls(hFile, options, spec, style, specData)
 		end
 	end
 	
-	hFile:write("\n")
-	
 	--For each version we are told to export, write the Functions.
 	if(options.version) then
+		hFile:write("\n")
 		style.WriteSmallHeading(hFile, "Core Functions")
+	else
+		--No version to export
+		return
 	end
 	
 	local coreExts = spec.GetCoreExts()
@@ -270,13 +272,13 @@ local function BuildHeader(options, spec, style, specData, basename)
 	hFile:rawwrite(spec.GetHeaderInit())
 	
 	--Write the standard typedefs.
-	header.WriteStdTypedefs(hFile, specData, options)
+	header.WriteStdTypedefs(hFile, specData, spec, options)
 	
 	--Write the typedefs from the spec.
-	header.WriteSpecTypedefs(hFile, specData, options)
+	header.WriteSpecTypedefs(hFile, specData, spec, options)
 	
 	--Write any declaration scoping start.
-	header.WriteBeginDecl(hFile, specData, options)
+	header.WriteBeginDecl(hFile, spec, options)
 	
 	--Write the extension variable declarations.
 	style.WriteLargeHeading(hFile, "Extension variable declarations")
@@ -287,19 +289,19 @@ local function BuildHeader(options, spec, style, specData, basename)
 	
 	--Write all enumerators.
 	style.WriteLargeHeading(hFile, "Enumerators")
-	header.WriteBeginEnumDeclBlock(hFile, specData, options)
+	header.WriteBeginEnumDeclBlock(hFile, spec, options)
 
 	WriteEnumerators(hFile, options, spec, style, specData)
 	
-	header.WriteEndEnumDeclBlock(hFile, specData, options)
+	header.WriteEndEnumDeclBlock(hFile, spec, options)
 	
 	--Write all function declarations
 	style.WriteLargeHeading(hFile, "Functions")
-	header.WriteBeginFuncDeclBlock(hFile, specData, options)
+	header.WriteBeginFuncDeclBlock(hFile, spec, options)
 
 	WriteFunctionDecls(hFile, options, spec, style, specData)
 	
-	header.WriteEndFuncDeclBlock(hFile, specData, options)
+	header.WriteEndFuncDeclBlock(hFile, spec, options)
 	
 	--Write the function loading stuff.
 	style.WriteLargeHeading(hFile, "Loading Functions")
@@ -312,12 +314,224 @@ local function BuildHeader(options, spec, style, specData, basename)
 	end
 	
 	--Write any declaration scoping end.
-	header.WriteEndDecl(hFile, specData, options)
+	header.WriteEndDecl(hFile, spec, options)
 	
 	--Ending includeguard.
 	hFile:fmt("#endif //%s\n", inclGuard)
 	hFile:close()
 	
+	return filename
+end
+
+
+
+local function WriteFuncDefsFromList(hFile, funcList, funcSeen,
+	listName, options, spec, style, specData)
+	local source = style.source
+	
+	local loaded = {}
+	for _, func in ipairs(funcList) do
+		if(not funcSeen[func.name]) then
+			source.WriteFuncDef(hFile, func, specData.typemap, spec, options)
+			funcSeen[func.name] = listName
+			loaded[#loaded + 1] = func
+		end
+	end
+	
+	return loaded
+end
+
+local function WriteExtFuncLoaderFromList(hFile, funcList,
+	options, spec, style, specData)
+	local source = style.source
+	
+	for _, func in ipairs(funcList) do
+		source.WriteExtFuncLoader(hFile, func, specData.typemap, spec, options)
+	end
+end
+
+local function WriteCoreFuncLoaderFromList(hFile, funcList,
+	options, spec, style, specData)
+	local source = style.source
+	
+	for _, func in ipairs(funcList) do
+		source.WriteCoreFuncLoader(hFile, func, specData.typemap, spec, options)
+	end
+end
+
+local function WriteFuncDefsForExt(hFile, extName, funcSeen, options, spec,
+	style, specData)
+	local source = style.source
+
+	if(#specData.extdefs[extName].funcs > 0) then
+		style.WriteSmallHeading(hFile, spec.ExtNamePrefix() .. extName)
+		
+		source.WriteBeginExtFuncDefBlock(hFile, extName, spec, options)
+		local loaded = WriteFuncDefsFromList(hFile,
+			specData.extdefs[extName].funcs, funcSeen, extName,
+			options, spec, style, specData)
+		
+		hFile:write("\n")
+		source.WriteBeginExtLoaderBlock(hFile, extName, spec, options)
+		WriteExtFuncLoaderFromList(hFile, loaded, options,
+			spec, style, specData)
+		source.WriteEndExtLoaderBlock(hFile, extName, spec, options)
+		
+		source.WriteEndExtFuncDefBlock(hFile, extName, spec, options)
+		hFile:write("\n")
+	end
+end
+
+local function WriteFuncDefsForCoreExt(hFile, extName, funcSeen, options, spec,
+	style, specData)
+	local source = style.source
+
+	if(#specData.extdefs[extName].funcs > 0) then
+		style.WriteSmallHeading(hFile, spec.ExtNamePrefix() .. extName)
+		
+		local loaded = WriteFuncDefsFromList(hFile,
+			specData.extdefs[extName].funcs, funcSeen, extName,
+			options, spec, style, specData)
+		hFile:write("\n")
+	end
+end
+
+local function WriteFunctionDefs(hFile, options, spec, style, specData)
+	local source = style.source
+	
+	style.WriteSmallHeading(hFile, "Extension Functions")
+
+	local extSeen = {}
+	local funcSeen = {}
+	
+	--For each extension, write their function pointer definitions.
+	for _, extName in ipairs(options.extensions) do
+		if(not extSeen[extName]) then
+			extSeen[extName] = true
+			WriteFuncDefsForExt(hFile, extName, funcSeen, options,
+				spec, style, specData)
+		end
+	end
+	
+	--For each version we are told to export, write the function pointer definitions.
+	if(options.version) then
+		hFile:write("\n")
+		style.WriteSmallHeading(hFile, "Core Functions")
+	else
+		--No version to export, so don't bother.
+		return
+	end
+	
+	--Write the core function definitions, maintaining a list of everything
+	--that was written.
+	local coreExts = spec.GetCoreExts()
+	local writtenData = { coreexts = {}, corefuncs = {}}
+	local bWrittenBeginCore = false
+	for _, version in ipairs(spec.GetVersions()) do
+		if(tonumber(version) <= tonumber(options.version)) then
+			--Write any core extensions for that version.
+			if(coreExts[version]) then
+				for _, extName in ipairs(coreExts[version]) do
+					if(not extSeen[extName]) then
+						if(not bWrittenBeginCore) then
+							source.WriteBeginCoreFuncDefBlock(hFile, options.version, spec, options)
+							bWrittenBeginCore = true
+						end
+						extSeen[extName] = true
+						WriteFuncDefsForCoreExt(hFile, extName, funcSeen,
+							options, spec, style, specData)
+						table.insert(writtenData.coreexts, extName)
+					end
+				end
+			end
+			
+			--Write the actual core functions, if any.
+			local funcList = GetCoreFunctions(specData.coredefs[version],
+				specData, spec, options, version)
+				
+			if(#funcList > 0) then
+				if(not bWrittenBeginCore) then
+					source.WriteBeginCoreFuncDefBlock(hFile, options.version, spec, options)
+					bWrittenBeginCore = true
+				end
+				style.WriteSmallHeading(hFile, "Version " .. version)
+				
+				WriteFuncDefsFromList(hFile, funcList, funcSeen,
+					version, options, spec, style, specData)
+
+				hFile:write("\n")
+				table.insert(writtenData.corefuncs, funcList)
+			end
+		end
+	end
+	
+	--Now, write the function that loads the core version. Include
+	--ALL core extensions, not just the ones we wrote.
+	--This allows us to build an accurate count of what core stuff is missing.
+	if(bWrittenBeginCore) then
+		source.WriteBeginCoreLoaderBlock(hFile, options.version, spec, options)
+		for _, version in ipairs(spec.GetVersions()) do
+			if(tonumber(version) <= tonumber(options.version)) then
+				if(coreExts[version]) then
+					for _, extName in ipairs(coreExts[version]) do
+						WriteCoreFuncLoaderFromList(hFile,
+							specData.extdefs[extName].funcs,
+							options, spec, style, specData)
+					end
+				end
+			end
+
+			--Write the actual core functions, if any.
+			local funcList = GetCoreFunctions(specData.coredefs[version],
+				specData, spec, options, version)
+				
+			if(#funcList > 0) then
+				WriteCoreFuncLoaderFromList(hFile,
+					funcList, options, spec, style, specData)
+			end
+		end
+
+		source.WriteEndCoreLoaderBlock(hFile, options.version, spec, options)
+
+		source.WriteEndCoreFuncDefBlock(hFile, options.version, spec, options)
+	end
+end
+
+local function BuildSource(options, spec, style, specData, basename,
+	hdrFilename)
+	local source = style.source
+	local hFile, filename = source.CreateFile(basename, options)
+	
+	--Write the header inclusions
+	source.WriteIncludes(hFile, spec, options)
+	hFile:fmt('#include "%s"\n', hdrFilename:match("([^\\/]+)$"))
+	hFile:write("\n")
+
+	--Write the function that loads a function pointer, given a name.
+	hFile:writeblock(spec.GetLoaderFunc())
+	hFile:write("\n")
+	
+	--Write any definitions scoping start.
+	source.WriteBeginDef(hFile, spec, options)
+	
+	--Write the extension variable definitions.
+	style.WriteLargeHeading(hFile, "Extension variable definitions")
+	for _, ext in ipairs(options.extensions) do
+		source.WriteExtVariableDef(hFile, ext, specData, spec, options)
+	end
+	hFile:write("\n")
+	
+	--Write all of the loader definitions.
+	style.WriteLargeHeading(hFile, "Function Definitions and Loaders")
+	WriteFunctionDefs(hFile, options, spec, style, specData)
+	hFile:write("\n")
+	
+	--Write utility definitions needed by the loader.
+	source.WriteUtilityDefs(hFile, specData, spec, options)
+
+	--Write any definitions scoping end.
+	source.WriteEndDef(hFile, spec, options)
+
 	return filename
 end
 
@@ -335,7 +549,9 @@ local function Generate(options, specData)
 	--Compute the filename, minus style-specific suffix.
 	local basename = dir .. spec:FilePrefix() .. simplename
 	
-	BuildHeader(options, spec, style, specData, basename)
+	local hdrFilename = BuildHeader(options, spec, style, specData, basename)
+	local srcFilename = BuildSource(options, spec, style, specData, basename,
+		hdrFilename)
 end
 
 local function LoadSpec(options)
