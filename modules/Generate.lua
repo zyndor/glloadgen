@@ -1,26 +1,12 @@
 --[[ Exports a table containing the following functions:
 
----- LoadSpec
-
-Given a specification type, it loads the spec and returns the spec data, exactly as from LoadLuaSpec.
-
-It is given the following parameters:
-
-- options: The options list, as culled from GetOptions.
-
-
 ---- Generate
 
-It creates a header/source file pair in accord with a standard algorithm and with the options it is given.
-
-It is given the following parameters:
-
-- options: The options list, as culled from GetOptions.
-- specData: The data as loaded with LoadSpec
+It creates a header/source file pair in accord with a standard algorithm and with the options it is given. It is given the options generated from GetOptions.
 ]]
 
-local Specs = require "_Specs"
-local Styles = require "_Styles"
+local Specs = require "Specs"
+local Styles = require "Styles"
 local LoadSpec = require "LoadLuaSpec"
 local util = require "util"
 
@@ -563,15 +549,19 @@ local function BuildSource(options, spec, style, specData, basename,
 	return filename
 end
 
-local function Generate(options, specData)
+local function Generate(options)
+	--Load the spec data.
+	local spec = Specs.GetSpec(options.spec)
+	local specData = spec.LoadSpec()
+
 	--Extract the path and base-filename from the options.
 	local simplename = options.outname:match("([^\\/]+)$")
 	local dir = options.outname:match("^(.*[\\/])")
+	dir = dir or "./"
 	
 	assert(simplename,
 		"There is no filename in the path '" .. options.outname .. "'")
 
-	local spec = Specs.GetSpec(options.spec)
 	local style = Styles.GetStyle(options.style)
 
 	--Compute the filename, minus style-specific suffix.
