@@ -21,8 +21,8 @@ It is given the following parameters:
 
 local Specs = require "_Specs"
 local Styles = require "_Styles"
-require "_LoadLuaSpec"
-require "_util"
+local LoadSpec = require "LoadLuaSpec"
+local util = require "util"
 
 local function WriteEnumsFromList(hFile, enumList, enumSeen, listName,
 	options, spec, style, specData)
@@ -582,22 +582,7 @@ local function Generate(options, specData)
 		hdrFilename)
 end
 
-local function LoadSpec(options)
-	local specfile =
-	{
-		gl = "glspec.lua",
-		glX = "glxspec.lua",
-		wgl = "wglspec.lua",
-	}
-	
-	local specFileLoc = GetSpecFilePath();
-	return LoadLuaSpec(specFileLoc .. specfile[options.spec])
-end
-
-
-
 return
 {
 	Generate = Generate,
-	LoadSpec = LoadSpec,
 }
