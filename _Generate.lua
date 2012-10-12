@@ -307,10 +307,10 @@ local function BuildHeader(options, spec, style, specData, basename)
 	style.WriteLargeHeading(hFile, "Loading Functions")
 	header.WriteStatusCodeDecl(hFile, spec, options)
 	hFile:write("\n")
-	header.WriteFuncLoaderDecl(hFile, spec, options)
+	header.WriteMainLoaderFuncDecl(hFile, spec, options)
 	if(options.version) then
 		hFile:write("\n")
-		header.WriteVersioningDecls(hFile, spec, options)
+		header.WriteVersioningFuncDecls(hFile, spec, options)
 	end
 	
 	--Write any declaration scoping end.
@@ -528,6 +528,11 @@ local function BuildSource(options, spec, style, specData, basename,
 	
 	--Write utility definitions needed by the loader.
 	source.WriteUtilityDefs(hFile, specData, spec, options)
+	
+	--Write the main loading function which loads everything.
+	source.WriteMainLoaderFunc(hFile, specData, spec, options)
+	
+	--Write any additional functions that load other things.
 
 	--Write any definitions scoping end.
 	source.WriteEndDef(hFile, spec, options)
