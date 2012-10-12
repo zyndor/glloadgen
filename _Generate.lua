@@ -460,15 +460,16 @@ local function WriteFunctionDefs(hFile, options, spec, style, specData)
 					version, options, spec, style, specData)
 
 				hFile:write("\n")
-				table.insert(writtenData.corefuncs, funcList)
 			end
 		end
 	end
 	
-	--Now, write the function that loads the core version. Include
-	--ALL core extensions, not just the ones we wrote.
-	--This allows us to build an accurate count of what core stuff is missing.
 	if(bWrittenBeginCore) then
+
+
+		--Now, write the function that loads the core version. Include
+		--ALL core extensions, not just the ones we wrote.
+		--This allows us to build an accurate count of what core stuff is missing.
 		source.WriteBeginCoreLoaderBlock(hFile, options.version, spec, options)
 		for _, version in ipairs(spec.GetVersions()) do
 			if(tonumber(version) <= tonumber(options.version)) then
@@ -490,10 +491,28 @@ local function WriteFunctionDefs(hFile, options, spec, style, specData)
 					funcList, options, spec, style, specData)
 			end
 		end
-
 		source.WriteEndCoreLoaderBlock(hFile, options.version, spec, options)
-
+		
 		source.WriteEndCoreFuncDefBlock(hFile, options.version, spec, options)
+	end
+	
+	local function FindFuncName(funcName)
+		for _, func in ipairs(specData.funcData.functions) do
+			if(func.name == funcName) then
+				return func
+			end
+		end
+		
+		return nil
+	end
+	
+	--Write the function declaration needed to load the extension string.
+	--But only if it's available in the spec data and hasn't already been written.
+	local funcExtString = FindFuncName(spec.GetExtStringFuncName())
+	if(funcExtString and not funcSeen[spec.GetExtStringFuncName()]) then
+		hFile:write("\n")
+		source.WriteGetExtStringFuncDef(hFile, funcExtString,
+			specData.typemap, spec, options)
 	end
 end
 
@@ -528,11 +547,15 @@ local function BuildSource(options, spec, style, specData, basename,
 	
 	--Write utility definitions needed by the loader.
 	source.WriteUtilityDefs(hFile, specData, spec, options)
+	hFile:write "\n"
 	
 	--Write the main loading function which loads everything.
 	source.WriteMainLoaderFunc(hFile, specData, spec, options)
+	hFile:write "\n"
 	
 	--Write any additional functions that load other things.
+	source.WriteVersioningFuncs(hFile, specData, spec, options)
+	hFile:write "\n"
 
 	--Write any definitions scoping end.
 	source.WriteEndDef(hFile, spec, options)
