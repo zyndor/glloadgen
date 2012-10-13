@@ -411,7 +411,6 @@ local function WriteFunctionDefs(hFile, options, spec, style, specData)
 	--Write the core function definitions, maintaining a list of everything
 	--that was written.
 	local coreExts = spec.GetCoreExts()
-	local writtenData = { coreexts = {}, corefuncs = {}}
 	local bWrittenBeginCore = false
 	for _, version in ipairs(spec.GetVersions()) do
 		if(tonumber(version) <= tonumber(options.version)) then
@@ -426,7 +425,6 @@ local function WriteFunctionDefs(hFile, options, spec, style, specData)
 						extSeen[extName] = true
 						WriteFuncDefsForCoreExt(hFile, extName, funcSeen,
 							options, spec, style, specData)
-						table.insert(writtenData.coreexts, extName)
 					end
 				end
 			end
@@ -451,8 +449,6 @@ local function WriteFunctionDefs(hFile, options, spec, style, specData)
 	end
 	
 	if(bWrittenBeginCore) then
-
-
 		--Now, write the function that loads the core version. Include
 		--ALL core extensions, not just the ones we wrote.
 		--This allows us to build an accurate count of what core stuff is missing.
