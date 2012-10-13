@@ -549,6 +549,22 @@ local function Generate(options)
 	--Load the spec data.
 	local spec = Specs.GetSpec(options.spec)
 	local specData = spec.LoadSpec()
+	
+	--Verify that every extension in `options.extensions` is a real extension.
+	local badExts = {}
+	for _, extName in ipairs(options.extensions) do
+		if(not specData.extdefs[extName]) then
+			badExts[#badExts + 1] = extName
+		end
+	end
+	
+	if(#badExts > 0) then
+		io.stdout:write("The following extensions are not in the spec ", options.spec, ":\n")
+		for _, extName in ipairs(badExts) do
+			io.stdout:write("\t", extName, "\n")
+		end
+		return
+	end
 
 	--Extract the path and base-filename from the options.
 	local simplename = options.outname:match("([^\\/]+)$")
