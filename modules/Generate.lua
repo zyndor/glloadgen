@@ -462,15 +462,15 @@ local function WriteFunctionDefs(hFile, options, spec, style, specData)
 							options, spec, style, specData)
 					end
 				end
-			end
-
-			--Write the actual core functions, if any.
-			local funcList = GetCoreFunctions(specData.coredefs[version],
-				specData, spec, options, version)
 				
-			if(#funcList > 0) then
-				WriteCoreFuncLoaderFromList(hFile,
-					funcList, options, spec, style, specData)
+				--Write the actual core functions, if any.
+				local funcList = GetCoreFunctions(specData.coredefs[version],
+					specData, spec, options, version)
+					
+				if(#funcList > 0) then
+					WriteCoreFuncLoaderFromList(hFile,
+						funcList, options, spec, style, specData)
+				end
 			end
 		end
 		source.WriteEndCoreLoaderBlock(hFile, options.version, spec, options)
