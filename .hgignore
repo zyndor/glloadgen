@@ -1,0 +1,11 @@
+syntax: glob
+test/glsdk/*
+*.idb
+*.sln
+*.suo
+*.ncb
+*.vcproj
+*.user
+*.pdb
+test/obj
+docs/*.wiki
