@@ -5,5 +5,10 @@
             positiveFilePatterns="" showHiddenFiles="false"/>
         <options/>
     </meta>
-    <projectTree name="Load%20Docs.xpr"/>
+    <projectTree name="Load%20Docs.xpr">
+        <file name="Command%20Line%20Options.xml"/>
+        <file name="Style%20Pointer%20C.xml"/>
+        <file name="Styles.xml"/>
+        <file name="ToCreole.xsl"/>
+    </projectTree>
 </project>
