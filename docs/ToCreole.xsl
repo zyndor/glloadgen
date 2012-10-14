@@ -3,6 +3,7 @@
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
     xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl"
     xmlns:db="http://docbook.org/ns/docbook"
+    xmlns:pg="https://bitbucket.org/alfonse/glloadgen"
     xmlns:xlink="http://www.w3.org/1999/xlink"
     xmlns:fn="http://www.w3.org/2005/xpath-functions"
     exclude-result-prefixes="xs xd"
@@ -20,6 +21,7 @@
     </xsl:template>
     
     <!-- Basic structural controls. -->
+    <!--
     <xsl:template match="db:section" mode="root">
         <xsl:choose>
             <xsl:when test="name(preceding-sibling::*[1]) != 'title' and
@@ -47,6 +49,7 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
+    -->
 
     <xsl:template match="db:title" mode="root"/>
 
@@ -60,13 +63,22 @@
         <xsl:if test="ancestor::db:blockquote or ancestor::db:epigraph">
             <xsl:text>-></xsl:text>
         </xsl:if>
+        <xsl:if test="ancestor::db:itemizedlist and not(preceding-sibling::*)">
+            <xsl:text>* </xsl:text>
+        </xsl:if>
+        <xsl:if test="ancestor::db:orderedlist and not(preceding-sibling::*)">
+            <xsl:text># </xsl:text>
+        </xsl:if>
         <xsl:apply-templates select="*|text()" mode="#current"/>
         <xsl:choose>
             <xsl:when test="ancestor::db:blockquote">
                 <xsl:text>
 </xsl:text>
             </xsl:when>
-            <xsl:when test="following-sibling::*">
+            <xsl:when test="ancestor::db:listitem and following-sibling::*">
+                <xsl:text>\\</xsl:text>
+            </xsl:when>
+            <xsl:when test="parent::db:glossdef or following-sibling::*">
                 <xsl:text>
 
 </xsl:text>
@@ -87,6 +99,30 @@
 </xsl:text>
     </xsl:template>
     
+    <xsl:template match="db:glossentry/db:glossterm" mode="file">
+        <xsl:text>**</xsl:text>
+        <xsl:apply-templates select="*|text()" mode="#current"/>
+        <xsl:text>**:
+
+</xsl:text>
+    </xsl:template>
+    
+    <xsl:template match="db:itemizedlist|db:orderedlist" mode="file">
+        <xsl:apply-templates select="*|text()" mode="#current"/>
+        <xsl:if test="not(following-sibling::*)">
+            <xsl:text>
+</xsl:text>
+        </xsl:if>
+    </xsl:template>
+    
+    <xsl:template match="db:programlisting" mode="file">
+        <xsl:text>{{{</xsl:text>
+        <xsl:apply-templates select="*|text()" mode="#current"/>
+        <xsl:text>}}}
+
+</xsl:text>
+    </xsl:template>
+    
     <!--
     <xsl:template match="db:footnote" mode="file">
         <xsl:text>[[hottip:</xsl:text>
@@ -104,7 +140,7 @@
         <xsl:text>//</xsl:text>
     </xsl:template>
     
-    <xsl:template match="db:emphasis[@role = 'strong'">
+    <xsl:template match="db:emphasis[@role = 'strong']" mode="file">
         <xsl:text>**</xsl:text>
         <xsl:apply-templates select="*|text()" mode="#current"/>
         <xsl:text>**</xsl:text>
@@ -114,6 +150,18 @@
         <xsl:text>//</xsl:text>
         <xsl:apply-templates select="*|text()" mode="#current"/>
         <xsl:text>//</xsl:text>
+    </xsl:template>
+    
+    <xsl:template match="db:filename" mode="file">
+        <xsl:text>{{{</xsl:text>
+        <xsl:apply-templates select="*|text()" mode="#current"/>
+        <xsl:text>}}}</xsl:text>
+    </xsl:template>
+    
+    <xsl:template match="db:literal" mode="file">
+        <xsl:text>{{{</xsl:text>
+        <xsl:apply-templates select="*|text()" mode="#current"/>
+        <xsl:text>}}}</xsl:text>
     </xsl:template>
     
     <xsl:template match="db:personname" mode="file">
@@ -149,34 +197,14 @@
         <xsl:apply-templates select="*|text()" mode="#current"/>
         <xsl:text>]]</xsl:text>
     </xsl:template>
-
-<!--
-    <xsl:template match="db:olink[@targetptr]" mode="file">
+    
+    <xsl:template match="pg:pagelink" mode="file">
         <xsl:text>[[</xsl:text>
-        <xsl:text>{{</xsl:text>
-        <xsl:value-of select="@targetptr"/>
-        <xsl:text>}}</xsl:text>
-        <xsl:text> </xsl:text>
+        <xsl:value-of select="@linkend"/>
+        <xsl:text>|</xsl:text>
         <xsl:apply-templates select="*|text()" mode="#current"/>
         <xsl:text>]]</xsl:text>
     </xsl:template>
-    
-    <xsl:template match="db:olink[@targetdir]" mode="file">
-        <xsl:text>[[</xsl:text>
-        <xsl:text>{{</xsl:text>
-        <xsl:value-of select="@targetdir"/>
-        <xsl:text>}}</xsl:text>
-        <xsl:text> </xsl:text>
-        <xsl:apply-templates select="*|text()" mode="#current"/>
-        <xsl:text>]]</xsl:text>
-    </xsl:template>
-    
-    <xsl:template match="db:olink" mode="file">
-        <xsl:text>{{</xsl:text>
-        <xsl:value-of select="."/>
-        <xsl:text>}}</xsl:text>
-    </xsl:template>
--->
     
     <xsl:template match="db:phrase[@role='title']" mode="file">
         <xsl:text>//**</xsl:text>
@@ -191,13 +219,30 @@
     </xsl:template>
     
     <xsl:template match="db:section" mode="file">
-        <xsl:text>==</xsl:text>
-        <xsl:value-of select="db:title[1]"/>
-        <xsl:text>==</xsl:text>
+        <xsl:call-template name="MakeSectionTitle"/>
         <xsl:text>
 
 </xsl:text>
         <xsl:apply-templates select="*|text()" mode="#current"/>
+    </xsl:template>
+    
+    <xsl:template name="MakeSectionTitle">
+        <xsl:for-each select="ancestor-or-self::db:section">
+            <xsl:text>=</xsl:text>
+        </xsl:for-each>
+        <xsl:variable name="RootSection" select="/*/db:section"/>
+        <xsl:variable name="NotSingularRoot" select="$RootSection/following-sibling::* or $RootSection/preceding-sibling::*[name()
+            != 'title']"/>
+        <xsl:if test="$NotSingularRoot">
+            <xsl:text>=</xsl:text>
+        </xsl:if>
+        <xsl:value-of select="db:title[1]"/>
+        <xsl:if test="$NotSingularRoot">
+            <xsl:text>=</xsl:text>
+        </xsl:if>
+        <xsl:for-each select="ancestor-or-self::db:section">
+            <xsl:text>=</xsl:text>
+        </xsl:for-each>
     </xsl:template>
     
     <xsl:template match="db:blockquote" mode="file">
