@@ -109,10 +109,8 @@
     
     <xsl:template match="db:itemizedlist|db:orderedlist" mode="file">
         <xsl:apply-templates select="*|text()" mode="#current"/>
-        <xsl:if test="not(following-sibling::*)">
-            <xsl:text>
+        <xsl:text>
 </xsl:text>
-        </xsl:if>
     </xsl:template>
     
     <xsl:template match="db:programlisting" mode="file">
