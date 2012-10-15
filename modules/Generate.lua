@@ -250,12 +250,15 @@ local function BuildHeader(options, spec, style, specData, basename)
 	
 	--Spec-specific initialization comes next. Generally macros and #includes.
 	hFile:rawwrite(spec.GetHeaderInit())
+	hFile:write("\n")
 	
 	--Write the standard typedefs.
 	header.WriteStdTypedefs(hFile, specData, spec, options)
+	hFile:write("\n")
 	
 	--Write the typedefs from the spec.
 	header.WriteSpecTypedefs(hFile, specData, spec, options)
+	hFile:write("\n")
 	
 	--Write any declaration scoping start.
 	header.WriteBeginDecl(hFile, spec, options)
@@ -272,18 +275,16 @@ local function BuildHeader(options, spec, style, specData, basename)
 	--Write all enumerators.
 	style.WriteLargeHeading(hFile, "Enumerators")
 	header.WriteBeginEnumDeclBlock(hFile, spec, options)
-
 	WriteEnumerators(hFile, options, spec, style, specData)
-	
 	header.WriteEndEnumDeclBlock(hFile, spec, options)
+	hFile:write("\n")
 	
 	--Write all function declarations
 	style.WriteLargeHeading(hFile, "Functions")
 	header.WriteBeginFuncDeclBlock(hFile, spec, options)
-
 	WriteFunctionDecls(hFile, options, spec, style, specData)
-	
 	header.WriteEndFuncDeclBlock(hFile, spec, options)
+	hFile:write("\n")
 	
 	--Write the function loading stuff.
 	style.WriteLargeHeading(hFile, "Loading Functions")
