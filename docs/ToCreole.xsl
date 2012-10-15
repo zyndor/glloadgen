@@ -114,9 +114,11 @@
     </xsl:template>
     
     <xsl:template match="db:programlisting" mode="file">
-        <xsl:text>{{{</xsl:text>
+        <xsl:text>{{{
+</xsl:text>
         <xsl:apply-templates select="*|text()" mode="#current"/>
-        <xsl:text>}}}
+        <xsl:text>
+}}}
 
 </xsl:text>
     </xsl:template>
@@ -210,6 +212,10 @@
         <xsl:text>**//</xsl:text>
     </xsl:template>
     
+    <xsl:template match="db:phrase[@role='toc']" mode="file">
+        <xsl:text><![CDATA[<<toc>>]]></xsl:text>
+    </xsl:template>
+    
     <xsl:template match="db:citetitle" mode="file">
         <xsl:text>//**</xsl:text>
         <xsl:apply-templates select="*|text()" mode="#current"/>
@@ -258,6 +264,10 @@
         <xsl:if test="substring($norm, string-length($norm), 1) != substring(., string-length(.), 1) and (string-length($norm) > 0)">
             <xsl:text> </xsl:text>
         </xsl:if>
+    </xsl:template>
+
+    <xsl:template match="text()[ancestor::db:programlisting]" mode="file">
+        <xsl:value-of select="."/>
     </xsl:template>
     
     <xsl:template match="db:title" mode="file"/>

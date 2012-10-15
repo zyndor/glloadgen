@@ -17,7 +17,7 @@
                                     <String xml:space="preserve">XSL</String>
                                 </field>
                                 <field name="url">
-                                    <String xml:space="preserve">Common_Extension_Files.xml</String>
+                                    <String xml:space="preserve">Style_Creation.xml</String>
                                 </field>
                             </scenarioAssociation>
                             <scenarioAssociation>
@@ -39,17 +39,6 @@
                                     <String xml:space="preserve">XSL</String>
                                 </field>
                                 <field name="url">
-                                    <String xml:space="preserve">Extension_Files.xml</String>
-                                </field>
-                            </scenarioAssociation>
-                            <scenarioAssociation>
-                                <field name="name">
-                                    <String xml:space="preserve">ToCreole</String>
-                                </field>
-                                <field name="type">
-                                    <String xml:space="preserve">XSL</String>
-                                </field>
-                                <field name="url">
                                     <String xml:space="preserve">Styles.xml</String>
                                 </field>
                             </scenarioAssociation>
@@ -61,18 +50,7 @@
                                     <String xml:space="preserve">XSL</String>
                                 </field>
                                 <field name="url">
-                                    <String xml:space="preserve">Style_Creation.xml</String>
-                                </field>
-                            </scenarioAssociation>
-                            <scenarioAssociation>
-                                <field name="name">
-                                    <String xml:space="preserve">ToCreole</String>
-                                </field>
-                                <field name="type">
-                                    <String xml:space="preserve">XSL</String>
-                                </field>
-                                <field name="url">
-                                    <String xml:space="preserve">Command_Line_Options.xml</String>
+                                    <String xml:space="preserve">Style_Pointer_C.xml</String>
                                 </field>
                             </scenarioAssociation>
                             <scenarioAssociation>
@@ -94,7 +72,29 @@
                                     <String xml:space="preserve">XSL</String>
                                 </field>
                                 <field name="url">
-                                    <String xml:space="preserve">Style_Pointer_C.xml</String>
+                                    <String xml:space="preserve">Extension_Files.xml</String>
+                                </field>
+                            </scenarioAssociation>
+                            <scenarioAssociation>
+                                <field name="name">
+                                    <String xml:space="preserve">ToCreole</String>
+                                </field>
+                                <field name="type">
+                                    <String xml:space="preserve">XSL</String>
+                                </field>
+                                <field name="url">
+                                    <String xml:space="preserve">Common_Extension_Files.xml</String>
+                                </field>
+                            </scenarioAssociation>
+                            <scenarioAssociation>
+                                <field name="name">
+                                    <String xml:space="preserve">ToCreole</String>
+                                </field>
+                                <field name="type">
+                                    <String xml:space="preserve">XSL</String>
+                                </field>
+                                <field name="url">
+                                    <String xml:space="preserve">Command_Line_Options.xml</String>
                                 </field>
                             </scenarioAssociation>
                             <scenarioAssociation>

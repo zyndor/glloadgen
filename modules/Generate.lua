@@ -245,13 +245,7 @@ local function BuildHeader(options, spec, style, specData, basename)
 	local hFile, filename = header.CreateFile(basename, options)
 	
 	--Start include-guards.
-	--IGs are built from style and spec data. The spec provides a string that
-	--the style uses in constructing it.
-	local inclGuard =
-		header.MakeIncludeGuard(options.prefix, spec.GetIncludeGuardString())
-	
-	hFile:fmt("#ifndef %s\n", inclGuard)
-	hFile:fmt("#define %s\n", inclGuard)
+	header.WriteBeginIncludeGuard(hFile, spec, options)
 	hFile:write("\n")
 	
 	--Spec-specific initialization comes next. Generally macros and #includes.
@@ -291,7 +285,7 @@ local function BuildHeader(options, spec, style, specData, basename)
 	
 	--Write the function loading stuff.
 	style.WriteLargeHeading(hFile, "Loading Functions")
-	header.WriteStatusCodeDecl(hFile, spec, options)
+	header.WriteUtilityDecls(hFile, spec, options)
 	hFile:write("\n")
 	header.WriteMainLoaderFuncDecl(hFile, spec, options)
 	if(options.version) then
@@ -303,7 +297,8 @@ local function BuildHeader(options, spec, style, specData, basename)
 	header.WriteEndDecl(hFile, spec, options)
 	
 	--Ending includeguard.
-	hFile:fmt("#endif //%s\n", inclGuard)
+	header.WriteEndIncludeGuard(hFile, spec, options)
+	hFile:write("\n")
 	hFile:close()
 	
 	return filename
@@ -456,11 +451,16 @@ local function WriteFunctionDefs(hFile, options, spec, style, specData)
 		for _, version in ipairs(spec.GetVersions()) do
 			if(tonumber(version) <= tonumber(options.version)) then
 				if(coreExts[version]) then
+					source.WriteBeginExtFuncDefBlock(hFile, extName, spec, options)
+
 					for _, extName in ipairs(coreExts[version]) do
 						WriteCoreFuncLoaderFromList(hFile,
 							specData.extdefs[extName].funcs,
 							options, spec, style, specData)
 					end
+					
+					source.WriteEndExtFuncDefBlock(hFile, extName, spec, options)
+
 				end
 				
 				--Write the actual core functions, if any.
@@ -536,8 +536,10 @@ local function BuildSource(options, spec, style, specData, basename,
 	hFile:write "\n"
 	
 	--Write any additional functions that load other things.
-	source.WriteVersioningFuncs(hFile, specData, spec, options)
-	hFile:write "\n"
+   	if(options.version) then
+        source.WriteVersioningFuncs(hFile, specData, spec, options)
+        hFile:write "\n"
+	end
 
 	--Write any definitions scoping end.
 	source.WriteEndDef(hFile, spec, options)
