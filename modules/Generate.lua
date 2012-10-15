@@ -404,69 +404,26 @@ local function WriteFunctionDefs(hFile, options, spec, style, specData)
 	if(options.version) then
 		hFile:write("\n")
 		style.WriteSmallHeading(hFile, "Core Functions")
-	else
-		--No version to export, so don't bother.
-		return
-	end
 	
-	--Write the core function definitions, maintaining a list of everything
-	--that was written.
-	local coreExts = spec.GetCoreExts()
-	local bWrittenBeginCore = false
-	for _, version in ipairs(spec.GetVersions()) do
-		if(tonumber(version) <= tonumber(options.version)) then
-			--Write any core extensions for that version.
-			if(coreExts[version]) then
-				for _, extName in ipairs(coreExts[version]) do
-					if(not extSeen[extName]) then
-						if(not bWrittenBeginCore) then
-							source.WriteBeginCoreFuncDefBlock(hFile, options.version, spec, options)
-							bWrittenBeginCore = true
-						end
-						extSeen[extName] = true
-						WriteFuncDefsForCoreExt(hFile, extName, funcSeen,
-							options, spec, style, specData)
-					end
-				end
-			end
-			
-			--Write the actual core functions, if any.
-			local funcList = GetCoreFunctions(specData.coredefs[version],
-				specData, spec, options, version)
-				
-			if(#funcList > 0) then
-				if(not bWrittenBeginCore) then
-					source.WriteBeginCoreFuncDefBlock(hFile, options.version, spec, options)
-					bWrittenBeginCore = true
-				end
-				style.WriteSmallHeading(hFile, "Version " .. version)
-				
-				WriteFuncDefsFromList(hFile, funcList, funcSeen,
-					version, options, spec, style, specData)
-
-				hFile:write("\n")
-			end
-		end
-	end
-	
-	if(bWrittenBeginCore) then
-		--Now, write the function that loads the core version. Include
-		--ALL core extensions, not just the ones we wrote.
-		--This allows us to build an accurate count of what core stuff is missing.
-		source.WriteBeginCoreLoaderBlock(hFile, options.version, spec, options)
+		--Write the core function definitions, maintaining a list of everything
+		--that was written.
+		local coreExts = spec.GetCoreExts()
+		local bWrittenBeginCore = false
 		for _, version in ipairs(spec.GetVersions()) do
 			if(tonumber(version) <= tonumber(options.version)) then
+				--Write any core extensions for that version.
 				if(coreExts[version]) then
-					source.WriteBeginExtFuncDefBlock(hFile, extName, spec, options)
-
 					for _, extName in ipairs(coreExts[version]) do
-						WriteCoreFuncLoaderFromList(hFile,
-							specData.extdefs[extName].funcs,
-							options, spec, style, specData)
+						if(not extSeen[extName]) then
+							if(not bWrittenBeginCore) then
+								source.WriteBeginCoreFuncDefBlock(hFile, options.version, spec, options)
+								bWrittenBeginCore = true
+							end
+							extSeen[extName] = true
+							WriteFuncDefsForCoreExt(hFile, extName, funcSeen,
+								options, spec, style, specData)
+						end
 					end
-					
-					source.WriteEndExtFuncDefBlock(hFile, extName, spec, options)
-
 				end
 				
 				--Write the actual core functions, if any.
@@ -474,14 +431,54 @@ local function WriteFunctionDefs(hFile, options, spec, style, specData)
 					specData, spec, options, version)
 					
 				if(#funcList > 0) then
-					WriteCoreFuncLoaderFromList(hFile,
-						funcList, options, spec, style, specData)
+					if(not bWrittenBeginCore) then
+						source.WriteBeginCoreFuncDefBlock(hFile, options.version, spec, options)
+						bWrittenBeginCore = true
+					end
+					style.WriteSmallHeading(hFile, "Version " .. version)
+					
+					WriteFuncDefsFromList(hFile, funcList, funcSeen,
+						version, options, spec, style, specData)
+
+					hFile:write("\n")
 				end
 			end
 		end
-		source.WriteEndCoreLoaderBlock(hFile, options.version, spec, options)
 		
-		source.WriteEndCoreFuncDefBlock(hFile, options.version, spec, options)
+		if(bWrittenBeginCore) then
+			--Now, write the function that loads the core version. Include
+			--ALL core extensions, not just the ones we wrote.
+			--This allows us to build an accurate count of what core stuff is missing.
+			source.WriteBeginCoreLoaderBlock(hFile, options.version, spec, options)
+			for _, version in ipairs(spec.GetVersions()) do
+				if(tonumber(version) <= tonumber(options.version)) then
+					if(coreExts[version]) then
+						source.WriteBeginExtFuncDefBlock(hFile, extName, spec, options)
+
+						for _, extName in ipairs(coreExts[version]) do
+							WriteCoreFuncLoaderFromList(hFile,
+								specData.extdefs[extName].funcs,
+								options, spec, style, specData)
+						end
+						
+						source.WriteEndExtFuncDefBlock(hFile, extName, spec, options)
+
+					end
+					
+					--Write the actual core functions, if any.
+					local funcList = GetCoreFunctions(specData.coredefs[version],
+						specData, spec, options, version)
+						
+					if(#funcList > 0) then
+						WriteCoreFuncLoaderFromList(hFile,
+							funcList, options, spec, style, specData)
+					end
+				end
+			end
+			source.WriteEndCoreLoaderBlock(hFile, options.version, spec, options)
+			
+			source.WriteEndCoreFuncDefBlock(hFile, options.version, spec, options)
+		end
 	end
 	
 	local function FindFuncName(funcName)
@@ -527,8 +524,8 @@ local function BuildSource(options, spec, style, specData, basename,
 	for _, ext in ipairs(options.extensions) do
 		source.WriteExtVariableDef(hFile, ext, specData, spec, options)
 	end
-	hFile:write("\n")
 	source.WriteEndExtVarDefBlock(hFile, spec, options)
+	hFile:write("\n")
 	
 	--Write all of the loader definitions.
 	style.WriteLargeHeading(hFile, "Function Definitions and Loaders")
