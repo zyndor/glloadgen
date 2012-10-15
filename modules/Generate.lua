@@ -262,9 +262,11 @@ local function BuildHeader(options, spec, style, specData, basename)
 	
 	--Write the extension variable declarations.
 	style.WriteLargeHeading(hFile, "Extension variable declarations")
+	header.WriteBeginExtVarDeclBlock(hFile, spec, options)
 	for _, ext in ipairs(options.extensions) do
 		header.WriteExtVariableDecl(hFile, ext, specData, spec, options)
 	end
+	header.WriteEndExtVarDeclBlock(hFile, spec, options)
 	hFile:write("\n")
 	
 	--Write all enumerators.
@@ -285,6 +287,7 @@ local function BuildHeader(options, spec, style, specData, basename)
 	
 	--Write the function loading stuff.
 	style.WriteLargeHeading(hFile, "Loading Functions")
+	header.WriteBeginSysDeclBlock(hFile, spec, options)
 	header.WriteUtilityDecls(hFile, spec, options)
 	hFile:write("\n")
 	header.WriteMainLoaderFuncDecl(hFile, spec, options)
@@ -292,6 +295,8 @@ local function BuildHeader(options, spec, style, specData, basename)
 		hFile:write("\n")
 		header.WriteVersioningFuncDecls(hFile, spec, options)
 	end
+	header.WriteEndSysDeclBlock(hFile, spec, options)
+
 	
 	--Write any declaration scoping end.
 	header.WriteEndDecl(hFile, spec, options)
@@ -517,16 +522,20 @@ local function BuildSource(options, spec, style, specData, basename,
 	
 	--Write the extension variable definitions.
 	style.WriteLargeHeading(hFile, "Extension variable definitions")
+	source.WriteBeginExtVarDefBlock(hFile, spec, options)
 	for _, ext in ipairs(options.extensions) do
 		source.WriteExtVariableDef(hFile, ext, specData, spec, options)
 	end
 	hFile:write("\n")
+	source.WriteEndExtVarDefBlock(hFile, spec, options)
 	
 	--Write all of the loader definitions.
 	style.WriteLargeHeading(hFile, "Function Definitions and Loaders")
 	WriteFunctionDefs(hFile, options, spec, style, specData)
 	hFile:write("\n")
 	
+
+	source.WriteBeginSysDefBlock(hFile, spec, options)
 	--Write utility definitions needed by the loader.
 	source.WriteUtilityDefs(hFile, specData, spec, options)
 	hFile:write "\n"
@@ -541,6 +550,8 @@ local function BuildSource(options, spec, style, specData, basename,
         hFile:write "\n"
 	end
 
+	source.WriteEndSysDefBlock(hFile, spec, options)
+	
 	--Write any definitions scoping end.
 	source.WriteEndDef(hFile, spec, options)
 
