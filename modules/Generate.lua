@@ -161,7 +161,7 @@ end
 local function GetCoreFunctions(core, specData, spec, options, version)
 	--Only remove from core profile.
 	if(options.profile ~= "core") then
-		return core.func
+		return core.funcs
 	end
 
 	local targetVersion = tonumber(options.version)
