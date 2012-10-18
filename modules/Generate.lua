@@ -585,14 +585,19 @@ local function Generate(options)
 	assert(simplename,
 		"There is no filename in the path '" .. options.outname .. "'")
 
-	local style = Styles.GetStyle(options.style)
+	local style, structure = Styles.GetStyle(options.style)
 
 	--Compute the filename, minus style-specific suffix.
 	local basename = dir .. spec:FilePrefix() .. simplename
 	
-	local hdrFilename = BuildHeader(options, spec, style, specData, basename)
-	local srcFilename = BuildSource(options, spec, style, specData, basename,
-		hdrFilename)
+	--If style has a structure, then use the structure's processing system.
+	if(structure) then
+		structure.Proc(basename, style, specData, spec, options)
+	else
+		local hdrFilename = BuildHeader(options, spec, style, specData, basename)
+		local srcFilename = BuildSource(options, spec, style, specData, basename,
+			hdrFilename)
+	end
 end
 
 return
