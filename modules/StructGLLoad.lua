@@ -1,6 +1,43 @@
 
 local struct = require "Structure"
 
+--Common set of header stuff.
+local common_ext_struct =
+{ type="group",
+	{ type="enum-iter",
+		{ type="write", name="Enumerator(hFile, enum, enumTable, spec, options)", },
+	},
+	{ type="blank", cond="enum-iter"},
+	{ type="func-iter",
+		{ type="write", name="FuncTypedef(hFile, func, typemap, spec, options)", },
+	},
+	{ type="blank", cond="func-iter"},
+	{ type="func-iter",
+		{ type="write", name="FuncDecl(hFile, func, typemap, spec, options)", },
+	},
+	{ type="blank", cond="func-iter"},
+}
+
+--Extension file.
+local ext_file_struct =
+{ type="file", style="ext_hdr", name="GetFilename(basename, spec, options)",
+	{ type="block", name="IncludeGuard",
+		{ type="blank"},
+		{ type="write", name="Typedefs(hFile, specData, spec, options)",},
+		{ type="blank"},
+		{ type="block", name="Extern(hFile, spec, options)",
+			{ type="ext-iter",
+				{ type="write", name="ExtVariable(hFile, extName, spec, options)" },
+			},
+			{ type="blank"},
+			{ type="ext-iter",
+				common_ext_struct,
+			},
+		},
+	},
+}
+
+
 local my_struct =
 {
 -- Internal header files.
@@ -8,15 +45,27 @@ local my_struct =
 { type="func-seen",
 	--Write the type header file.
 	{ type="file", style="type_hdr", name="GetFilename(basename, spec, options)",
+		{ type="block", name="IncludeGuard(hFile, spec, options)",
+			{ type="write", name="Init(hFile, spec, options)"},
+			{ type="write", name="StdTypedefs(hFile, spec, options)"},
+			{ type="write", name="PassthruTypedefs(hFile, specData, spec, options)"},
+		},
 	},
 	
 	--Write the extension file
-	{ type="file", style="ext_hdr", name="GetFilename(basename, spec, options)",
-	},
+	ext_file_struct,
 	
 	--For each version, write files containing just the core declarations.
 	{ type="version-iter",
-		{ type="file", style="core_hdr", name="GetFilename(basename, version, spec, options)",
+		{ type="filter", name="VersionHasCore(version, specData, spec, options)",
+			{ type="file", style="core_hdr", name="GetFilename(basename, version, spec, options)",
+				{ type="block", name="IncludeGuard(hFile, version, spec, options)",
+					{ type="blank"},
+					{ type="block", name="Extern(hFile, spec, options)",
+						common_ext_struct,
+					},
+				},
+			},
 		},
 	},
 	
@@ -24,6 +73,12 @@ local my_struct =
 	{ type="version-iter",
 		{ type="filter", name="VersionHasRemoved(version, specData, spec, options)",
 			{ type="file", style="core_hdr", name="GetFilenameRem(basename, version, spec, options)",
+				{ type="block", name="IncludeGuardRem(hFile, version, spec, options)",
+					{ type="blank"},
+					{ type="block", name="Extern(hFile, spec, options)",
+						common_ext_struct,
+					},
+				},
 			},
 		},
 	},
