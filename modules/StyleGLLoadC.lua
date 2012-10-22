@@ -183,17 +183,20 @@ local incl_hdr = {}
 
 function incl_hdr.VersionFilenameCore(basename, version, spec, options)
 	local basename, dir = util.ParsePath(basename)
-	return dir .. glload.headerDirectory .. spec.FilePrefix() .. version .. ".h"
+	return dir .. glload.headerDirectory ..
+		glload.GetVersionCoreBasename(version, spec, options)
 end
 
 function incl_hdr.VersionFilenameComp(basename, version, spec, options)
 	local basename, dir = util.ParsePath(basename)
-	return dir .. glload.headerDirectory .. spec.FilePrefix() .. version .. "_comp.h"
+	return dir .. glload.headerDirectory ..
+		glload.GetVersionCompBasename(version, spec, options)
 end
 
 function incl_hdr.AllFilename(basename, spec, options)
 	local basename, dir = util.ParsePath(basename)
-	return dir .. glload.headerDirectory .. spec.FilePrefix() .. "all.h"
+	return dir .. glload.headerDirectory .. 
+		glload.GetAllBasename(spec, options)
 end
 
 function incl_hdr.WriteBlockBeginIncludeGuardCore(hFile, version, spec, options)
@@ -265,7 +268,117 @@ function source.GetFilename(basename, spec, options)
 	return dir .. glload.sourceDirectory .. spec.FilePrefix() .. "load.c"
 end
 
+function source.WriteIncludes(hFile, spec, options)
+	hFile:writeblock[[
+#include <stdlib.h>
+#include <string.h>
+]]
+	hFile:fmt('#include "%s"\n', glload.headerDirectory .. 
+		glload.GetAllBasename(spec, options))
+end
 
+function source.WritePointerLoading(hFile, specData, spec, options)
+	hFile:writeblock(spec.GetLoaderFunc())
+end
+
+function source.WriteExtVariable(hFile, extName, spec, options)
+	hFile:fmt("int %s = 0;\n",
+		glload.GetExtVariableName(extName, spec, options))
+end
+
+function source.WriteBlockBeginClearExtVars(hFile, spec, options)
+	hFile:fmtblock("static void %s()\n{\n",
+		glload.GetClearExtVarsFuncName(spec, options))
+	hFile:inc()
+end
+
+function source.WriteBlockEndClearExtVars(hFile, spec, options)
+	hFile:dec()
+	hFile:write("}\n")
+end
+
+function source.WriteClearExtVar(hFile, extName, spec, options)
+	hFile:fmt("%s = 0;\n",
+		glload.GetExtVariableName(extName, spec, options))
+end
+
+function source.WriteFuncDef(hFile, func, typemap, spec, options)
+	hFile:fmt("%s %s = NULL;\n",
+		glload.GetFuncTypedefName(func, spec, options),
+		glload.GetFuncPtrName(func, spec, options))
+end
+
+function source.WriteFuncDefCond(hFile, func, typemap, spec, options, funcSeen)
+	if(not funcSeen[func.name]) then
+		source.WriteFuncDef(hFile, func, typemap, spec, options)
+	end
+end
+
+function source.WriteBlockBeginLoadExtensionFuncs(hFile, extName, spec, options)
+	hFile:fmt("static int %s()\n",
+		glload.GetLoadExtensionFuncName(extName, spec, options))
+	hFile:write("{\n")
+	hFile:inc()
+	hFile:write("int numFailed = 0;\n")
+end
+
+function source.WriteBlockEndLoadExtensionFuncs(hFile, extName, spec, options)
+	hFile:write("return numFailed;\n")
+	hFile:dec()
+	hFile:write("}\n")
+end
+
+function source.WriteLoadFunction(hFile, func, typemap, spec, options)
+	hFile:fmt('%s = %s("%s");\n',
+		glload.GetFuncPtrName(func, spec, options),
+		common.GetProcAddressName(spec),
+		common.GetOpenGLFuncName(func, spec))
+	hFile:fmt("if(!%s) ++numFailed;\n",
+		glload.GetFuncPtrName(func, spec, options))
+end
+
+function source.WriteBlockBeginLoadCoreFuncs(hFile, version, spec, options)
+	hFile:fmt("static int %s()\n",
+		glload.GetLoadCoreFuncName(version, spec, options))
+	hFile:write("{\n")
+	hFile:inc()
+	hFile:write("int numFailed = 0;\n")
+end
+
+function source.WriteBlockEndLoadCoreFuncs(hFile, version, spec, options)
+	hFile:write("return numFailed;\n")
+	hFile:dec()
+	hFile:write("}\n")
+end
+
+function source.WriteBlockBeginLoadCoreFuncsComp(hFile, version, spec, options)
+	hFile:fmt("static int %s()\n",
+		glload.GetLoadCoreCompFuncName(version, spec, options))
+	hFile:write("{\n")
+	hFile:inc()
+	hFile:write("int numFailed = 0;\n")
+end
+
+function source.WriteBlockEndLoadCoreFuncsComp(hFile, version, spec, options)
+	hFile:write("return numFailed;\n")
+	hFile:dec()
+	hFile:write("}\n")
+end
+
+function source.WriteLoadFunctionCore(hFile, func, typemap, spec, options)
+	hFile:fmt('%s = %s("%s");\n',
+		glload.GetFuncPtrName(func, spec, options),
+		common.GetProcAddressName(spec),
+		common.GetOpenGLFuncName(func, spec))
+		
+	if(func.name:match("EXT$")) then
+		hFile:fmt("/* %s comes from DSA.*/\n",
+			common.GetOpenGLFuncName(func, spec))
+	else
+		hFile:fmt("if(!%s) ++numFailed;\n",
+			glload.GetFuncPtrName(func, spec, options))
+	end
+end
 
 my_style =
 {
@@ -317,6 +430,86 @@ function my_style.FilterHasCompatibility(version, specData, spec, options)
 		return false
 	end
 end
+
+local function HasFunclistAnyCore(funcList)
+	for _, func in ipairs(funcList) do
+		if(not func.deprecated) then
+			return true
+		end
+	end
+	
+	return false
+end
+
+local function HasFunclistAnyComp(funcList)
+	for _, func in ipairs(funcList) do
+		if(func.deprecated) then
+			return true
+		end
+	end
+	
+	return false
+end
+
+function my_style.FilterVersionHasCoreFuncs(version, specData, spec, options)
+	local coreExtByVersion = spec.GetCoreExts()
+	if(not coreExtByVersion) then return end
+	
+	local coreExts = coreExtByVersion[version]
+	
+	if(coreExts) then
+		for _, extName in ipairs(coreExts) do
+			if(HasFunclistAnyCore(specData.extdefs[extName].funcs)) then
+				return true
+			end
+		end
+	end
+	
+	if(HasFunclistAnyCore(specData.coredefs[version].funcs)) then
+		return true
+	end
+	
+	return false
+end
+
+function my_style.FilterVersionHasCompFuncs(version, specData, spec, options)
+	local coreExtByVersion = spec.GetCoreExts()
+	if(not coreExtByVersion) then return end
+	
+	local coreExts = coreExtByVersion[version]
+	
+	if(coreExts) then
+		for _, extName in ipairs(coreExts) do
+			if(HasFunclistAnyComp(specData.extdefs[extName].funcs)) then
+				return true
+			end
+		end
+	end
+	
+	if(HasFunclistAnyComp(specData.coredefs[version].funcs)) then
+		return true
+	end
+	
+	return false
+end
+
+function my_style.FilterCoreEnum(enum)
+	return not enum.removed and not enum.extensions
+end
+
+function my_style.FilterCompEnum(enum)
+	return enum.removed and not enum.extensions
+end
+
+function my_style.FilterCoreFunc(func)
+	return not func.deprecated
+end
+
+function my_style.FilterCompFunc(func)
+	return func.deprecated
+end
+
+
 
 local function Create()
 	return common.DeepCopyTable(my_style), struct

@@ -7,6 +7,18 @@ data.internalPrefix = "_int_"
 data.headerDirectory = ""
 data.sourceDirectory = ""
 
+function data.GetVersionCoreBasename(version, spec, options)
+	return spec.FilePrefix() .. version .. ".h"
+end
+
+function data.GetVersionCompBasename(version, spec, options)
+	return spec.FilePrefix() .. version .. "_comp.h"
+end
+
+function data.GetAllBasename(spec, options)
+	return spec.FilePrefix() .. "all.h"
+end
+
 function data.GetTypeHeaderBasename(spec, options)
 	return data.internalPrefix .. spec.FilePrefix() .. "type.h"
 end
@@ -87,6 +99,22 @@ function data.GetEndExternBlock()
 }
 #endif //__cplusplus
 ]]
+end
+
+function data.GetClearExtVarsFuncName(spec, options)
+	return "ClearExtensionVariables"
+end
+
+function data.GetLoadExtensionFuncName(extName, spec, options)
+	return "LoadExt_" .. extName
+end
+
+function data.GetLoadCoreFuncName(version, spec, options)
+	return "LoadCore_Version_" .. version:gsub("%.", "_")
+end
+
+function data.GetLoadCoreCompFuncName(version, spec, options)
+	return "LoadCore_Version_" .. version:gsub("%.", "_") .. "_Comp"
 end
 
 
