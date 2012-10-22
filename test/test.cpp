@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "gl_test_cpp.hpp"
-#include "wgl_test_cpp.hpp"
+#include "gl_test.hpp"
+//#include "wgl_test.hpp"
 #include <GL/freeglut.h>
 
 GLuint positionBufferObject;
@@ -87,7 +87,7 @@ void init()
 
 	program = gl::CreateProgram();
 	gl::AttachShader(program, vertShader);
-	gl::AttachShader(program, fragShader);	
+	gl::AttachShader(program, fragShader);
 	gl::LinkProgram(program);
 
 	GLint status;
@@ -137,7 +137,7 @@ void reshape (int w, int h)
 
 //Called whenever a key on the keyboard was pressed.
 //The key is given by the ''key'' parameter, which is in ASCII.
-//It's often a good idea to have the escape key (ASCII value 27) call glutLeaveMainLoop() to 
+//It's often a good idea to have the escape key (ASCII value 27) call glutLeaveMainLoop() to
 //exit the program.
 void keyboard(unsigned char key, int x, int y)
 {
@@ -161,7 +161,7 @@ int main(int argc, char** argv)
 	glutInitDisplayMode(displayMode);
 	glutInitContextVersion (3, 3);
 	glutInitContextProfile(GLUT_CORE_PROFILE);
-	glutInitWindowSize (width, height); 
+	glutInitWindowSize (width, height);
 	glutInitWindowPosition (300, 200);
 	glutCreateWindow (argv[0]);
 
@@ -176,7 +176,7 @@ int main(int argc, char** argv)
 
 	init();
 
-	glutDisplayFunc(display); 
+	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
 	glutKeyboardFunc(keyboard);
 	glutMainLoop();
