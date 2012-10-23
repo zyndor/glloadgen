@@ -258,6 +258,9 @@ function load_hdr.GetFilename(basename, spec, options)
 	return dir .. glload.headerDirectory .. spec.FilePrefix() .. "load.h"
 end
 
+function load_hdr.WriteLoaderDecl(hFile, spec, options)
+	hFile:writeblock(glload.GetLoaderHeaderString(spec, options))
+end
 
 ----------------------------------------------------------
 -- Source file.
@@ -315,17 +318,12 @@ function source.WriteFuncDefCond(hFile, func, typemap, spec, options, funcSeen)
 end
 
 function source.WriteBlockBeginLoadExtensionFuncs(hFile, extName, spec, options)
-	hFile:fmt("static int %s()\n",
+	glload.WriteLoaderFuncBegin(hFile,
 		glload.GetLoadExtensionFuncName(extName, spec, options))
-	hFile:write("{\n")
-	hFile:inc()
-	hFile:write("int numFailed = 0;\n")
 end
 
 function source.WriteBlockEndLoadExtensionFuncs(hFile, extName, spec, options)
-	hFile:write("return numFailed;\n")
-	hFile:dec()
-	hFile:write("}\n")
+	glload.WriteLoaderFuncEnd(hFile)
 end
 
 function source.WriteLoadFunction(hFile, func, typemap, spec, options)
@@ -338,31 +336,21 @@ function source.WriteLoadFunction(hFile, func, typemap, spec, options)
 end
 
 function source.WriteBlockBeginLoadCoreFuncs(hFile, version, spec, options)
-	hFile:fmt("static int %s()\n",
+	glload.WriteLoaderFuncBegin(hFile,
 		glload.GetLoadCoreFuncName(version, spec, options))
-	hFile:write("{\n")
-	hFile:inc()
-	hFile:write("int numFailed = 0;\n")
 end
 
 function source.WriteBlockEndLoadCoreFuncs(hFile, version, spec, options)
-	hFile:write("return numFailed;\n")
-	hFile:dec()
-	hFile:write("}\n")
+	glload.WriteLoaderFuncEnd(hFile)
 end
 
 function source.WriteBlockBeginLoadCoreFuncsComp(hFile, version, spec, options)
-	hFile:fmt("static int %s()\n",
+	glload.WriteLoaderFuncBegin(hFile,
 		glload.GetLoadCoreCompFuncName(version, spec, options))
-	hFile:write("{\n")
-	hFile:inc()
-	hFile:write("int numFailed = 0;\n")
 end
 
 function source.WriteBlockEndLoadCoreFuncsComp(hFile, version, spec, options)
-	hFile:write("return numFailed;\n")
-	hFile:dec()
-	hFile:write("}\n")
+	glload.WriteLoaderFuncEnd(hFile)
 end
 
 function source.WriteLoadFunctionCore(hFile, func, typemap, spec, options)
@@ -379,6 +367,43 @@ function source.WriteLoadFunctionCore(hFile, func, typemap, spec, options)
 			glload.GetFuncPtrName(func, spec, options))
 	end
 end
+
+function source.WriteBlockBeginLoadAllCoreFunc(hFile, version, spec, options)
+	glload.WriteLoaderFuncBegin(hFile,
+		glload.GetLoadAllCoreFuncName(version, spec, options))
+end
+
+function source.WriteBlockEndLoadAllCoreFunc(hFile, version, spec, options)
+	glload.WriteLoaderFuncEnd(hFile)
+end
+
+function source.WriteBlockBeginLoadAllCoreCompFunc(hFile, version, spec, options)
+	hFile:fmt("static int %s()\n",
+		glload.GetLoadAllCoreCompFuncName(version, spec, options))
+	hFile:write("{\n")
+	hFile:inc()
+	hFile:write("int numFailed = 0;\n")
+end
+
+function source.WriteBlockEndLoadAllCoreCompFunc(hFile, version, spec, options)
+	hFile:write("return numFailed;\n")
+	hFile:dec()
+	hFile:write("}\n")
+end
+
+function source.WriteCallCoreLoad(hFile, sub_version, spec, options)
+	hFile:fmt("numFailed += %s();\n",
+		glload.GetLoadCoreFuncName(sub_version, spec, options))
+end
+
+function source.WriteCallCoreCompLoad(hFile, sub_version, spec, options)
+	hFile:fmt("numFailed += %s();\n",
+		glload.GetLoadCoreCompFuncName(sub_version, spec, options))
+end
+
+
+------------------------------------------------------
+-- Filters
 
 my_style =
 {

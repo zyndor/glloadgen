@@ -39,20 +39,20 @@ local ext_file_struct =
 
 local function CoreLoaderStruct(funcFilter)
 	return
-{ type="group",
-	{ type="core-ext-iter",
+	{ type="group",
+		{ type="core-ext-iter",
+			{ type="func-iter",
+				{ type="filter", name= funcFilter .. "(func)",
+					{ type="write", name="LoadFunctionCore(hFile, func, typemap, spec, options)", },
+				},
+			},
+		},
 		{ type="func-iter",
-			{ type="filter", name= funcFilter .. "(func)",
+			{ type="filter", name=funcFilter .. "(func)",
 				{ type="write", name="LoadFunctionCore(hFile, func, typemap, spec, options)", },
 			},
 		},
-	},
-	{ type="func-iter",
-		{ type="filter", name=funcFilter .. "(func)",
-			{ type="write", name="LoadFunctionCore(hFile, func, typemap, spec, options)", },
-		},
-	},
-}
+	}
 end
 
 local source_struct = 
@@ -72,6 +72,7 @@ local source_struct =
 	},
 	{ type="blank"},
 	{ type="func-seen",
+		--Write the extension functions and ext loaders.
 		{ type="ext-iter",
 			{ type="func-iter",
 				{ type="write", name="FuncDef(hFile, func, typemap, spec, options)", },
@@ -84,12 +85,14 @@ local source_struct =
 			},
 			{ type="blank", cond="func-iter"},
 		},
+		{ type="blank"},
+		--Write the core functions (not already written) and the individual core loaders.
 		{ type="version-iter",
 			{ type="func-iter",
 				{ type="write", name="FuncDefCond(hFile, func, typemap, spec, options, funcSeen)", },
 			},
 		},
-		{ type="blank"},
+		{ type="blank", cond="version-iter"},
 		{ type="version-iter",
 			{ type="filter", name="VersionHasCoreFuncs(version, specData, spec, options)",
 				{ type="block", name="LoadCoreFuncs(hFile, version, spec, options)",
@@ -104,12 +107,44 @@ local source_struct =
 				},
 			},
 		},
+		{ type="blank", cond="version-iter"},
 	},
+	
+	--Write the aggregate core loaders (ie: load all for version X and below)
+	{ type="version-iter",
+		{ type="block", name="LoadAllCoreFunc(hFile, version, spec, options)",
+			{ type="sub-version-iter",
+				{ type="filter", name="VersionHasCoreFuncs(sub_version, specData, spec, options)",
+					{ type="write", name="CallCoreLoad(hFile, sub_version, spec, options)" },
+				},
+				{ type="filter", name="HasCompatibility(version, specData, spec, options)", neg=true,
+					{ type="filter", name="VersionHasCompFuncs(sub_version, specData, spec, options)",
+						{ type="write", name="CallCoreCompLoad(hFile, sub_version, spec, options)" },
+					},
+				},
+			},
+		},
+		{ type="blank" },
+		{ type="filter", name="HasCompatibility(version, specData, spec, options)",
+			{ type="block", name="LoadAllCoreCompFunc(hFile, version, spec, options)",
+				{ type="sub-version-iter",
+					{ type="filter", name="VersionHasCoreFuncs(sub_version, specData, spec, options)",
+						{ type="write", name="CallCoreLoad(hFile, sub_version, spec, options)" },
+					},
+					{ type="filter", name="VersionHasCompFuncs(sub_version, specData, spec, options)",
+						{ type="write", name="CallCoreCompLoad(hFile, sub_version, spec, options)" },
+					},
+				},
+			},
+			{ type="blank" },
+		},
+	},
+	
+
 }
 
-
-local my_struct =
-{
+local decl_header_struct =
+{ type="group",
 -- Internal header files.
 { type="enum-seen",
 { type="func-seen",
@@ -189,6 +224,13 @@ local my_struct =
 },
 },
 
+}
+
+
+local my_struct =
+{
+	decl_header_struct,
+
 	--Main header files.
 	{ type="version-iter",
 		{ type="file", style="incl_hdr", name="VersionFilenameCore(basename, version, spec, options)",
@@ -241,6 +283,7 @@ local my_struct =
 
 	--Header to load things.
 	{ type="file", style="load_hdr", name="GetFilename(basename, spec, options)",
+		{ type="write", name="LoaderDecl(hFile, spec, options)" },
 	},
 	
 	--Source file.
