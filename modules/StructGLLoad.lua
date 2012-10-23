@@ -117,7 +117,7 @@ local source_struct =
 				{ type="filter", name="VersionHasCoreFuncs(sub_version, specData, spec, options)",
 					{ type="write", name="CallCoreLoad(hFile, sub_version, spec, options)" },
 				},
-				{ type="filter", name="HasCompatibility(version, specData, spec, options)", neg=true,
+				{ type="filter", name="VersionHasCompProfile(version)", neg=true,
 					{ type="filter", name="VersionHasCompFuncs(sub_version, specData, spec, options)",
 						{ type="write", name="CallCoreCompLoad(hFile, sub_version, spec, options)" },
 					},
@@ -125,7 +125,7 @@ local source_struct =
 			},
 		},
 		{ type="blank" },
-		{ type="filter", name="HasCompatibility(version, specData, spec, options)",
+		{ type="filter", name="VersionHasCompProfile(version)",
 			{ type="block", name="LoadAllCoreCompFunc(hFile, version, spec, options)",
 				{ type="sub-version-iter",
 					{ type="filter", name="VersionHasCoreFuncs(sub_version, specData, spec, options)",
@@ -139,8 +139,13 @@ local source_struct =
 			{ type="blank" },
 		},
 	},
-	
 
+	--Write the main loading function.
+	{ type="write", name="MainLoadPrelim(hFile, specData, spec, options)", },
+	{ type="blank", },
+	{ type="write", name="MainLoader(hFile, specData, spec, options)", },
+	{ type="blank", },
+	{ type="write", name="MainExtraFuncs(hFile, specData, spec, options)", cond="version-iter" },
 }
 
 local decl_header_struct =
@@ -249,7 +254,7 @@ local my_struct =
 
 	--Compatibility headers.
 	{ type="version-iter",
-		{ type="filter", name="HasCompatibility(version, specData, spec, options)",
+		{ type="filter", name="VersionHasCompProfile(version)",
 			{ type="file", style="incl_hdr", name="VersionFilenameComp(basename, version, spec, options)",
 				{ type="block", name="IncludeGuardComp(hFile, version, spec, options)",
 					{ type="blank" },

@@ -402,6 +402,271 @@ function source.WriteCallCoreCompLoad(hFile, sub_version, spec, options)
 end
 
 
+
+function source.WriteMainLoadPrelim(hFile, specData, spec, options)
+	--Write the extension function mapping table.
+	common.WriteCMappingTable(hFile, specData, spec, options,
+		glload.GetMapTableStructName(spec, options),
+		"ExtensionTable",
+		glload.GetExtVariableName,
+		glload.GetLoadExtensionFuncName)
+	hFile:write "\n"
+	
+	--Write the function to find entries.
+	common.WriteCFindExtEntryFunc(hFile, specData, spec,
+							options, glload.GetMapTableStructName(spec, options),
+							"ExtensionTable")
+	hFile:write "\n"
+
+	--Write the function to clear the extension variables.
+	common.WriteCClearExtensionVarsFunc(hFile, specData, spec, options,
+		glload.GetExtVariableName,
+		"0")
+	hFile:write "\n"
+
+	--Write a function that loads an extension by name.
+	common.WriteCLoadExtByNameFunc(hFile, specData, spec, options,
+		glload.GetMapTableStructName(spec, options),
+		spec.DeclPrefix() .. "LOAD_SUCCEEDED")
+		
+	if(options.version) then
+		hFile:write "\n"
+		
+		--Write a table that maps from version X.Y profile Z to a loading function.
+		hFile:fmtblock([[
+typedef struct %s%sVersProfToLoaderMap_s
+{
+	int majorVersion;
+	int minorVersion;
+	int compatibilityProfile;
+	PFN_LOADFUNCPOINTERS LoadVersion;
+} %s;
+]], options.prefix, spec.DeclPrefix(), "VersionMapEntry")
+		hFile:write "\n"
+		
+		hFile:write("static VersionMapEntry g_versionMapTable[] =\n")
+		hFile:write("{\n")
+		hFile:inc()
+		local numEntries = 0
+		for _, version in ipairs(spec.GetCoreVersions()) do
+			local major, minor = version:match("(%d+)%.(%d+)")
+			hFile:fmt("{%s, %s, 0, %s},\n",
+				major, minor,
+				glload.GetLoadAllCoreFuncName(version, spec, options))
+			numEntries = numEntries + 1
+			if(my_style.FilterVersionHasCompProfile(version)) then
+				hFile:fmt("{%s, %s, 1, %s},\n",
+					major, minor,
+					glload.GetLoadAllCoreCompFuncName(version, spec, options))
+				numEntries = numEntries + 1
+			end
+		end
+		hFile:dec()
+		hFile:write("};\n")
+		hFile:write "\n"
+		hFile:fmt("static int g_numVersionMapEntries = %i;\n", numEntries)
+		hFile:write "\n"
+		
+		--Write a function to find a map entry and call the loader, returning
+		--the value.
+		hFile:writeblock([[
+static int LoadVersionFromMap(int major, int minor, int compatibilityProfile)
+{
+	int loop = 0;
+	for(; loop < g_numVersionMapEntries; ++loop)
+	{
+		if(
+			(g_versionMapTable[loop].major == major) &&
+			(g_versionMapTable[loop].minor == minor) &&
+			(g_versionMapTable[loop].compatibilityProfile == compatibilityProfile))
+		{
+			return g_versionMapTable[loop].LoadVersion()
+		}
+	}
+	
+	return 0;
+}
+]])
+		hFile:write "\n"
+		
+		--Write a function to get the current version from a string.
+		hFile:writeblock(common.GetParseVersionFromString())
+		hFile:write "\n"
+		
+		--Write function to load extensions from alist functions.
+		local indexed = spec.GetIndexedExtStringFunc(options);
+		common.FixupIndexedList(specData, indexed)
+		hFile:writeblock(common.GetProcExtsFromExtListFunc(
+			hFile, specData, spec, options,
+			indexed, glload.GetFuncPtrName, glload.GetEnumeratorName))
+		
+	end
+	hFile:write "\n"
+	hFile:writeblock(common.GetProcessExtsFromStringFunc("LoadExtByName(%s)"))
+end
+
+local function FindFuncByName(specData, name)
+	for _, func in ipairs(specData.funcData.functions) do
+		if(name == func.name) then
+			return func
+		end
+	end
+end
+
+function source.WriteMainLoader(hFile, specData, spec, options)
+	if(options.version) then
+		hFile:writeblock[[
+static int g_majorVersion = 0;
+static int g_minorVersion = 0;
+]]
+		hFile:write "\n"
+	end
+
+	hFile:fmt("int %sLoadFunctions(%s)\n", spec.DeclPrefix(), spec.GetLoaderParams())
+	hFile:write "{\n"
+	hFile:inc()
+	
+	if(options.version) then
+		hFile:writeblock[[
+int numFailed = 0;
+int compProfile = 0;
+
+g_majorVersion = 0;
+g_minorVersion = 0;
+]]
+		hFile:write "\n"
+	end
+	
+	hFile:write("ClearExtensionVars();\n")
+	hFile:write "\n"
+	
+	--Load the extensions. Needs to be done differently based on the removal
+	--of glGetString(GL_EXTENSIONS).
+	if(options.version) then
+		--Get the current version.
+		--To do that, we need certain functions.
+		local strFunc = FindFuncByName(specData, "GetString")
+		
+		hFile:writeblock(glload.GetInMainFuncLoader(hFile, strFunc, spec, options))
+		strFunc = glload.GetFuncPtrName(strFunc, spec, options)
+		
+		hFile:write "\n"
+		hFile:fmt("ParseVersionFromString(&g_majorVersion, &g_minorVersion, (const char*)%s(GL_VERSION))", strFunc)
+		hFile:write "\n"
+		
+		--Load extensions in different ways, based on version.
+		hFile:write("if(g_majorVersion < 3)\n")
+		hFile:write "{\n"
+		hFile:inc()
+		--Load the file from a list of extensions. We already have the string getter.
+		hFile:fmt("ProcExtsFromExtString((const char*)%s());\n", strFunc)
+		hFile:dec()
+		hFile:write "}\n"
+		hFile:write "else\n"
+		hFile:write "{\n"
+		hFile:inc()
+		--Load some additional functions.
+		local indexed = spec.GetIndexedExtStringFunc(options);
+		common.FixupIndexedList(specData, indexed)
+		hFile:writeblock(glload.GetInMainFuncLoader(hFile, indexed[1], spec, options))
+		hFile:writeblock(glload.GetInMainFuncLoader(hFile, indexed[3], spec, options))
+		hFile:write("\n")
+		hFile:write("ProcExtsFromExtList();\n")
+		hFile:dec()
+		hFile:write "}\n"
+	else
+		local extListName, needLoad = spec.GetExtStringFuncName()
+		if(needLoad) then
+			extListName = FindFuncByName(specData, extListName)
+			
+			hFile:writeblock(glload.GetInMainFuncLoader(hFile, extListName, spec, options))
+
+			extListName = glload.GetFuncPtrName(extListName, spec, options);
+		end
+
+		local function EnumResolve(enumName)
+			return GetEnumName(specData.enumtable[enumName], spec, options)
+		end
+		
+		hFile:write "\n"
+		hFile:fmt("ProcExtsFromExtString((const char *)%s(%s));\n",
+			extListName,
+			spec.GetExtStringParamList(EnumResolve))
+	end
+	
+	hFile:write "\n"
+	--Write the core loading, if any.
+	if(options.version) then
+		--Step 1: figure out if we're core or compatibility. Only applies
+		--to GL 3.1+
+		hFile:writeblock [[
+if(g_majorVersion >= 3)
+{
+	if(g_majorVersion == 3 && g_minorVersion == 0)
+	{ //Deliberately empty. Core/compatibility didn't exist til 3.1.
+	}
+	else if(g_majorVersion == 3 && g_minorVersion == 1)
+	{
+		if(glext_ARB_compatibility)
+			compProfile = 1;
+	}
+	else
+	{
+		GLint iProfileMask = 0;
+		glGetIntegerv(GL_CONTEXT_PROFILE_MASK, &iProfileMask);
+		
+		if(!iProfileMask)
+		{
+			if(glext_ARB_compatibility)
+				compProfile = 1;
+		}
+		else
+		{
+			if(iProfileMask & GL_CONTEXT_COMPATIBILITY_PROFILE_BIT)
+				compProfile = 1;
+		}
+	}
+}
+]]
+		hFile:write "\n"
+
+		--Step 2: load the version.
+		local major, minor = options.version:match("(%d+)%.(%d+)")
+
+		hFile:fmtblock([[
+numFailed = LoadVersionFromMap(g_majorVersion, g_minorVersion, compProfile);
+if(numFailed == 0)
+{
+	//Unable to find a compatible one. Load max version+compatibility.
+	numFailed = LoadVersionFromMap(4, 3, compProfile);
+}
+
+return numFailed;
+]], major, minor)
+		
+	else
+		hFile:fmt("return %s;\n", spec.DeclPrefix() .. "LOAD_SUCCEEDED")
+	end
+	
+	hFile:dec()
+	hFile:write "}\n"
+end
+
+function source.WriteMainExtraFuncs(hFile, specData, spec, options)
+	hFile:writeblock[[
+int GetMajorVersion() { return g_majorVersion; }
+int GetMinorVersion() { return g_minorVersion; }
+
+int IsVersionGEQ( int testMajorVersion, int testMinorVersion )
+{
+	if(g_majorVersion > testMajorVersion) return 1;
+	if(g_majorVersion < testMajorVersion) return 0;
+	if(g_minorVersion >= testMinorVersion) return 1;
+	return 0;
+}
+]]
+end
+
 ------------------------------------------------------
 -- Filters
 
@@ -448,7 +713,7 @@ function my_style.FilterVersionHasCore(version, specData, spec, options)
 end
 
 
-function my_style.FilterHasCompatibility(version, specData, spec, options)
+function my_style.FilterVersionHasCompProfile(version)
 	if(tonumber(version) >= 3.1) then
 		return true
 	else

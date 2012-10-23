@@ -1,5 +1,6 @@
 
 local util = require "util"
+local common = require "CommonStyle"
 
 local data = {}
 
@@ -138,12 +139,22 @@ function data.GetLoadAllCoreCompFuncName(version, spec, options)
 	return "LoadVersion_" .. version:gsub("%.", "_") .. "_Comp"
 end
 
---[[
-$<specname>
-$<prefix>
-$<desc>
-$<extra>
-]]
+function data.GetMapTableStructName(spec, options)
+	return string.format("%s%sStrToExtMap", options.prefix, spec.DeclPrefix())
+end
+
+function data.GetInMainFuncLoader(hFile, func, spec, options)
+	local ret = ""
+	ret = ret .. string.format('%s = %s("%s%s");\n',
+		data.GetFuncPtrName(func, spec, options),
+		common.GetProcAddressName(spec),
+		spec.FuncNamePrefix(), func.name)
+	ret = ret .. string.format('if(!%s) return %s;\n',
+		data.GetFuncPtrName(func, spec, options),
+		"0")
+	return ret
+end
+
 
 local hdr_extra_spec =
 {
@@ -161,7 +172,7 @@ This function retrieves the minor GL version number. Only works after LoadFuncti
 int $<prefix>GetMinorVersion();
 
 ///Returns non-zero if the current GL version is greater than or equal to the given version.
-int $<prefix>IsVersionGEQ(int iMajorVersion, int iMinorVersion);
+int $<prefix>IsVersionGEQ(int testMajorVersion, int testMinorVersion);
 ]=],
 }
 
@@ -204,7 +215,7 @@ $<desc>
 
 \return Will return $<prefix>LOAD_FAILED if the loading failed entirely and nothing was loaded. Returns $<prefix>LOAD_SUCCEEDED if the loading process worked as planned. If it is neither, then the (return value - $<prefix>LOAD_SUCCEEDED) is the number of core functions that fialed to load.
 **/
-int $<prefix>LoadFunctions();
+int $<prefix>LoadFunctions($<params>);
 
 $<extra>
 ///@}
@@ -220,6 +231,7 @@ function data.GetLoaderHeaderString(spec, options)
 	ret = ret:gsub("%$%<specname%>", spec.DisplayName())
 	ret = ret:gsub("%$%<prefix%>", spec.DeclPrefix())
 	ret = ret:gsub("%$%<desc%>", hdr_desc[options.spec])
+	ret = ret:gsub("%$%<params%>", spec.GetLoaderParams())
 	return ret
 end
 
