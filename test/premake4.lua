@@ -26,7 +26,7 @@ project("loadtest")
 		links {"glu32", "opengl32", "gdi32", "winmm", "user32"}
 		
 	configuration "linux"
-		links {"GL", "GLU", "Xrandr"}
+		links {"GL", "GLU", "Xrandr", "X11"}
 		
 	configuration "Debug"
 		targetsuffix "D"

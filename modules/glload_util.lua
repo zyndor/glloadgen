@@ -145,8 +145,9 @@ end
 
 function data.GetInMainFuncLoader(hFile, func, spec, options)
 	local ret = ""
-	ret = ret .. string.format('%s = %s("%s%s");\n',
+	ret = ret .. string.format('%s = (%s)%s("%s%s");\n',
 		data.GetFuncPtrName(func, spec, options),
+		data.GetFuncTypedefName(func, spec, options),
 		common.GetProcAddressName(spec),
 		spec.FuncNamePrefix(), func.name)
 	ret = ret .. string.format('if(!%s) return %s;\n',

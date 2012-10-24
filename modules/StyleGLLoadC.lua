@@ -318,8 +318,9 @@ function source.WriteBlockEndLoadExtensionFuncs(hFile, extName, spec, options)
 end
 
 function source.WriteLoadFunction(hFile, func, typemap, spec, options)
-	hFile:fmt('%s = %s("%s");\n',
+	hFile:fmt('%s = (%s)%s("%s");\n',
 		glload.GetFuncPtrName(func, spec, options),
+		glload.GetFuncTypedefName(func, spec, options),
 		common.GetProcAddressName(spec),
 		common.GetOpenGLFuncName(func, spec))
 	hFile:fmt("if(!%s) ++numFailed;\n",
@@ -345,8 +346,9 @@ function source.WriteBlockEndLoadCoreFuncsComp(hFile, version, spec, options)
 end
 
 function source.WriteLoadFunctionCore(hFile, func, typemap, spec, options)
-	hFile:fmt('%s = %s("%s");\n',
+	hFile:fmt('%s = (%s)%s("%s");\n',
 		glload.GetFuncPtrName(func, spec, options),
+		glload.GetFuncTypedefName(func, spec, options),
 		common.GetProcAddressName(spec),
 		common.GetOpenGLFuncName(func, spec))
 		

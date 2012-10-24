@@ -6,8 +6,8 @@
 
 #include "glload/gl_4_3.h"
 #include "glload/gl_load.h"
-#include "glload/wgl_all.h"
-#include "glload/wgl_load.h"
+//#include "glload/wgl_all.h"
+//#include "glload/wgl_load.h"
 #include <GL/freeglut.h>
 
 GLuint positionBufferObject;
@@ -174,9 +174,9 @@ int main(int argc, char** argv)
 
 	init();
 
-	HDC hdc = wglGetCurrentDC();
-	numFailed = wgl_LoadFunctions(hdc);
-	printf("WGL: %i\n", numFailed);
+//	HDC hdc = wglGetCurrentDC();
+//	numFailed = wgl_LoadFunctions(hdc);
+//	printf("WGL: %i\n", numFailed);
 
 	glutDisplayFunc(display); 
 	glutReshapeFunc(reshape);
