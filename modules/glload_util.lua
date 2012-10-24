@@ -5,8 +5,9 @@ local common = require "CommonStyle"
 local data = {}
 
 data.internalPrefix = "_int_"
-data.headerDirectory = ""
-data.sourceDirectory = ""
+data.headerDirectory = "include/glload/"
+data.includeDirectory = "glload/" --For inclusions from source.
+data.sourceDirectory = "source/"
 
 function data.GetLoaderBasename(spec, options)
 	return spec.FilePrefix() .. "load.h"

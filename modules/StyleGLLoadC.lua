@@ -281,9 +281,9 @@ function source.WriteIncludes(hFile, spec, options)
 #include <stddef.h>
 #include <string.h>
 ]]
-	hFile:fmt('#include "%s"\n', glload.headerDirectory .. 
+	hFile:fmt('#include "%s"\n', glload.includeDirectory .. 
 		glload.GetAllBasename(spec, options))
-	hFile:fmt('#include "%s"\n', glload.headerDirectory .. 
+	hFile:fmt('#include "%s"\n', glload.includeDirectory .. 
 		glload.GetLoaderBasename(spec, options))
 end
 
