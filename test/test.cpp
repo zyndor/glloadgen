@@ -4,7 +4,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "gl_test.h"
+#include "glload/gl_4_3.h"
+#include "glload/gl_load.h"
+#include "glload/wgl_all.h"
+#include "glload/wgl_load.h"
 #include <GL/freeglut.h>
 
 GLuint positionBufferObject;
@@ -166,9 +169,14 @@ int main(int argc, char** argv)
 
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
 
-	ogl_LoadFunctions();
+	int numFailed = ogl_LoadFunctions();
+	printf("OpenGL: %i\n", numFailed);
 
 	init();
+
+	HDC hdc = wglGetCurrentDC();
+	numFailed = wgl_LoadFunctions(hdc);
+	printf("WGL: %i\n", numFailed);
 
 	glutDisplayFunc(display); 
 	glutReshapeFunc(reshape);

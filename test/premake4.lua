@@ -14,6 +14,11 @@ project("loadtest")
 	files {"*.c"}
 	files {"*.hpp"}
 	files {"*.h"}
+	
+	files {"glload/*.cpp"}
+	files {"glload/*.c"}
+	files {"glload/*.hpp"}
+	files {"glload/*.h"}
 
 	UseLibs {"freeglut"}
 	

@@ -22,7 +22,7 @@ function type_hdr.WriteBlockBeginIncludeGuard(hFile, spec, options)
 end
 
 function type_hdr.WriteBlockEndIncludeGuard(hFile, spec, options)
-	hFile:fmt("#endif //%s\n", glload.GetTypeHdrFileIncludeGuard(spec, options))
+	hFile:fmt("#endif /*%s*/\n", glload.GetTypeHdrFileIncludeGuard(spec, options))
 end
 
 function type_hdr.WriteInit(hFile, spec, options)
@@ -69,11 +69,11 @@ function ext_hdr.WriteBlockBeginIncludeGuard(hFile, spec, options)
 end
 
 function ext_hdr.WriteBlockEndIncludeGuard(hFile, spec, options)
-	hFile:fmt("#endif //%s\n", glload.GetExtFileIncludeGuard(spec, options))
+	hFile:fmt("#endif /*%s*/\n", glload.GetExtFileIncludeGuard(spec, options))
 end
 
 function ext_hdr.WriteTypedefs(hFile, specData, spec, options)
-	common.WritePassthruData(hFile, specData.funcData.passthru)
+--	common.WritePassthruData(hFile, specData.funcData.passthru)
 end
 
 function ext_hdr.WriteBlockBeginExtern(hFile, spec, options)
@@ -133,7 +133,7 @@ function core_hdr.WriteBlockBeginIncludeGuard(hFile, version, spec, options)
 end
 
 function core_hdr.WriteBlockEndIncludeGuard(hFile, version, spec, options)
-	hFile:fmt("#endif //%s\n", glload.GetCoreHdrFileIncludeGuard(version, spec, options))
+	hFile:fmt("#endif /*%s*/\n", glload.GetCoreHdrFileIncludeGuard(version, spec, options))
 end
 
 function core_hdr.WriteBlockBeginIncludeGuardRem(hFile, version, spec, options)
@@ -143,7 +143,7 @@ function core_hdr.WriteBlockBeginIncludeGuardRem(hFile, version, spec, options)
 end
 
 function core_hdr.WriteBlockEndIncludeGuardRem(hFile, version, spec, options)
-	hFile:fmt("#endif //%s\n", glload.GetCoreHdrFileIncludeGuard(version, spec, options, true))
+	hFile:fmt("#endif /*%s*/\n", glload.GetCoreHdrFileIncludeGuard(version, spec, options, true))
 end
 
 function core_hdr.WriteBlockBeginExtern(hFile, spec, options)
@@ -206,7 +206,7 @@ function incl_hdr.WriteBlockBeginIncludeGuardCore(hFile, version, spec, options)
 end
 
 function incl_hdr.WriteBlockEndIncludeGuardCore(hFile, version, spec, options)
-	hFile:fmt("#endif //%s\n", glload.GetInclFileIncludeGuard(version, spec, options))
+	hFile:fmt("#endif /*%s*/\n", glload.GetInclFileIncludeGuard(version, spec, options))
 end
 
 function incl_hdr.WriteBlockBeginIncludeGuardComp(hFile, version, spec, options)
@@ -216,7 +216,7 @@ function incl_hdr.WriteBlockBeginIncludeGuardComp(hFile, version, spec, options)
 end
 
 function incl_hdr.WriteBlockEndIncludeGuardComp(hFile, version, spec, options)
-	hFile:fmt("#endif //%s\n", glload.GetInclFileCompIncludeGuard(version, spec, options))
+	hFile:fmt("#endif /*%s*/\n", glload.GetInclFileCompIncludeGuard(version, spec, options))
 end
 
 function incl_hdr.WriteBlockBeginIncludeGuardAll(hFile, spec, options)
@@ -226,7 +226,7 @@ function incl_hdr.WriteBlockBeginIncludeGuardAll(hFile, spec, options)
 end
 
 function incl_hdr.WriteBlockEndIncludeGuardAll(hFile, spec, options)
-	hFile:fmt("#endif //%s\n", glload.GetInclFileAllIncludeGuard(spec, options))
+	hFile:fmt("#endif /*%s*/\n", glload.GetInclFileAllIncludeGuard(spec, options))
 end
 
 function incl_hdr.WriteIncludeIntType(hFile, spec, options)
@@ -237,7 +237,11 @@ function incl_hdr.WriteIncludeIntExts(hFile, spec, options)
 	hFile:fmt('#include "%s"\n', glload.GetExtsHeaderBasename(spec, options))
 end
 
-function incl_hdr.WriteIncludeIntVersionCore(hFile, sub_version, spec, options)
+function incl_hdr.WriteIncludeIntVersionCore(hFile, sub_version, specData, spec, options)
+	if(not my_style.FilterVersionHasCore(sub_version, specData, spec, options)) then
+		return
+	end
+
 	hFile:fmt('#include "%s"\n', glload.GetCoreHeaderBasename(sub_version, spec, options))
 end
 
@@ -255,7 +259,7 @@ local load_hdr = {}
 
 function load_hdr.GetFilename(basename, spec, options)
 	local basename, dir = util.ParsePath(basename)
-	return dir .. glload.headerDirectory .. spec.FilePrefix() .. "load.h"
+	return dir .. glload.headerDirectory .. glload.GetLoaderBasename(spec, options)
 end
 
 function load_hdr.WriteLoaderDecl(hFile, spec, options)
@@ -274,10 +278,13 @@ end
 function source.WriteIncludes(hFile, spec, options)
 	hFile:writeblock[[
 #include <stdlib.h>
+#include <stddef.h>
 #include <string.h>
 ]]
 	hFile:fmt('#include "%s"\n', glload.headerDirectory .. 
 		glload.GetAllBasename(spec, options))
+	hFile:fmt('#include "%s"\n', glload.headerDirectory .. 
+		glload.GetLoaderBasename(spec, options))
 end
 
 function source.WritePointerLoading(hFile, specData, spec, options)
@@ -286,22 +293,6 @@ end
 
 function source.WriteExtVariable(hFile, extName, spec, options)
 	hFile:fmt("int %s = 0;\n",
-		glload.GetExtVariableName(extName, spec, options))
-end
-
-function source.WriteBlockBeginClearExtVars(hFile, spec, options)
-	hFile:fmtblock("static void %s()\n{\n",
-		glload.GetClearExtVarsFuncName(spec, options))
-	hFile:inc()
-end
-
-function source.WriteBlockEndClearExtVars(hFile, spec, options)
-	hFile:dec()
-	hFile:write("}\n")
-end
-
-function source.WriteClearExtVar(hFile, extName, spec, options)
-	hFile:fmt("%s = 0;\n",
 		glload.GetExtVariableName(extName, spec, options))
 end
 
@@ -476,15 +467,15 @@ static int LoadVersionFromMap(int major, int minor, int compatibilityProfile)
 	for(; loop < g_numVersionMapEntries; ++loop)
 	{
 		if(
-			(g_versionMapTable[loop].major == major) &&
-			(g_versionMapTable[loop].minor == minor) &&
+			(g_versionMapTable[loop].majorVersion == major) &&
+			(g_versionMapTable[loop].minorVersion == minor) &&
 			(g_versionMapTable[loop].compatibilityProfile == compatibilityProfile))
 		{
-			return g_versionMapTable[loop].LoadVersion()
+			return g_versionMapTable[loop].LoadVersion();
 		}
 	}
 	
-	return 0;
+	return -1;
 }
 ]])
 		hFile:write "\n"
@@ -551,7 +542,7 @@ g_minorVersion = 0;
 		strFunc = glload.GetFuncPtrName(strFunc, spec, options)
 		
 		hFile:write "\n"
-		hFile:fmt("ParseVersionFromString(&g_majorVersion, &g_minorVersion, (const char*)%s(GL_VERSION))", strFunc)
+		hFile:fmt("ParseVersionFromString(&g_majorVersion, &g_minorVersion, (const char*)%s(GL_VERSION));\n", strFunc)
 		hFile:write "\n"
 		
 		--Load extensions in different ways, based on version.
@@ -559,7 +550,7 @@ g_minorVersion = 0;
 		hFile:write "{\n"
 		hFile:inc()
 		--Load the file from a list of extensions. We already have the string getter.
-		hFile:fmt("ProcExtsFromExtString((const char*)%s());\n", strFunc)
+		hFile:fmt("ProcExtsFromExtString((const char*)%s(GL_EXTENSIONS));\n", strFunc)
 		hFile:dec()
 		hFile:write "}\n"
 		hFile:write "else\n"
@@ -603,7 +594,7 @@ g_minorVersion = 0;
 if(g_majorVersion >= 3)
 {
 	if(g_majorVersion == 3 && g_minorVersion == 0)
-	{ //Deliberately empty. Core/compatibility didn't exist til 3.1.
+	{ /*Deliberately empty. Core/compatibility didn't exist til 3.1.*/
 	}
 	else if(g_majorVersion == 3 && g_minorVersion == 1)
 	{
@@ -635,14 +626,16 @@ if(g_majorVersion >= 3)
 
 		hFile:fmtblock([[
 numFailed = LoadVersionFromMap(g_majorVersion, g_minorVersion, compProfile);
-if(numFailed == 0)
+if(numFailed == -1) /*Couldn't find something to load.*/
 {
-	//Unable to find a compatible one. Load max version+compatibility.
-	numFailed = LoadVersionFromMap(4, 3, compProfile);
+	/*Unable to find a compatible one. Load max version+compatibility.*/
+	numFailed = LoadVersionFromMap(%i, %i, 1);
+	if(numFailed == -1) /*Couldn't even load it.*/
+		return %sLOAD_FAILED;
 }
 
-return numFailed;
-]], major, minor)
+return %sLOAD_SUCCEEDED + numFailed;
+]], major, minor, spec.DeclPrefix(), spec.DeclPrefix())
 		
 	else
 		hFile:fmt("return %s;\n", spec.DeclPrefix() .. "LOAD_SUCCEEDED")

@@ -8,12 +8,16 @@ data.internalPrefix = "_int_"
 data.headerDirectory = ""
 data.sourceDirectory = ""
 
+function data.GetLoaderBasename(spec, options)
+	return spec.FilePrefix() .. "load.h"
+end
+
 function data.GetVersionCoreBasename(version, spec, options)
-	return spec.FilePrefix() .. version .. ".h"
+	return spec.FilePrefix() .. version:gsub("%.", "_") .. ".h"
 end
 
 function data.GetVersionCompBasename(version, spec, options)
-	return spec.FilePrefix() .. version .. "_comp.h"
+	return spec.FilePrefix() .. version:gsub("%.", "_") .. "_comp.h"
 end
 
 function data.GetAllBasename(spec, options)
@@ -29,11 +33,11 @@ function data.GetExtsHeaderBasename(spec, options)
 end
 
 function data.GetCoreHeaderBasename(version, spec, options)
-	return data.internalPrefix .. spec.FilePrefix() .. version .. ".h"
+	return data.internalPrefix .. spec.FilePrefix() .. version:gsub("%.", "_") .. ".h"
 end
 
 function data.GetRemHeaderBasename(version, spec, options)
-	return data.internalPrefix .. spec.FilePrefix() .. version .. "_rem.h"
+	return data.internalPrefix .. spec.FilePrefix() .. version:gsub("%.", "_") .. "_rem.h"
 end
 
 function data.GetExtVariableName(extName, spec, options)
@@ -90,7 +94,7 @@ function data.GetBeginExternBlock()
 	return [[
 #ifdef __cplusplus
 extern "C" {
-#endif //__cplusplus
+#endif /*__cplusplus*/
 ]]
 end
 
@@ -98,7 +102,7 @@ function data.GetEndExternBlock()
 	return [[
 #ifdef __cplusplus
 }
-#endif //__cplusplus
+#endif /*__cplusplus*/
 ]]
 end
 
@@ -113,10 +117,6 @@ function data.WriteLoaderFuncEnd(hFile)
 	hFile:write("return numFailed;\n")
 	hFile:dec()
 	hFile:write("}\n")
-end
-
-function data.GetClearExtVarsFuncName(spec, options)
-	return "ClearExtensionVariables"
 end
 
 function data.GetLoadExtensionFuncName(extName, spec, options)
@@ -171,7 +171,7 @@ This function retrieves the minor GL version number. Only works after LoadFuncti
 **/
 int $<prefix>GetMinorVersion();
 
-///Returns non-zero if the current GL version is greater than or equal to the given version.
+/**Returns non-zero if the current GL version is greater than or equal to the given version.**/
 int $<prefix>IsVersionGEQ(int testMajorVersion, int testMinorVersion);
 ]=],
 }
@@ -191,8 +191,8 @@ local hdr_pattern =
 
 **/
 
-///\addtogroup module_glload_cinter
-///@{
+/**\addtogroup module_glload_cinter**/
+/**@{**/
 
 /**
 \brief The loading status returned by the loading functions.
@@ -200,13 +200,13 @@ local hdr_pattern =
 **/
 enum
 {
-	$<prefix>LOAD_FAILED = 0;
-	$<prefix>LOAD_SUCCEEDED = 0;
+	$<prefix>LOAD_FAILED = 0,
+	$<prefix>LOAD_SUCCEEDED,
 };
 
 #ifdef __cplusplus
 extern "C" {
-#endif //__cplusplus
+#endif /*__cplusplus*/
 
 /**
 \brief Loads all of the function pointers available.
@@ -218,11 +218,11 @@ $<desc>
 int $<prefix>LoadFunctions($<params>);
 
 $<extra>
-///@}
+/**@}**/
 
 #ifdef __cplusplus
 }
-#endif //__cplusplus
+#endif /*__cplusplus*/
 ]=]
 
 function data.GetLoaderHeaderString(spec, options)
