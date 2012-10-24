@@ -23,7 +23,7 @@ project("loadtest")
 	UseLibs {"freeglut"}
 	
 	configuration "windows"
-		defines "WIN32"
+--		defines "WIN32"
 		links {"glu32", "opengl32", "gdi32", "winmm", "user32"}
 		
 	configuration "linux"
