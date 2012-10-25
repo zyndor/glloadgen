@@ -5,7 +5,7 @@ solution "test"
 	configurations {"Debug", "Release"}
 	defines {"_CRT_SECURE_NO_WARNINGS", "_SCL_SECURE_NO_WARNINGS"}
 
-local testDirs = {"pointer_cpp"}
+local testDirs = {"ptr_cpp"}
 
 local oldDir = os.getcwd()
 for _, testDir in ipairs(testDirs) do

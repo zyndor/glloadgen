@@ -9,3 +9,6 @@ test/glsdk/*
 *.pdb
 test/obj
 docs/*.wiki
+obj/*
+*.exe
+*.ilk
