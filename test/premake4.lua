@@ -1,38 +1,41 @@
 
 dofile "glsdk/links.lua"
 
-solution "loadtest"
+solution "test"
 	configurations {"Debug", "Release"}
 	defines {"_CRT_SECURE_NO_WARNINGS", "_SCL_SECURE_NO_WARNINGS"}
 
-	
-project("loadtest")
-	kind "ConsoleApp"
-	language "c++"
-	objdir("obj")
-	files {"*.cpp"}
-	files {"*.c"}
-	files {"*.hpp"}
-	files {"*.h"}
-	
-	files {"glload/*.cpp"}
-	files {"glload/*.c"}
-	files {"glload/*.hpp"}
-	files {"glload/*.h"}
+local testDirs = {"pointer_cpp"}
 
-	UseLibs {"freeglut"}
+local oldDir = os.getcwd()
+for _, testDir in ipairs(testDirs) do
+	os.chdir(path.getabsolute(testDir))
 	
-	configuration "windows"
-		links {"glu32", "opengl32", "gdi32", "winmm", "user32"}
+	project(testDir .. "_test")
+		kind "ConsoleApp"
+		language "c++"
+		objdir("obj")
+		files {"**.cpp"}
+		files {"**.c"}
+		files {"**.hpp"}
+		files {"**.h"}
 		
-	configuration "linux"
-		links {"GL", "GLU", "Xrandr", "X11"}
+		UseLibs {"freeglut"}
 		
-	configuration "Debug"
-		targetsuffix "D"
-		defines "_DEBUG"
-		flags "Symbols"
+		configuration "windows"
+			links {"glu32", "opengl32", "gdi32", "winmm", "user32"}
+			
+		configuration "linux"
+			links {"GL", "GLU", "Xrandr", "X11"}
+			
+		configuration "Debug"
+			targetsuffix "D"
+			defines "_DEBUG"
+			flags "Symbols"
 
-	configuration "Release"
-		defines "NDEBUG"
-		flags {"OptimizeSpeed", "NoFramePointer", "ExtraWarnings", "NoEditAndContinue"};
+		configuration "Release"
+			defines "NDEBUG"
+			flags {"OptimizeSpeed", "NoFramePointer", "ExtraWarnings", "NoEditAndContinue"};
+	
+	os.chdir(testDir)
+end
