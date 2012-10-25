@@ -5,13 +5,17 @@ solution "test"
 	configurations {"Debug", "Release"}
 	defines {"_CRT_SECURE_NO_WARNINGS", "_SCL_SECURE_NO_WARNINGS"}
 
-local testDirs = {"ptr_cpp"}
+local tests =
+{
+	{name = "ptr_cpp"},
+	{name = "glload_c", include = "include"},
+}
 
 local oldDir = os.getcwd()
-for _, testDir in ipairs(testDirs) do
-	os.chdir(path.getabsolute(testDir))
+for _, test in ipairs(tests) do
+	os.chdir(path.getabsolute(test.name))
 	
-	project(testDir .. "_test")
+	project(test.name .. "_test")
 		kind "ConsoleApp"
 		language "c++"
 		objdir("obj")
@@ -19,6 +23,10 @@ for _, testDir in ipairs(testDirs) do
 		files {"**.c"}
 		files {"**.hpp"}
 		files {"**.h"}
+		
+		if(test.include) then
+			includedirs(test.include)
+		end
 		
 		UseLibs {"freeglut"}
 		
@@ -37,5 +45,5 @@ for _, testDir in ipairs(testDirs) do
 			defines "NDEBUG"
 			flags {"OptimizeSpeed", "NoFramePointer", "ExtraWarnings", "NoEditAndContinue"};
 	
-	os.chdir(testDir)
+	os.chdir(oldDir)
 end
