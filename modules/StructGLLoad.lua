@@ -312,6 +312,86 @@ local source_c_struct =
 
 local source_cpp_struct = 
 { type="group",
+	--includes
+	{ type="write", name="Includes(hFile, spec, options)", },
+	{ type="blank", },
+
+	{ type="block", name="ExternC(hFile, spec, options)",
+		{ type="ext-iter",
+			{ type="write", name="CExtVarDecl(hFile, extName, spec, options)"},
+		},
+		{ type="blank", },
+		{ type="ext-iter",
+			{ type="func-iter",
+				{ type="write", name="CFuncDecl(hFile, func, typemap, spec, options)"},
+			},
+		},
+		{ type="version-iter",
+			{ type="func-iter",
+				{ type="write", name="CFuncDecl(hFile, func, typemap, spec, options)"},
+			},
+		},
+		{ type="blank", },
+		{ type="write", name="CLoaderFunc(hFile, spec, options)", },
+		{ type="blank", },
+		{ type="write", name="CExtraFuncs(hFile, spec, options)", cond="version-iter"},
+		{ type="blank", cond="version-iter" },
+	},
+	{ type="blank", },
+	{ type="block", name="Definitions(hFile, spec, options)",
+		--define extension variables
+		{ type="block", name="ExtVariables(hFile, spec, options)",
+			{ type="ext-iter",
+				{ type="write", name="ExtVariable(hFile, extName, spec, options)"},
+			},
+		},
+		{ type="blank", },
+		
+		--define pointers
+		{ type="ext-iter",
+			{ type="func-iter",
+				{ type="write", name="FuncDef(hFile, func, typemap, spec, options)"},
+				{type="blank", last=true, },
+			},
+		},
+		
+		{ type="version-iter",
+			{ type="func-iter",
+				{ type="write", name="FuncDef(hFile, func, typemap, spec, options)"},
+				{type="blank", last=true, },
+			},
+		},
+		
+		--function to copy variables from C-version
+		{ type="block", name="CopyExtVariables(hFile, spec, options)",
+			{ type="ext-iter",
+				{ type="write", name="CopyExtVariable(hFile, extName, spec, options)"},
+			},
+		},
+		{ type="blank", },
+		
+		--function to copy pointers from C-version
+		{ type="block", name="CopyFunctionPtrs(hFile, spec, options)",
+			{ type="ext-iter",
+				{ type="func-iter",
+					{ type="write", name="CopyFunctionPtr(hFile, func, typemap, spec, options)"},
+				},
+			},
+			
+			{ type="version-iter",
+				{ type="func-iter",
+					{ type="write", name="CopyFunctionPtr(hFile, func, typemap, spec, options)"},
+				},
+			},
+		},
+		{ type="blank", },
+	},
+	--Loaders et. al.
+	{ type="block", name="SystemDefs(hFile, spec, options)",
+		{ type="write", name="MainLoader(hFile, specData, spec, options)", },
+		{ type="blank", },
+		{ type="write", name="MainExtraFuncs(hFile, specData, spec, options)", cond="version-iter" },
+	},
 }
 
 local my_struct =
@@ -335,6 +415,12 @@ local my_struct =
 	},
 	
 	{ type="group", style="cpp",
+		{ type="file", name="GetFilename(basename, spec, options)", style="load_test",
+			{ type="block", name="IncludeGuard(hFile, spec, options)",
+				{ type="write", name="LoadTest(hFile, spec, options)", },
+			},
+		},
+
 		decl_header_struct,
 		
 		include_header_struct,

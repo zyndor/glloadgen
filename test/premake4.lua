@@ -9,6 +9,7 @@ local tests =
 {
 	{name = "ptr_cpp"},
 	{name = "glload_c", include = "include"},
+	{name = "glload_cpp", include = "include"},
 }
 
 local oldDir = os.getcwd()

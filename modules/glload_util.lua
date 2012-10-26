@@ -264,6 +264,10 @@ end
 -- CPP-specific
 data.cpp = util.DeepCopyTable(data)
 
+function data.cpp.GetLoadTestBasename(spec, options)
+	return data.internalPrefix .. "load_test.hpp"
+end
+
 function data.cpp.GetLoaderBasename(spec, options)
 	return spec.FilePrefix() .. "load.hpp"
 end
@@ -294,6 +298,10 @@ end
 
 function data.cpp.GetRemHeaderBasename(version, spec, options)
 	return data.internalPrefix .. spec.FilePrefix() .. version:gsub("%.", "_") .. "_rem.hpp"
+end
+
+function data.cpp.GetLoadTestFileIncludeGuard(spec, options)
+	return "GENERATED_LOAD_TEST_HPP"
 end
 
 function data.cpp.GetTypeHdrFileIncludeGuard(spec, options)
@@ -357,7 +365,7 @@ public:
 	int GetNumMissing() const {return m_numMissing;}
 	
 	LoadTest() : m_isLoaded(false), m_numMissing(0) {}
-	LoadTest(bool isLoaded, int numMissing) : m_isLoaded(isLoaded), m_numMissing(numMissing) {}
+	LoadTest(bool isLoaded, int numMissing) : m_isLoaded(isLoaded), m_numMissing(isLoaded ? numMissing : 0) {}
 private:
 	bool m_isLoaded;
 	int m_numMissing;
@@ -422,34 +430,24 @@ local hdr_pattern =
 
 **/
 
+#include "$<loadtest>"
 
 ///\addtogroup module_glload_cppinter
 ///@{
 
 ///The core namespace for the C++ interface for the OpenGL initialization functions.
-namespace $<funcspec>
+namespace glload
 {
-	namespace sys
-	{
-		/**
-		\brief The loading status returned by the loader function.
-
-		**/
-]=]
-.. data.cpp.LoadTestClassDef() ..
-[=[
-
-		/**
-		\brief Loads all of the function pointers available.
+	/**
+	\brief Loads all of the function pointers available.
 
 $<desc>
 
-		\return A sys::LoadTest object that defines whether the loading was successful.
-		**/
-		LoadTest LoadFunctions($<params>);
+	\return A sys::LoadTest object that defines whether the loading was successful.
+	**/
+	glload::LoadTest LoadFunctions($<params>);
 
 $<extra>
-	}
 }
 ///@}
 ]=]
@@ -462,6 +460,7 @@ function data.cpp.GetLoaderHeaderString(spec, options)
 	ret = ret:gsub("%$%<desc%>", hdr_desc[options.spec])
 	ret = ret:gsub("%$%<params%>", spec.GetLoaderParams())
 	ret = ret:gsub("%$%<funcspec%>", spec.FuncNamePrefix())	
+	ret = ret:gsub("%$<loadtest>", data.cpp.GetLoadTestBasename(spec, options))
 	return ret
 end
 

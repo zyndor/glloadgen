@@ -2,9 +2,10 @@ local util = require "util"
 local struct = require "StructGLLoad"
 local common = require "CommonStyle"
 local glload = require "glload_util"
-
+local glload_c = require "glload_util"
 
 local my_style
+
 
 ----------------------------------------------------------
 -- Type header.
@@ -639,11 +640,11 @@ return %sLOAD_SUCCEEDED + numFailed;
 end
 
 function source.WriteMainExtraFuncs(hFile, specData, spec, options)
-	hFile:writeblock[[
-int GetMajorVersion() { return g_majorVersion; }
-int GetMinorVersion() { return g_minorVersion; }
+	local output = [[
+int %<prefix>GetMajorVersion() { return g_majorVersion; }
+int %<prefix>GetMinorVersion() { return g_minorVersion; }
 
-int IsVersionGEQ( int testMajorVersion, int testMinorVersion )
+int %<prefix>IsVersionGEQ( int testMajorVersion, int testMinorVersion )
 {
 	if(g_majorVersion > testMajorVersion) return 1;
 	if(g_majorVersion < testMajorVersion) return 0;
@@ -651,6 +652,10 @@ int IsVersionGEQ( int testMajorVersion, int testMinorVersion )
 	return 0;
 }
 ]]
+
+	output = output:gsub("%%<prefix>", spec.DeclPrefix())
+	
+	hFile:writeblock(output)
 end
 
 ----------------------------------------------------------
@@ -664,16 +669,39 @@ cpp.core_hdr = util.DeepCopyTable(core_hdr)
 cpp.incl_hdr = util.DeepCopyTable(incl_hdr)
 cpp.load_hdr = util.DeepCopyTable(load_hdr)
 cpp.source = {}
+cpp.load_test = {}
 
 function cpp._init()
 	glload = glload.cpp
 end
 
 function cpp._exit()
-	glload = require "glload_util"
+	glload = glload_c
 end
 
+
+----------------------------------------------------------
+-- C++ header for LoadTest.
+
+function cpp.load_test.GetFilename(basename, spec, options)
+	local basename, dir = util.ParsePath(basename)
+	return dir .. glload.headerDirectory .. glload.GetLoadTestBasename(spec, options)
+end
+
+glload.CreateIncludeGuardWriters(cpp.load_test, "IncludeGuard", 
+	function(...) return glload.GetLoadTestFileIncludeGuard(...) end)
+
+function cpp.load_test.WriteLoadTest(hFile, spec, options)
+	glload.WriteNamespaceBegin(hFile, "glload")
+	hFile:writeblock(glload.LoadTestClassDef())
+	glload.WriteNamespaceEnd(hFile, "glload")
+end
+
+
+----------------------------------------------------------
+-- C++ header stuff.
 function cpp.ext_hdr.WriteBlockBeginExtern(hFile, spec, options)
+	hFile:fmt('#include "%s"\n', glload.GetLoadTestBasename(spec, options))
 	glload.WriteNamespaceBegin(hFile, spec.FuncNamePrefix())
 end
 
@@ -683,12 +711,15 @@ end
 
 function cpp.ext_hdr.WriteBlockBeginExtVariables(hFile, spec, options)
 	glload.WriteNamespaceBegin(hFile, "exts")
-	hFile:writeblock(glload.LoadTestClassDef())
-	hFile:write "\n"
 end
 
 function cpp.ext_hdr.WriteBlockEndExtVariables(hFile, spec, options)
 	glload.WriteNamespaceEnd(hFile)
+end
+
+function cpp.ext_hdr.WriteExtVariable(hFile, extName, spec, options)
+	hFile:fmt("extern glload::LoadTest %s;\n",
+		glload.GetExtVariableName(extName, spec, options))
 end
 
 function cpp.ext_hdr.FilterEnumsAllAtOnce() return true end
@@ -705,20 +736,26 @@ function cpp.ext_hdr.WriteBlockEndEnumerators(hFile, spec, options)
 	hFile:write "};\n"
 end
 
-function cpp.ext_hdr.WriteEnumerator(hFile, enum, enumTable, spec, options)
-	local enumName = glload.GetCppEnumName(enum)
-	local lenEnum = #enumName
-	local numIndent = 33
-	
-	local numSpaces = numIndent - lenEnum
-	if(numSpaces < 1) then
-		numSpaces = 1
-	end
+function cpp.ext_hdr.WriteEnumerator(hFile, enum, enumTable, spec, options, enumSeen)
+	if(enumSeen[enum.name]) then
+		hFile:fmt("//%s taken from %s\n",
+			enum.name,
+			enumSeen[enum.name])
+	else
+		local enumName = glload.GetCppEnumName(enum)
+		local lenEnum = #enumName
+		local numIndent = 33
+		
+		local numSpaces = numIndent - lenEnum
+		if(numSpaces < 1) then
+			numSpaces = 1
+		end
 
-	hFile:fmt("%s%s= %s,\n",
-		enumName,
-		string.rep(" ", numSpaces),
-		common.ResolveEnumValue(enum, enumTable))
+		hFile:fmt("%s%s= %s,\n",
+			enumName,
+			string.rep(" ", numSpaces),
+			common.ResolveEnumValue(enum, enumTable))
+	end
 end
 
 function cpp.ext_hdr.WriteBlockBeginFuncTypedefs(hFile, spec, options)
@@ -741,16 +778,7 @@ cpp.core_hdr.WriteBlockEndExtern = cpp.ext_hdr.WriteBlockEndExtern
 
 cpp.core_hdr.WriteBlockBeginEnumerators = cpp.ext_hdr.WriteBlockBeginEnumerators
 cpp.core_hdr.WriteBlockEndEnumerators = cpp.ext_hdr.WriteBlockEndEnumerators
-
-function cpp.core_hdr.WriteEnumerator(hFile, enum, enumTable, spec, options, enumSeen)
-	if(enumSeen[enum.name]) then
-		hFile:fmt("//%s taken from %s",
-			enum.name,
-			enumSeen[enum.name])
-	else
-		cpp.ext_hdr.WriteEnumerator(hFile, enum, enumTable, spec, options, enumSeen)
-	end
-end
+cpp.core_hdr.WriteEnumerator = cpp.ext_hdr.WriteEnumerator
 
 cpp.core_hdr.WriteBlockBeginFuncTypedefs = cpp.ext_hdr.WriteBlockBeginFuncTypedefs
 cpp.core_hdr.WriteBlockEndFuncTypedefs = cpp.ext_hdr.WriteBlockEndFuncTypedefs
@@ -761,9 +789,171 @@ cpp.core_hdr.WriteFuncDecl = cpp.ext_hdr.WriteFuncDecl
 -- Source CPP file.
 function cpp.source.GetFilename(basename, spec, options)
 	local basename, dir = util.ParsePath(basename)
-	return dir .. glload.sourceDirectory .. spec.FilePrefix() .. "load.cpp"
+	return dir .. glload.sourceDirectory .. spec.FilePrefix() .. "load_cpp.cpp"
 end
 
+
+function cpp.source.WriteIncludes(hFile, spec, options)
+	hFile:writeblock([[
+#include <algorithm>
+#include <vector>
+#include <string.h>
+]])
+	hFile:fmt('#include "%s"\n', glload.includeDirectory .. 
+		glload.GetAllBasename(spec, options))
+	hFile:fmt('#include "%s"\n', glload.includeDirectory .. 
+		glload.GetLoaderBasename(spec, options))
+end
+
+function cpp.source.WriteBlockBeginExternC(hFile, spec, options)
+	hFile:writeblock(glload.GetBeginExternBlock())
+end
+
+function cpp.source.WriteBlockEndExternC(hFile, spec, options)
+	hFile:writeblock(glload.GetEndExternBlock())
+end
+
+function cpp.source.WriteCExtVarDecl(hFile, extName, spec, options)
+	hFile:fmt("extern int %s;\n",
+		glload_c.GetExtVariableName(extName, spec, options))
+end
+
+function cpp.source.WriteCFuncDecl(hFile, func, typemap, spec, options)
+	hFile:fmt("extern %s::%s::%s %s;\n",
+		spec.FuncNamePrefix(),
+		glload.GetFuncPtrTypedefNamespace(),
+		glload.GetFuncTypedefName(func, spec, options),
+		glload_c.GetFuncPtrName(func, spec, options))
+end
+
+function cpp.source.WriteCLoaderFunc(hFile, spec, options)
+	hFile:fmt("int %sLoadFunctions(%s);\n",
+		spec.DeclPrefix(),
+		spec.GetLoaderParams())
+end
+
+function cpp.source.WriteCExtraFuncs(hFile, spec, options)
+	hFile:fmtblock([[
+int %sGetMajorVersion();
+int %sGetMinorVersion();
+int %sIsVersionGEQ(int, int);
+]],
+		spec.DeclPrefix(), spec.DeclPrefix(), spec.DeclPrefix())
+
+end
+
+function cpp.source.WriteBlockBeginDefinitions(hFile, spec, options)
+	glload.WriteNamespaceBegin(hFile, spec.FuncNamePrefix())
+end
+
+function cpp.source.WriteBlockEndDefinitions(hFile, spec, options)
+	glload.WriteNamespaceEnd(hFile)
+end
+
+function cpp.source.WriteBlockBeginExtVariables(hFile, spec, options)
+	glload.WriteNamespaceBegin(hFile, "exts")
+end
+
+function cpp.source.WriteBlockEndExtVariables(hFile, spec, options)
+	glload.WriteNamespaceEnd(hFile)
+end
+
+function cpp.source.WriteExtVariable(hFile, extName, spec, options)
+	hFile:fmt("glload::LoadTest %s;\n",
+		glload.GetExtVariableName(extName, spec, options))
+end
+
+function cpp.source.WriteFuncDef(hFile, func, typemap, spec, options)
+	hFile:fmt("%s::%s %s = 0;\n",
+		glload.GetFuncPtrTypedefNamespace(),
+		glload.GetFuncTypedefName(func, spec, options),
+		func.name)
+end
+
+function cpp.source.WriteBlockBeginCopyExtVariables(hFile, spec, options)
+	hFile:write("static void CopyExtensionVariables()\n")
+	hFile:write("{\n")
+	hFile:inc()
+end
+
+function cpp.source.WriteBlockEndCopyExtVariables(hFile, spec, options)
+	hFile:dec()
+	hFile:write("}\n")
+end
+
+function cpp.source.WriteCopyExtVariable(hFile, extName, spec, options)
+	local cppExtVarname = glload.GetExtVariableName(extName, spec, options)
+	local cExtVarname = glload_c.GetExtVariableName(extName, spec, options)
+	
+	hFile:fmt("exts::%s = glload::LoadTest((::%s == 0), ::%s - 1);\n",
+		cppExtVarname,
+		cExtVarname,
+		cExtVarname)
+end
+
+function cpp.source.WriteBlockBeginCopyFunctionPtrs(hFile, spec, options)
+	hFile:write("static void CopyFunctionPointers()\n")
+	hFile:write("{\n")
+	hFile:inc()
+end
+
+function cpp.source.WriteBlockEndCopyFunctionPtrs(hFile, spec, options)
+	hFile:dec()
+	hFile:write("}\n")
+end
+
+function cpp.source.WriteCopyFunctionPtr(hFile, func, typemap, spec, options)
+	hFile:fmt("%s = %s;\n",
+		func.name,
+		glload_c.GetFuncPtrName(func, spec, options))
+end
+
+function cpp.source.WriteBlockBeginSystemDefs(hFile, spec, options)
+	glload.WriteNamespaceBegin(hFile, "glload")
+end
+
+function cpp.source.WriteBlockEndSystemDefs(hFile, spec, options)
+	glload.WriteNamespaceEnd(hFile)
+end
+
+function cpp.source.WriteMainLoader(hFile, specData, spec, options)
+	hFile:fmt("glload::LoadTest LoadFunctions(%s)\n", spec.GetLoaderParams())
+	hFile:write "{\n"
+	hFile:inc()
+	
+	hFile:fmt("int test = ::%sLoadFunctions(%s);\n",
+		spec.DeclPrefix(),
+		spec.GetExtStringParamList(function() return "" end))
+		
+	hFile:fmtblock([[
+%s::CopyExtensionVariables();
+%s::CopyFunctionPointers();
+
+if(test == 0)
+	return glload::LoadTest(false, 0);
+return glload::LoadTest(true, test - 1);
+]],
+		spec.FuncNamePrefix(), spec.FuncNamePrefix())
+	
+	hFile:dec()
+	hFile:write "}\n"
+end
+
+function cpp.source.WriteMainExtraFuncs(hFile, specData, spec, options)
+	output = [[
+int GetMajorVersion() { return ::%<prefix>GetMajorVersion(); }
+int GetMinorVersion() { return ::%<prefix>GetMinorVersion(); }
+
+int IsVersionGEQ( int testMajorVersion, int testMinorVersion )
+{
+	return ::%<prefix>IsVersionGEQ(testMajorVersion, testMinorVersion);
+}
+]]
+	output = output:gsub("%%<prefix>", spec.DeclPrefix())
+	
+	hFile:writeblock(output)
+
+end
 
 ------------------------------------------------------
 -- Filters
