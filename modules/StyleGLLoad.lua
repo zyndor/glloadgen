@@ -15,15 +15,8 @@ function type_hdr.GetFilename(basename, spec, options)
 	return dir .. glload.headerDirectory .. glload.GetTypeHeaderBasename(spec, options)
 end
 
-function type_hdr.WriteBlockBeginIncludeGuard(hFile, spec, options)
-	local includeGuard = glload.GetTypeHdrFileIncludeGuard(spec, options)
-	hFile:fmt("#ifndef %s\n", includeGuard)
-	hFile:fmt("#define %s\n", includeGuard)
-end
-
-function type_hdr.WriteBlockEndIncludeGuard(hFile, spec, options)
-	hFile:fmt("#endif /*%s*/\n", glload.GetTypeHdrFileIncludeGuard(spec, options))
-end
+glload.CreateIncludeGuardWriters(type_hdr, "IncludeGuard",
+	function(...) return glload.GetTypeHdrFileIncludeGuard(...) end)
 
 function type_hdr.WriteInit(hFile, spec, options)
 	hFile:rawwrite(spec.GetHeaderInit())
@@ -88,6 +81,8 @@ function ext_hdr.WriteExtVariable(hFile, extName, spec, options)
 	hFile:fmt("extern int %s;\n",
 		glload.GetExtVariableName(extName, spec, options))
 end
+
+function ext_hdr.FilterEnumsPerExtInGroup() return true end
 
 function ext_hdr.WriteEnumerator(hFile, enum, enumTable, spec, options)
 	hFile:fmt("#define %s %s\n",
@@ -262,9 +257,13 @@ function load_hdr.GetFilename(basename, spec, options)
 	return dir .. glload.headerDirectory .. glload.GetLoaderBasename(spec, options)
 end
 
+glload.CreateIncludeGuardWriters(load_hdr, "IncludeGuard",
+	function(...) return glload.GetInclFileLoaderIncludeGuard(...) end)
+
 function load_hdr.WriteLoaderDecl(hFile, spec, options)
 	hFile:writeblock(glload.GetLoaderHeaderString(spec, options))
 end
+
 
 ----------------------------------------------------------
 -- Source file.
@@ -498,14 +497,6 @@ static int LoadVersionFromMap(int major, int minor, int compatibilityProfile)
 	hFile:writeblock(common.GetProcessExtsFromStringFunc("LoadExtByName(%s)"))
 end
 
-local function FindFuncByName(specData, name)
-	for _, func in ipairs(specData.funcData.functions) do
-		if(name == func.name) then
-			return func
-		end
-	end
-end
-
 function source.WriteMainLoader(hFile, specData, spec, options)
 	if(options.version) then
 		hFile:writeblock[[
@@ -538,7 +529,7 @@ g_minorVersion = 0;
 	if(options.version) then
 		--Get the current version.
 		--To do that, we need certain functions.
-		local strFunc = FindFuncByName(specData, "GetString")
+		local strFunc = specData.functable["GetString"]
 		
 		hFile:writeblock(glload.GetInMainFuncLoader(hFile, strFunc, spec, options))
 		strFunc = glload.GetFuncPtrName(strFunc, spec, options)
@@ -570,7 +561,7 @@ g_minorVersion = 0;
 	else
 		local extListName, needLoad = spec.GetExtStringFuncName()
 		if(needLoad) then
-			extListName = FindFuncByName(specData, extListName)
+			extListName = specData.functable[extListName]
 			
 			hFile:writeblock(glload.GetInMainFuncLoader(hFile, extListName, spec, options))
 
@@ -662,6 +653,118 @@ int IsVersionGEQ( int testMajorVersion, int testMinorVersion )
 ]]
 end
 
+----------------------------------------------------------
+-- C++ styling.
+
+local cpp = {}
+
+cpp.type_hdr = util.DeepCopyTable(type_hdr)
+cpp.ext_hdr = util.DeepCopyTable(ext_hdr)
+cpp.core_hdr = util.DeepCopyTable(core_hdr)
+cpp.incl_hdr = util.DeepCopyTable(incl_hdr)
+cpp.load_hdr = util.DeepCopyTable(load_hdr)
+cpp.source = {}
+
+function cpp._init()
+	glload = glload.cpp
+end
+
+function cpp._exit()
+	glload = require "glload_util"
+end
+
+function cpp.ext_hdr.WriteBlockBeginExtern(hFile, spec, options)
+	glload.WriteNamespaceBegin(hFile, spec.FuncNamePrefix())
+end
+
+function cpp.ext_hdr.WriteBlockEndExtern(hFile, spec, options)
+	glload.WriteNamespaceEnd(hFile)
+end
+
+function cpp.ext_hdr.WriteBlockBeginExtVariables(hFile, spec, options)
+	glload.WriteNamespaceBegin(hFile, "exts")
+	hFile:writeblock(glload.LoadTestClassDef())
+	hFile:write "\n"
+end
+
+function cpp.ext_hdr.WriteBlockEndExtVariables(hFile, spec, options)
+	glload.WriteNamespaceEnd(hFile)
+end
+
+function cpp.ext_hdr.FilterEnumsAllAtOnce() return true end
+cpp.ext_hdr.FilterEnumsPerExtInGroup = nil
+
+function cpp.ext_hdr.WriteBlockBeginEnumerators(hFile, spec, options)
+	hFile:write("enum\n")
+	hFile:write "{\n"
+	hFile:inc()
+end
+
+function cpp.ext_hdr.WriteBlockEndEnumerators(hFile, spec, options)
+	hFile:dec()
+	hFile:write "};\n"
+end
+
+function cpp.ext_hdr.WriteEnumerator(hFile, enum, enumTable, spec, options)
+	local enumName = glload.GetCppEnumName(enum)
+	local lenEnum = #enumName
+	local numIndent = 33
+	
+	local numSpaces = numIndent - lenEnum
+	if(numSpaces < 1) then
+		numSpaces = 1
+	end
+
+	hFile:fmt("%s%s= %s,\n",
+		enumName,
+		string.rep(" ", numSpaces),
+		common.ResolveEnumValue(enum, enumTable))
+end
+
+function cpp.ext_hdr.WriteBlockBeginFuncTypedefs(hFile, spec, options)
+	glload.WriteNamespaceBegin(hFile, glload.GetFuncPtrTypedefNamespace())
+end
+
+function cpp.ext_hdr.WriteBlockEndFuncTypedefs(hFile, spec, options)
+	glload.WriteNamespaceEnd(hFile)
+end
+
+function cpp.ext_hdr.WriteFuncDecl(hFile, func, typemap, spec, options)
+	hFile:fmt("extern %s::%s %s;\n",
+		glload.GetFuncPtrTypedefNamespace(),
+		glload.GetFuncTypedefName(func, spec, options),
+		func.name)
+end
+
+cpp.core_hdr.WriteBlockBeginExtern = cpp.ext_hdr.WriteBlockBeginExtern
+cpp.core_hdr.WriteBlockEndExtern = cpp.ext_hdr.WriteBlockEndExtern
+
+cpp.core_hdr.WriteBlockBeginEnumerators = cpp.ext_hdr.WriteBlockBeginEnumerators
+cpp.core_hdr.WriteBlockEndEnumerators = cpp.ext_hdr.WriteBlockEndEnumerators
+
+function cpp.core_hdr.WriteEnumerator(hFile, enum, enumTable, spec, options, enumSeen)
+	if(enumSeen[enum.name]) then
+		hFile:fmt("//%s taken from %s",
+			enum.name,
+			enumSeen[enum.name])
+	else
+		cpp.ext_hdr.WriteEnumerator(hFile, enum, enumTable, spec, options, enumSeen)
+	end
+end
+
+cpp.core_hdr.WriteBlockBeginFuncTypedefs = cpp.ext_hdr.WriteBlockBeginFuncTypedefs
+cpp.core_hdr.WriteBlockEndFuncTypedefs = cpp.ext_hdr.WriteBlockEndFuncTypedefs
+cpp.core_hdr.WriteFuncDecl = cpp.ext_hdr.WriteFuncDecl
+
+
+--------------------------------------------------------------
+-- Source CPP file.
+function cpp.source.GetFilename(basename, spec, options)
+	local basename, dir = util.ParsePath(basename)
+	return dir .. glload.sourceDirectory .. spec.FilePrefix() .. "load.cpp"
+end
+
+
 ------------------------------------------------------
 -- Filters
 
@@ -673,6 +776,7 @@ my_style =
 	incl_hdr = incl_hdr,
 	load_hdr = load_hdr,
 	source = source,
+	cpp = cpp
 }
 
 function my_style.FilterVersionHasRemoved(version, specData, spec, options)
@@ -729,6 +833,26 @@ end
 local function HasFunclistAnyComp(funcList)
 	for _, func in ipairs(funcList) do
 		if(func.deprecated) then
+			return true
+		end
+	end
+	
+	return false
+end
+
+function my_style.FilterVersionHasCoreEnums(version, specData, spec, options)
+	for _, enum in ipairs(specData.coredefs[version].enums) do
+		if(not enum.removed and not enum.extensions) then
+			return true
+		end
+	end
+	
+	return false
+end
+
+function my_style.FilterVersionHasCompEnums(version, specData, spec, options)
+	for _, enum in ipairs(specData.coredefs[version].enums) do
+		if(enum.removed and not enum.extensions) then
 			return true
 		end
 	end

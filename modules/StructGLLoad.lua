@@ -4,12 +4,16 @@ local struct = require "Structure"
 --Common set of header stuff.
 local common_ext_struct =
 { type="group",
-	{ type="enum-iter",
-		{ type="write", name="Enumerator(hFile, enum, enumTable, spec, options)", },
+	{ type="filter", name="EnumsPerExtInGroup", optional=true, cond="enum-iter",
+		{ type="enum-iter",
+			{ type="write", name="Enumerator(hFile, enum, enumTable, spec, options, enumSeen)", },
+		},
+		{ type="blank", cond="enum-iter"},
 	},
-	{ type="blank", cond="enum-iter"},
-	{ type="func-iter",
-		{ type="write", name="FuncTypedef(hFile, func, typemap, spec, options)", },
+	{ type="block", name="FuncTypedefs(hFile, spec, options)", optional=true, cond="func-iter",
+		{ type="func-iter",
+			{ type="write", name="FuncTypedef(hFile, func, typemap, spec, options)", },
+		},
 	},
 	{ type="blank", cond="func-iter"},
 	{ type="func-iter",
@@ -26,16 +30,179 @@ local ext_file_struct =
 		{ type="write", name="Typedefs(hFile, specData, spec, options)",},
 		{ type="blank"},
 		{ type="block", name="Extern(hFile, spec, options)",
-			{ type="ext-iter",
-				{ type="write", name="ExtVariable(hFile, extName, spec, options)" },
+			{ type="block", name="ExtVariables(hFile, spec, options)", optional=true,
+				{ type="ext-iter",
+					{ type="write", name="ExtVariable(hFile, extName, spec, options)" },
+				},
 			},
 			{ type="blank"},
+			{ type="filter", name="EnumsAllAtOnce", optional=true,
+				{ type="block", name="Enumerators(hFile, spec, options)",
+					{ type="ext-iter",
+						{ type="enum-iter",
+							{ type="write", name="Enumerator(hFile, enum, enumTable, spec, options, enumSeen)", },
+						},
+					},
+				},
+				{ type="blank"},
+			},
+
 			{ type="ext-iter",
 				common_ext_struct,
 			},
 		},
 	},
 }
+
+local decl_header_struct =
+{ type="group",
+-- Internal header files.
+{ type="enum-seen",
+{ type="func-seen",
+	--Write the type header file.
+	{ type="file", style="type_hdr", name="GetFilename(basename, spec, options)",
+		{ type="block", name="IncludeGuard(hFile, spec, options)",
+			{ type="write", name="Init(hFile, spec, options)"},
+			{ type="write", name="StdTypedefs(hFile, spec, options)"},
+			{ type="write", name="PassthruTypedefs(hFile, specData, spec, options)"},
+		},
+	},
+	
+	--Write the extension file
+	ext_file_struct,
+	
+	--For each version, write files containing just the core declarations.
+	{ type="version-iter",
+		{ type="filter", name="VersionHasCore(version, specData, spec, options)",
+			{ type="file", style="core_hdr", name="GetFilename(basename, version, spec, options)",
+				{ type="block", name="IncludeGuard(hFile, version, spec, options)",
+					{ type="blank"},
+					{ type="block", name="Extern(hFile, spec, options)",
+						{ type="filter", name="VersionHasCoreEnums(version, specData, spec, options)",
+							{ type="block", name="Enumerators(hFile, spec, options)", optional=true,
+								{ type="enum-iter",
+									{ type="filter", name="CoreEnum(enum)",
+										{ type="write", name="Enumerator(hFile, enum, enumTable, spec, options, enumSeen)", },
+									},
+								},
+							},
+							{ type="blank", cond="enum-iter"},
+						},
+						{ type="block", name="FuncTypedefs(hFile, spec, options)", optional=true, cond="func-iter",
+							{ type="func-iter",
+								{ type="filter", name="CoreFunc(func)",
+									{ type="write", name="FuncTypedef(hFile, func, typemap, spec, options)", },
+								},
+							},
+						},
+						{ type="blank", cond="func-iter"},
+						{ type="func-iter",
+							{ type="filter", name="CoreFunc(func)",
+								{ type="write", name="FuncDecl(hFile, func, typemap, spec, options)", },
+							},
+						},
+						{ type="blank", cond="func-iter"},
+					},
+				},
+			},
+		},
+	},
+	
+	--For each version, write files containing core declarations that were removed.
+	{ type="version-iter",
+		{ type="filter", name="VersionHasRemoved(version, specData, spec, options)",
+			{ type="file", style="core_hdr", name="GetFilenameRem(basename, version, spec, options)",
+				{ type="block", name="IncludeGuardRem(hFile, version, spec, options)",
+					{ type="blank"},
+					{ type="block", name="Extern(hFile, spec, options)",
+						{ type="filter", name="VersionHasCompEnums(version, specData, spec, options)",
+							{ type="block", name="Enumerators(hFile, spec, options)", optional=true,
+								{ type="enum-iter",
+									{ type="filter", name="CompEnum(enum)",
+										{ type="write", name="Enumerator(hFile, enum, enumTable, spec, options, enumSeen)", },
+									},
+								},
+							},
+						},
+						{ type="blank", cond="enum-iter"},
+						{ type="block", name="FuncTypedefs(hFile, spec, options)", optional=true, cond="func-iter",
+							{ type="func-iter",
+								{ type="filter", name="CompFunc(func)",
+									{ type="write", name="FuncTypedef(hFile, func, typemap, spec, options)", },
+								},
+							},
+						},
+						{ type="blank", cond="func-iter"},
+						{ type="func-iter",
+							{ type="filter", name="CompFunc(func)",
+								{ type="write", name="FuncDecl(hFile, func, typemap, spec, options)", },
+							},
+						},
+						{ type="blank", cond="func-iter"},
+					},
+				},
+			},
+		},
+	},
+},
+},
+
+}
+
+
+local include_header_struct =
+{ type="group",
+	--Main header files.
+	{ type="version-iter",
+		{ type="file", style="incl_hdr", name="VersionFilenameCore(basename, version, spec, options)",
+			{ type="block", name="IncludeGuardCore(hFile, version, spec, options)",
+				{ type="blank" },
+				{ type="write", name="IncludeIntType(hFile, spec, options)"},
+				{ type="write", name="IncludeIntExts(hFile, spec, options)"},
+				{ type="blank" },
+				{ type="sub-version-iter",
+					{ type="write", name="IncludeIntVersionCore(hFile, sub_version, specData, spec, options)"},
+					{ type="blank", last=true, },
+				},
+			},
+		},
+	},
+
+	--Compatibility headers.
+	{ type="version-iter",
+		{ type="filter", name="VersionHasCompProfile(version)",
+			{ type="file", style="incl_hdr", name="VersionFilenameComp(basename, version, spec, options)",
+				{ type="block", name="IncludeGuardComp(hFile, version, spec, options)",
+					{ type="blank" },
+					{ type="write", name="IncludeIntType(hFile, spec, options)"},
+					{ type="write", name="IncludeIntExts(hFile, spec, options)"},
+					{ type="blank" },
+					{ type="sub-version-iter",
+						{ type="write", name="IncludeIntVersionCore(hFile, sub_version, specData, spec, options)"},
+						{ type="write", name="IncludeIntVersionComp(hFile, sub_version, specData, spec, options)"},
+						{ type="blank", last=true, },
+					},
+				},
+			},
+		},
+	},
+
+	--Header that includes everything.
+	{ type="file", style="incl_hdr", name="AllFilename(basename, spec, options)",
+		{ type="block", name="IncludeGuardAll(hFile, spec, options)",
+			{ type="blank" },
+			{ type="write", name="IncludeIntType(hFile, spec, options)"},
+			{ type="write", name="IncludeIntExts(hFile, spec, options)"},
+			{ type="blank" },
+			{ type="version-iter",
+				{ type="write", name="IncludeIntVersionCore(hFile, version, specData, spec, options)"},
+				{ type="write", name="IncludeIntVersionComp(hFile, version, specData, spec, options)"},
+				{ type="blank", last=true, },
+			},
+		},
+	},
+}
+
 
 local function CoreLoaderStruct(funcFilter)
 	return
@@ -55,7 +222,8 @@ local function CoreLoaderStruct(funcFilter)
 	}
 end
 
-local source_struct = 
+
+local source_c_struct = 
 { type="group",
 	{ type="write", name="Includes(hFile, spec, options)" },
 	{ type="blank"},
@@ -142,152 +310,46 @@ local source_struct =
 	{ type="write", name="MainExtraFuncs(hFile, specData, spec, options)", cond="version-iter" },
 }
 
-local decl_header_struct =
+local source_cpp_struct = 
 { type="group",
--- Internal header files.
-{ type="enum-seen",
-{ type="func-seen",
-	--Write the type header file.
-	{ type="file", style="type_hdr", name="GetFilename(basename, spec, options)",
-		{ type="block", name="IncludeGuard(hFile, spec, options)",
-			{ type="write", name="Init(hFile, spec, options)"},
-			{ type="write", name="StdTypedefs(hFile, spec, options)"},
-			{ type="write", name="PassthruTypedefs(hFile, specData, spec, options)"},
-		},
-	},
-	
-	--Write the extension file
-	ext_file_struct,
-	
-	--For each version, write files containing just the core declarations.
-	{ type="version-iter",
-		{ type="filter", name="VersionHasCore(version, specData, spec, options)",
-			{ type="file", style="core_hdr", name="GetFilename(basename, version, spec, options)",
-				{ type="block", name="IncludeGuard(hFile, version, spec, options)",
-					{ type="blank"},
-					{ type="block", name="Extern(hFile, spec, options)",
-						{ type="enum-iter",
-							{ type="filter", name="CoreEnum(enum)",
-								{ type="write", name="Enumerator(hFile, enum, enumTable, spec, options)", },
-							},
-						},
-						{ type="blank", cond="enum-iter"},
-						{ type="func-iter",
-							{ type="filter", name="CoreFunc(func)",
-								{ type="write", name="FuncTypedef(hFile, func, typemap, spec, options)", },
-							},
-						},
-						{ type="blank", cond="func-iter"},
-						{ type="func-iter",
-							{ type="filter", name="CoreFunc(func)",
-								{ type="write", name="FuncDecl(hFile, func, typemap, spec, options)", },
-							},
-						},
-						{ type="blank", cond="func-iter"},
-					},
-				},
-			},
-		},
-	},
-	
-	--For each version, write files containing core declarations that were removed.
-	{ type="version-iter",
-		{ type="filter", name="VersionHasRemoved(version, specData, spec, options)",
-			{ type="file", style="core_hdr", name="GetFilenameRem(basename, version, spec, options)",
-				{ type="block", name="IncludeGuardRem(hFile, version, spec, options)",
-					{ type="blank"},
-					{ type="block", name="Extern(hFile, spec, options)",
-						{ type="enum-iter",
-							{ type="filter", name="CompEnum(enum)",
-								{ type="write", name="Enumerator(hFile, enum, enumTable, spec, options)", },
-							},
-						},
-						{ type="blank", cond="enum-iter"},
-						{ type="func-iter",
-							{ type="filter", name="CompFunc(func)",
-								{ type="write", name="FuncTypedef(hFile, func, typemap, spec, options)", },
-							},
-						},
-						{ type="blank", cond="func-iter"},
-						{ type="func-iter",
-							{ type="filter", name="CompFunc(func)",
-								{ type="write", name="FuncDecl(hFile, func, typemap, spec, options)", },
-							},
-						},
-						{ type="blank", cond="func-iter"},
-					},
-				},
-			},
-		},
-	},
-},
-},
-
 }
-
 
 local my_struct =
 {
-	decl_header_struct,
-
-	--Main header files.
-	{ type="version-iter",
-		{ type="file", style="incl_hdr", name="VersionFilenameCore(basename, version, spec, options)",
-			{ type="block", name="IncludeGuardCore(hFile, version, spec, options)",
-				{ type="blank" },
-				{ type="write", name="IncludeIntType(hFile, spec, options)"},
-				{ type="write", name="IncludeIntExts(hFile, spec, options)"},
-				{ type="blank" },
-				{ type="sub-version-iter",
-					{ type="write", name="IncludeIntVersionCore(hFile, sub_version, specData, spec, options)"},
-					{ type="blank", last=true, },
-				},
-			},
+	{ type="group",
+		decl_header_struct,
+		
+		include_header_struct,
+		
+		--Header to load things.
+		{ type="file", style="load_hdr", name="GetFilename(basename, spec, options)",
+			{ type="block", name="IncludeGuard(hFile, spec, options)",
+				{ type="write", name="LoaderDecl(hFile, spec, options)" },
+			}
 		},
-	},
-
-	--Compatibility headers.
-	{ type="version-iter",
-		{ type="filter", name="VersionHasCompProfile(version)",
-			{ type="file", style="incl_hdr", name="VersionFilenameComp(basename, version, spec, options)",
-				{ type="block", name="IncludeGuardComp(hFile, version, spec, options)",
-					{ type="blank" },
-					{ type="write", name="IncludeIntType(hFile, spec, options)"},
-					{ type="write", name="IncludeIntExts(hFile, spec, options)"},
-					{ type="blank" },
-					{ type="sub-version-iter",
-						{ type="write", name="IncludeIntVersionCore(hFile, sub_version, specData, spec, options)"},
-						{ type="write", name="IncludeIntVersionComp(hFile, sub_version, specData, spec, options)"},
-						{ type="blank", last=true, },
-					},
-				},
-			},
+		
+		--Source file.
+		{ type="file", style="source", name="GetFilename(basename, spec, options)",
+			source_c_struct,
 		},
-	},
-
-	--Header that includes everything.
-	{ type="file", style="incl_hdr", name="AllFilename(basename, spec, options)",
-		{ type="block", name="IncludeGuardAll(hFile, spec, options)",
-			{ type="blank" },
-			{ type="write", name="IncludeIntType(hFile, spec, options)"},
-			{ type="write", name="IncludeIntExts(hFile, spec, options)"},
-			{ type="blank" },
-			{ type="version-iter",
-				{ type="write", name="IncludeIntVersionCore(hFile, version, specData, spec, options)"},
-				{ type="write", name="IncludeIntVersionComp(hFile, version, specData, spec, options)"},
-				{ type="blank", last=true, },
-			},
-		},
-	},
-
-	--Header to load things.
-	{ type="file", style="load_hdr", name="GetFilename(basename, spec, options)",
-		{ type="write", name="LoaderDecl(hFile, spec, options)" },
 	},
 	
-	--Source file.
-	{ type="file", style="source", name="GetFilename(basename, spec, options)",
-		source_struct,
+	{ type="group", style="cpp",
+		decl_header_struct,
+		
+		include_header_struct,
+		
+		--Header to load things.
+		{ type="file", style="load_hdr", name="GetFilename(basename, spec, options)",
+			{ type="block", name="IncludeGuard(hFile, spec, options)",
+				{ type="write", name="LoaderDecl(hFile, spec, options)" },
+			}
+		},
+		
+		--Source file.
+		{ type="file", style="source", name="GetFilename(basename, spec, options)",
+			source_cpp_struct,
+		},
 	},
 }
 

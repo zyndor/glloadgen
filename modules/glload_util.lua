@@ -3,12 +3,30 @@ local util = require "util"
 local common = require "CommonStyle"
 
 local data = {}
+data.cpp = {}
 
 data.internalPrefix = "_int_"
 data.headerDirectory = "include/glload/"
 data.includeDirectory = "glload/" --For inclusions from source.
 data.sourceDirectory = "source/"
 
+
+
+function data.CreateIncludeGuardWriters(tbl, name, Func)
+	tbl["WriteBlockBegin" .. name] = function(hFile, ...)
+		local includeGuard = Func(...)
+		hFile:fmt("#ifndef %s\n", includeGuard)
+		hFile:fmt("#define %s\n", includeGuard)
+	end
+	tbl["WriteBlockEnd" .. name] = function(hFile, ...)
+		local includeGuard = Func(...)
+		hFile:fmt("#endif /*%s*/\n", includeGuard)
+	end
+end
+
+
+-----------------------------------------------
+-- Header filenames
 function data.GetLoaderBasename(spec, options)
 	return spec.FilePrefix() .. "load.h"
 end
@@ -89,6 +107,10 @@ end
 
 function data.GetInclFileAllIncludeGuard(spec, options)
 	return spec.GetIncludeGuardString() .. "_GEN_ALL_H"
+end
+
+function data.GetInclFileLoaderIncludeGuard(spec, options)
+	return spec.GetIncludeGuardString() .. "_GEN_LOAD_FUNCTIONS_H"
 end
 
 function data.GetBeginExternBlock()
@@ -236,6 +258,215 @@ function data.GetLoaderHeaderString(spec, options)
 	ret = ret:gsub("%$%<params%>", spec.GetLoaderParams())
 	return ret
 end
+
+
+----------------------------------------------------------------------------
+-- CPP-specific
+data.cpp = util.DeepCopyTable(data)
+
+function data.cpp.GetLoaderBasename(spec, options)
+	return spec.FilePrefix() .. "load.hpp"
+end
+
+function data.cpp.GetVersionCoreBasename(version, spec, options)
+	return spec.FilePrefix() .. version:gsub("%.", "_") .. ".hpp"
+end
+
+function data.cpp.GetVersionCompBasename(version, spec, options)
+	return spec.FilePrefix() .. version:gsub("%.", "_") .. "_comp.hpp"
+end
+
+function data.cpp.GetAllBasename(spec, options)
+	return spec.FilePrefix() .. "all.hpp"
+end
+
+function data.cpp.GetTypeHeaderBasename(spec, options)
+	return data.internalPrefix .. spec.FilePrefix() .. "type.hpp"
+end
+
+function data.cpp.GetExtsHeaderBasename(spec, options)
+	return data.internalPrefix .. spec.FilePrefix() .. "exts.hpp"
+end
+
+function data.cpp.GetCoreHeaderBasename(version, spec, options)
+	return data.internalPrefix .. spec.FilePrefix() .. version:gsub("%.", "_") .. ".hpp"
+end
+
+function data.cpp.GetRemHeaderBasename(version, spec, options)
+	return data.internalPrefix .. spec.FilePrefix() .. version:gsub("%.", "_") .. "_rem.hpp"
+end
+
+function data.cpp.GetTypeHdrFileIncludeGuard(spec, options)
+	return spec.GetIncludeGuardString() .. "_GEN_TYPE" .. "_HPP"
+end
+
+function data.cpp.GetExtFileIncludeGuard(spec, options)
+	return spec.GetIncludeGuardString() .. "_GEN_EXTENSIONS" .. "_HPP"
+end
+
+function data.cpp.GetCoreHdrFileIncludeGuard(version, spec, options, removed)
+	if(removed) then
+		return spec.GetIncludeGuardString() .. "_GEN_CORE_REM" .. version:gsub("%.", "_") .. "_HPP"
+	else
+		return spec.GetIncludeGuardString() .. "_GEN_CORE_" .. version:gsub("%.", "_") .. "_HPP"
+	end
+end
+
+function data.cpp.GetInclFileIncludeGuard(version, spec, options)
+	return spec.GetIncludeGuardString() .. "_GEN_" .. version:gsub("%.", "_") .. "_HPP"
+end
+
+function data.cpp.GetInclFileCompIncludeGuard(version, spec, options)
+	return spec.GetIncludeGuardString() .. "_GEN_" .. version:gsub("%.", "_") .. "COMP_HPP"
+end
+
+function data.cpp.GetInclFileAllIncludeGuard(spec, options)
+	return spec.GetIncludeGuardString() .. "_GEN_ALL_HPP"
+end
+
+function data.cpp.GetInclFileLoaderIncludeGuard(spec, options)
+	return spec.GetIncludeGuardString() .. "_GEN_LOAD_FUNCTIONS_HPP"
+end
+
+function data.cpp.WriteNamespaceBegin(hFile, namespace)
+	hFile:fmt("namespace %s\n", namespace)
+	hFile:write("{\n")
+	hFile:inc()
+end
+
+function data.cpp.WriteNamespaceEnd(hFile)
+	hFile:dec()
+	hFile:write("}\n")
+end
+
+function data.cpp.LoadTestClassDef()
+	return [[
+class LoadTest
+{
+private:
+	//Safe bool idiom. Joy!
+	typedef void (LoadTest::*bool_type)() const;
+	void big_long_name_that_really_doesnt_matter() const {}
+	
+public:
+	operator bool_type() const
+	{
+		return m_isLoaded ? &LoadTest::big_long_name_that_really_doesnt_matter : 0;
+	}
+	
+	int GetNumMissing() const {return m_numMissing;}
+	
+	LoadTest() : m_isLoaded(false), m_numMissing(0) {}
+	LoadTest(bool isLoaded, int numMissing) : m_isLoaded(isLoaded), m_numMissing(numMissing) {}
+private:
+	bool m_isLoaded;
+	int m_numMissing;
+};
+]]
+end
+
+function data.cpp.GetFuncTypedefName(func, spec, options)
+	local temp = "Proc_" .. spec.FuncNamePrefix() .. func.name
+	return temp
+end
+
+function data.cpp.GetFuncPtrTypedefNamespace()
+	return "_detail"
+end
+
+function data.cpp.GetCppEnumName(enum)
+	--Note: some enumerators start with characters C++ forbids as initial
+	--identifiers. If we detect such an enum, prefix it with `_`.
+	local enumName = enum.name
+	if(not enumName:match("^[a-zA-Z_]")) then
+		enumName = "_" .. enumName
+	end
+	
+	--Also, certain identifiers can need it because they conflict.
+	local badIdent = {"TRUE", "FALSE", "NO_ERROR", "WAIT_FAILED"}
+	for _, ident in ipairs(badIdent) do
+		if(enumName == ident) then
+			enumName = enumName .. "_"
+			break
+		end
+	end
+	
+	return enumName
+end
+
+local cpp_hdr_extra_spec =
+{
+	wgl = "",
+	glX = "",
+	gl = [=[
+		/**
+		This function retrieves the major GL version number. Only works after LoadFunctions has been called.
+		**/
+		int GetMajorVersion();
+
+		/**
+		This function retrieves the minor GL version number. Only works after LoadFunctions has been called.
+		**/
+		int GetMinorVersion();
+
+		/**Returns non-zero if the current GL version is greater than or equal to the given version.**/
+		int IsVersionGEQ(int testMajorVersion, int testMinorVersion);
+]=],
+}
+
+local hdr_pattern = 
+[=[
+/**
+\file
+\brief C++ header to include if you want to initialize $<specname>.
+
+**/
+
+
+///\addtogroup module_glload_cppinter
+///@{
+
+///The core namespace for the C++ interface for the OpenGL initialization functions.
+namespace $<funcspec>
+{
+	namespace sys
+	{
+		/**
+		\brief The loading status returned by the loader function.
+
+		**/
+]=]
+.. data.cpp.LoadTestClassDef() ..
+[=[
+
+		/**
+		\brief Loads all of the function pointers available.
+
+$<desc>
+
+		\return A sys::LoadTest object that defines whether the loading was successful.
+		**/
+		LoadTest LoadFunctions($<params>);
+
+$<extra>
+	}
+}
+///@}
+]=]
+
+function data.cpp.GetLoaderHeaderString(spec, options)
+	local ret = hdr_pattern
+	ret = ret:gsub("%$%<extra%>", cpp_hdr_extra_spec[options.spec])
+	ret = ret:gsub("%$%<specname%>", spec.DisplayName())
+	ret = ret:gsub("%$%<prefix%>", spec.DeclPrefix())
+	ret = ret:gsub("%$%<desc%>", hdr_desc[options.spec])
+	ret = ret:gsub("%$%<params%>", spec.GetLoaderParams())
+	ret = ret:gsub("%$%<funcspec%>", spec.FuncNamePrefix())	
+	return ret
+end
+
+
+
 
 
 return data
