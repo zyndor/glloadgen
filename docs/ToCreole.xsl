@@ -123,6 +123,11 @@
 </xsl:text>
     </xsl:template>
     
+    <xsl:template match="db:glossterm" mode="file">
+        <xsl:text>**</xsl:text>
+        <xsl:apply-templates select="*|text()" mode="#current"/>
+        <xsl:text>**</xsl:text>
+    </xsl:template>
     <!--
     <xsl:template match="db:footnote" mode="file">
         <xsl:text>[[hottip:</xsl:text>

@@ -580,6 +580,7 @@
         <file name="Common_Extension_Files.xml"/>
         <file name="Extension_Files.xml"/>
         <file name="Home.xml"/>
+        <file name="Structure_Reference.xml"/>
         <file name="Style_Creation.xml"/>
         <file name="Style_Pointer_C.xml"/>
         <file name="Style_Pointer_CPP.xml"/>
