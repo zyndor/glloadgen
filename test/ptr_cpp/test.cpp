@@ -5,7 +5,11 @@
 #include <stdlib.h>
 
 #include "gl_test.hpp"
+#ifdef _WIN32
 #include "wgl_test.hpp"
+#else
+#include "glx_test.hpp"
+#endif
 #include <GL/freeglut.h>
 
 GLuint positionBufferObject;
@@ -175,12 +179,15 @@ int main(int argc, char** argv)
 
 	init();
 
+#ifdef _WIN32
 	HDC hdc = wglGetCurrentDC();
 	wgl::exts::LoadTest load = wgl::sys::LoadFunctions(hdc);
 	if(!load)
 		printf("WGL: %i\n", load.GetNumMissing());
 	else
 		printf("WGL Loaded!\n");
+#else
+#endif
 
 	glutDisplayFunc(display); 
 	glutReshapeFunc(reshape);
