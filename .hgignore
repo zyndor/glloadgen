@@ -12,3 +12,8 @@ docs/*.wiki
 obj/*
 *.exe
 *.ilk
+*.workspace
+allwgl.txt
+allglx.txt
+allgl.txt
+test/*
