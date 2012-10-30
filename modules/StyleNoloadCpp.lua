@@ -1,5 +1,5 @@
 local util = require "util"
-local struct = require "StructGleeCpp"
+local struct = require "StructNoloadCpp"
 local common = require "CommonStyle"
 
 --------------------------------------
