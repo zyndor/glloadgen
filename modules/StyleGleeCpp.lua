@@ -143,7 +143,7 @@ end
 
 function hdr.WriteBlockEndEnumerators(hFile, spec, options)
 	hFile:dec()
-	hFile:write("}\n")
+	hFile:write("};\n")
 end
 
 function hdr.WriteEnumerator(hFile, enum, enumTable, spec, options, enumSeen)
@@ -161,7 +161,7 @@ end
 function hdr.WriteFunction(hFile, func, typemap, spec, options, funcSeen)
 	if(funcSeen[func.name]) then return end
 	
-	hFile:write(GetFuncPtrDefDirect(func, typemap, spec, options), "\n")
+	hFile:write("extern ", GetFuncPtrDefDirect(func, typemap, spec, options), ";\n")
 end
 
 function hdr.WriteSetupFunction(hFile, specData, spec, options)
@@ -196,8 +196,25 @@ function src.WriteLoaderFunc(hFile, spec, options)
 	hFile:writeblock(spec.GetLoaderFunc())
 end
 
+function src.WriteExtVariable(hFile, extName, spec, options)
+	hFile:fmt("bool %s = false;\n", extName)
+end
+
 function src.WriteSetupFunction(hFile, specData, spec, options)
 	common.WriteNamespaceBegin(hFile, "")
+	
+	hFile:write "void ClearExtensionVariables()\n"
+	hFile:write "{\n"
+	hFile:inc()
+	
+	for _, extName in ipairs(options.extensions) do
+		hFile:fmt("exts::%s = false;\n", extName)
+	end
+	
+	hFile:dec()
+	hFile:write "}\n"
+	hFile:write "\n"
+	
 	hFile:writeblock[[
 struct MapEntry
 {
@@ -234,10 +251,11 @@ struct ClearEntry
 	hFile:fmtblock([[
 void LoadExtByName(const char *extensionName)
 {
-	std::vector<MapEntry>::iterator entry = std::find_if(&g_mappingTable[0], &g_mappingTable[%i], MapCompare(extensionName));
+	MapEntry *tableEnd = &g_mappingTable[%i];
+	MapEntry *entry = std::find_if(&g_mappingTable[0], tableEnd, MapCompare(extensionName));
 	
-	if(entry != table.end())
-		(*entry->extVariable) = true;
+	if(entry != tableEnd)
+		*(entry->extVariable) = true;
 }
 ]], #options.extensions)
 
@@ -284,6 +302,7 @@ void ProcExtsFromExtList()
 	hFile:fmt("void CheckExtensions(%s)\n", spec.GetLoaderParams())
 	hFile:write "{\n"
 	hFile:inc()
+	hFile:write "ClearExtensionVariables();\n"
 	hFile:fmt("std::for_each(&g_mappingTable[0], &g_mappingTable[%i], ClearEntry());\n", #options.extensions)
 	hFile:write "\n"
 	if(indexed) then
@@ -312,24 +331,25 @@ local defs = {}
 src.defs = defs
 
 function defs.WriteFunction(hFile, func, typemap, spec, options, funcSeen)
-	hFile:write(GetFuncPtrDefTypedef(func, typemap, spec, options), "\n")
+	hFile:write(GetFuncPtrDefTypedef(func, typemap, spec, options), ";\n")
 end
 
 local switch = {}
 src.switch = switch
 
 function switch.WriteFunction(hFile, func, typemap, spec, options, funcSeen)
-	hFile:fmt("static %s %s Switch_%s(%s);\n",
-		spec.GetCodegenPtrType(),
+	hFile:fmt("static %s %s Switch_%s(%s)\n",
 		common.GetFuncReturnType(func, typemap),
+		spec.GetCodegenPtrType(),
 		func.name,
 		common.GetFuncParamList(func, typemap, true))
 	hFile:write "{\n"
 	hFile:inc()
-	hFile:fmt('%s = (%s)%s("%s");\n',
+	hFile:fmt('%s = (%s)%s("%s%s");\n',
 		GetFuncPtrName(func, spec, options),
 		GetFuncPtrTypedefName(func, spec, options),
 		spec.GetPtrLoaderFuncName(),
+		spec.FuncNamePrefix(),
 		func.name)
 		
 	if(common.DoesFuncReturnSomething(func, typemap)) then
@@ -365,6 +385,7 @@ function init.WriteBlockEndStruct(hFile, spec, options)
 	hFile:dec()
 	hFile:write "};\n\n"
 	hFile:write("InitializeVariables g_initVariables;\n")
+	common.WriteNamespaceEnd(hFile, "")
 end
 
 function init.WriteFunction(hFile, func, typemap, spec, options, funcSeen)
