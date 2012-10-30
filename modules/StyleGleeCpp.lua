@@ -6,7 +6,7 @@ local common = require "CommonStyle"
 -- Common functions.
 local function GetIncludeGuard(spec, options)
 	local temp = 
-		options.prefix .. spec.GetIncludeGuardString() .. "_GLEE_STYLE_HPP"
+		options.prefix .. spec.GetIncludeGuardString() .. "_NOLOAD_STYLE_HPP"
 	return temp:upper()
 end
 
