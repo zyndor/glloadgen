@@ -3139,6 +3139,7 @@ return {
 		[==[AMD_gpu_association]==],
 		[==[EXT_create_context_es2_profile]==],
 		[==[EXT_swap_control_tear]==],
+		[==[EXT_buffer_age]==],
 	},
 	["enumerations"] = {
 		{
@@ -4874,6 +4875,14 @@ return {
 				[==[EXT_swap_control_tear]==],
 			},
 			["name"] = [==[LATE_SWAPS_TEAR_EXT]==],
+		},
+		{
+			["value"] = [==[0x20F4]==],
+			["copy"] = false,
+			["extensions"] = {
+				[==[EXT_buffer_age]==],
+			},
+			["name"] = [==[BACK_BUFFER_AGE_EXT]==],
 		},
 	},
 };
