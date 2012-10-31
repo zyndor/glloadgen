@@ -174,7 +174,7 @@ int main(int argc, char** argv)
 	gl::sys::CheckExtensions();
 	wgl::sys::CheckExtensions(wglGetCurrentDC());
 
-	if(gl::exts::EXT_texture_compression_s3tc)
+	if(gl::exts::var_EXT_texture_compression_s3tc)
 		printf("Yay!\n");
 	else
 		printf("Fooey.\n");

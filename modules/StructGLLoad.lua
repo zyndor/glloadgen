@@ -401,6 +401,9 @@ local source_cpp_struct =
 		{ type="blank", },
 	},
 	--Loaders et. al.
+	{type="write", name="CopierC(hFile, specData, spec, options)", },
+	{ type="blank", },
+
 	{ type="block", name="SystemDefs(hFile, spec, options)",
 		{ type="write", name="MainLoader(hFile, specData, spec, options)", },
 		{ type="blank", },

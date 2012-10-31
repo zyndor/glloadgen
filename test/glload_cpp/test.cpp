@@ -6,6 +6,7 @@
 
 #include "glload/gl_all.hpp"
 #include "glload/gl_load.hpp"
+#include "glload/gl_load.h"
 #ifdef _WIN32
 #include "glload/wgl_all.hpp"
 #include "glload/wgl_load.hpp"
@@ -174,21 +175,28 @@ int main(int argc, char** argv)
 
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
 
+/*
 	glload::LoadTest didLoad = glload::LoadFunctions();
-	if(!didLoad)
+	if(didLoad)
 		printf("OpenGL: %i\n", didLoad.GetNumMissing());
 	else
-		printf("OpenGL Loaded!\n");
+		printf("OpenGL Failed to Load!\n");
+*/
+	int numFailed = ogl_LoadFunctions();
+	if(numFailed)
+		printf("OpenGL: %i\n", numFailed - 1);
+	else
+		printf("OpenGL Failed to Load!\n");
 
 	init();
 
 #ifdef _WIN32
 	HDC hdc = wglGetCurrentDC();
 	glload::LoadTest load = glload::LoadFunctions(hdc);
-	if(!load)
+	if(load)
 		printf("WGL: %i\n", load.GetNumMissing());
 	else
-		printf("WGL Loaded!\n");
+		printf("WGL Failed to Loaded!\n");
 #else
 #endif
 

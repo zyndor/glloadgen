@@ -505,6 +505,9 @@ static int LoadVersionFromMap(int major, int minor, int compatibilityProfile)
 	end
 	hFile:write "\n"
 	hFile:writeblock(common.GetProcessExtsFromStringFunc("LoadExtByName(%s)"))
+	
+	hFile:write "\n"
+	hFile:fmt("void %sCopyFromC();\n", spec.DeclPrefix())
 end
 
 function source.WriteMainLoader(hFile, specData, spec, options)
@@ -516,7 +519,7 @@ static int g_minorVersion = 0;
 		hFile:write "\n"
 	end
 
-	hFile:fmt("int %sLoadFunctions(%s)\n", spec.DeclPrefix(), spec.GetLoaderParams())
+	hFile:fmt("static int InternalLoad(%s)\n", spec.GetLoaderParams())
 	hFile:write "{\n"
 	hFile:inc()
 	
@@ -644,6 +647,22 @@ return %sLOAD_SUCCEEDED + numFailed;
 		hFile:fmt("return %s;\n", spec.DeclPrefix() .. "LOAD_SUCCEEDED")
 	end
 	
+	hFile:dec()
+	hFile:write "}\n"
+	
+	hFile:write "\n"
+	
+	hFile:fmt("int %sLoadFunctions(%s)\n", spec.DeclPrefix(), spec.GetLoaderParams())
+	hFile:write "{\n"
+	hFile:inc()
+	hFile:fmtblock(
+[[int numFailed = 0;
+numFailed = InternalLoad(%s);
+]],
+		spec.GetExtStringParamList(function() return "" end))
+	--Call CPP loader.
+	hFile:fmt("%sCopyFromC();\n", spec.DeclPrefix())
+	hFile:write "return numFailed;\n"
 	hFile:dec()
 	hFile:write "}\n"
 end
@@ -928,6 +947,17 @@ function cpp.source.WriteBlockEndSystemDefs(hFile, spec, options)
 	glload.WriteNamespaceEnd(hFile)
 end
 
+function cpp.source.WriteCopierC(hFile, specData, spec, options)
+	hFile:fmtblock([[
+extern "C" void %sCopyFromC()
+{
+  %s::CopyExtensionVariables();
+  %s::CopyFunctionPointers();
+}
+]],
+	spec.DeclPrefix(), spec.FuncNamePrefix(), spec.FuncNamePrefix())
+end
+
 function cpp.source.WriteMainLoader(hFile, specData, spec, options)
 	hFile:fmt("glload::LoadTest LoadFunctions(%s)\n", spec.GetLoaderParams())
 	hFile:write "{\n"
@@ -938,14 +968,12 @@ function cpp.source.WriteMainLoader(hFile, specData, spec, options)
 		spec.GetExtStringParamList(function() return "" end))
 		
 	hFile:fmtblock([[
-%s::CopyExtensionVariables();
-%s::CopyFunctionPointers();
+//The C loader will call the above function to copy the variables and such.
 
 if(test == 0)
 	return glload::LoadTest(false, 0);
 return glload::LoadTest(true, test - 1);
-]],
-		spec.FuncNamePrefix(), spec.FuncNamePrefix())
+]])
 	
 	hFile:dec()
 	hFile:write "}\n"

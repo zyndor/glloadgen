@@ -593,6 +593,7 @@
         <file name="Home.xml"/>
         <file name="Structure_Reference.xml"/>
         <file name="Style_Creation.xml"/>
+        <file name="Style_No_Load_CPP.xml"/>
         <file name="Style_Pointer_C.xml"/>
         <file name="Style_Pointer_CPP.xml"/>
         <file name="Styles.xml"/>
