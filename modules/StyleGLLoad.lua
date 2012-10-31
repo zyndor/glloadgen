@@ -195,23 +195,29 @@ function incl_hdr.AllFilename(basename, spec, options)
 		glload.GetAllBasename(spec, options)
 end
 
-function incl_hdr.WriteBlockBeginIncludeGuardCore(hFile, version, spec, options)
+function incl_hdr.CoreFilename(basename, spec, options)
+	local basename, dir = util.ParsePath(basename)
+	return dir .. glload.headerDirectory .. 
+		glload.GetCoreBasename(spec, options)
+end
+
+function incl_hdr.WriteBlockBeginIncludeGuardVersionCore(hFile, version, spec, options)
 	local includeGuard = glload.GetInclFileIncludeGuard(version, spec, options)
 	hFile:fmt("#ifndef %s\n", includeGuard)
 	hFile:fmt("#define %s\n", includeGuard)
 end
 
-function incl_hdr.WriteBlockEndIncludeGuardCore(hFile, version, spec, options)
+function incl_hdr.WriteBlockEndIncludeGuardVersionCore(hFile, version, spec, options)
 	hFile:fmt("#endif /*%s*/\n", glload.GetInclFileIncludeGuard(version, spec, options))
 end
 
-function incl_hdr.WriteBlockBeginIncludeGuardComp(hFile, version, spec, options)
+function incl_hdr.WriteBlockBeginIncludeGuardVersionComp(hFile, version, spec, options)
 	local includeGuard = glload.GetInclFileCompIncludeGuard(version, spec, options)
 	hFile:fmt("#ifndef %s\n", includeGuard)
 	hFile:fmt("#define %s\n", includeGuard)
 end
 
-function incl_hdr.WriteBlockEndIncludeGuardComp(hFile, version, spec, options)
+function incl_hdr.WriteBlockEndIncludeGuardVersionComp(hFile, version, spec, options)
 	hFile:fmt("#endif /*%s*/\n", glload.GetInclFileCompIncludeGuard(version, spec, options))
 end
 
@@ -224,6 +230,9 @@ end
 function incl_hdr.WriteBlockEndIncludeGuardAll(hFile, spec, options)
 	hFile:fmt("#endif /*%s*/\n", glload.GetInclFileAllIncludeGuard(spec, options))
 end
+
+glload.CreateIncludeGuardWriters(incl_hdr, "IncludeGuardCore",
+	function(...) return glload.GetInclFileCoreIncludeGuard(...) end)
 
 function incl_hdr.WriteIncludeIntType(hFile, spec, options)
 	hFile:fmt('#include "%s"\n', glload.GetTypeHeaderBasename(spec, options))
@@ -789,6 +798,9 @@ cpp.core_hdr.WriteFuncDecl = cpp.ext_hdr.WriteFuncDecl
 -- Source CPP file.
 function cpp.source.GetFilename(basename, spec, options)
 	local basename, dir = util.ParsePath(basename)
+	--The extra _cpp is *on purpose*. Visual Studio checks object files
+	--by filename. So gl_load.c and gl_load.cpp generate the same object file.
+	--This confuses it.
 	return dir .. glload.sourceDirectory .. spec.FilePrefix() .. "load_cpp.cpp"
 end
 

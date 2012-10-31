@@ -43,6 +43,10 @@ function data.GetAllBasename(spec, options)
 	return spec.FilePrefix() .. "all.h"
 end
 
+function data.GetCoreBasename(spec, options)
+	return spec.FilePrefix() .. "core.h"
+end
+
 function data.GetTypeHeaderBasename(spec, options)
 	return data.internalPrefix .. spec.FilePrefix() .. "type.h"
 end
@@ -107,6 +111,10 @@ end
 
 function data.GetInclFileAllIncludeGuard(spec, options)
 	return spec.GetIncludeGuardString() .. "_GEN_ALL_H"
+end
+
+function data.GetInclFileCoreIncludeGuard(spec, options)
+	return spec.GetIncludeGuardString() .. "_GEN_CORE_H"
 end
 
 function data.GetInclFileLoaderIncludeGuard(spec, options)
@@ -284,6 +292,10 @@ function data.cpp.GetAllBasename(spec, options)
 	return spec.FilePrefix() .. "all.hpp"
 end
 
+function data.cpp.GetCoreBasename(spec, options)
+	return spec.FilePrefix() .. "core.hpp"
+end
+
 function data.cpp.GetTypeHeaderBasename(spec, options)
 	return data.internalPrefix .. spec.FilePrefix() .. "type.hpp"
 end
@@ -330,6 +342,10 @@ end
 
 function data.cpp.GetInclFileAllIncludeGuard(spec, options)
 	return spec.GetIncludeGuardString() .. "_GEN_ALL_HPP"
+end
+
+function data.cpp.GetInclFileCoreIncludeGuard(spec, options)
+	return spec.GetIncludeGuardString() .. "_GEN_CORE_HPP"
 end
 
 function data.cpp.GetInclFileLoaderIncludeGuard(spec, options)
