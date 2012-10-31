@@ -1120,6 +1120,11 @@ function my_style.FilterCompFunc(func)
 	return func.deprecated
 end
 
+function my_style.UpdateEnumSeen(enumSeen_, enum, value)
+	enumSeen_[enum.name] = value;
+end
+
+function my_style.StateEnumSeen() return {} end
 
 
 local function Create()

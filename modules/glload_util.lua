@@ -403,23 +403,7 @@ function data.cpp.GetFuncPtrTypedefNamespace()
 end
 
 function data.cpp.GetCppEnumName(enum)
-	--Note: some enumerators start with characters C++ forbids as initial
-	--identifiers. If we detect such an enum, prefix it with `_`.
-	local enumName = enum.name
-	if(not enumName:match("^[a-zA-Z_]")) then
-		enumName = "_" .. enumName
-	end
-	
-	--Also, certain identifiers can need it because they conflict.
-	local badIdent = {"TRUE", "FALSE", "NO_ERROR", "WAIT_FAILED"}
-	for _, ident in ipairs(badIdent) do
-		if(enumName == ident) then
-			enumName = enumName .. "_"
-			break
-		end
-	end
-	
-	return enumName
+	return common.GetCppEnumName(enum)
 end
 
 local cpp_hdr_extra_spec =
