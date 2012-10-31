@@ -352,6 +352,10 @@ function data.cpp.GetInclFileLoaderIncludeGuard(spec, options)
 	return spec.GetIncludeGuardString() .. "_GEN_LOAD_FUNCTIONS_HPP"
 end
 
+function data.cpp.GetExtVariableName(extName, spec, options)
+	return "var_" .. extName
+end
+
 function data.cpp.WriteNamespaceBegin(hFile, namespace)
 	hFile:fmt("namespace %s\n", namespace)
 	hFile:write("{\n")

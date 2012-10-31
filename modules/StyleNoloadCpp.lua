@@ -133,7 +133,7 @@ function hdr.WriteTypedefs(hFile, specData, spec, options)
 end
 
 function hdr.WriteExtVariable(hFile, extName, spec, options)
-	hFile:fmt("extern bool %s;\n", extName)
+	hFile:fmt("extern bool var_%s;\n", extName)
 end
 
 function hdr.WriteBlockBeginEnumerators(hFile, spec, options)
@@ -197,7 +197,7 @@ function src.WriteLoaderFunc(hFile, spec, options)
 end
 
 function src.WriteExtVariable(hFile, extName, spec, options)
-	hFile:fmt("bool %s = false;\n", extName)
+	hFile:fmt("bool var_%s = false;\n", extName)
 end
 
 function src.WriteSetupFunction(hFile, specData, spec, options)
@@ -208,7 +208,7 @@ function src.WriteSetupFunction(hFile, specData, spec, options)
 	hFile:inc()
 	
 	for _, extName in ipairs(options.extensions) do
-		hFile:fmt("exts::%s = false;\n", extName)
+		hFile:fmt("exts::var_%s = false;\n", extName)
 	end
 	
 	hFile:dec()
@@ -239,7 +239,7 @@ struct ClearEntry
 	hFile:write "{\n"
 	hFile:inc()
 	for _, extName in ipairs(options.extensions) do
-		hFile:fmt('{"%s%s", &exts::%s},\n',
+		hFile:fmt('{"%s%s", &exts::var_%s},\n',
 			spec.ExtNamePrefix(),
 			extName,
 			extName)

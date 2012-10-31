@@ -897,7 +897,7 @@ function cpp.source.WriteCopyExtVariable(hFile, extName, spec, options)
 	local cppExtVarname = glload.GetExtVariableName(extName, spec, options)
 	local cExtVarname = glload_c.GetExtVariableName(extName, spec, options)
 	
-	hFile:fmt("exts::%s = glload::LoadTest((::%s == 0), ::%s - 1);\n",
+	hFile:fmt("exts::%s = glload::LoadTest((::%s != 0), ::%s - 1);\n",
 		cppExtVarname,
 		cExtVarname,
 		cExtVarname)
