@@ -59,7 +59,7 @@ local ext_file_struct =
 local decl_header_struct =
 { type="group",
 -- Internal header files.
-{ type="context", key="enumSeen", name="EnumSeen",
+{ type="context", key="enumSeen_", name="EnumSeen",
 { type="func-seen",
 	--Write the type header file.
 	{ type="file", style="type_hdr", name="GetFilename(basename, spec, options)",
