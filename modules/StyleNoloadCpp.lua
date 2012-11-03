@@ -132,7 +132,7 @@ function hdr.WriteTypedefs(hFile, specData, spec, options)
 	common.WritePassthruData(hFile, specData.funcData.passthru)
 end
 
-function hdr.WriteExtVariable(hFile, extName, spec, options)
+function hdr.WriteExtension(hFile, extName, spec, options)
 	hFile:fmt("extern bool var_%s;\n", extName)
 end
 
@@ -196,7 +196,7 @@ function src.WriteLoaderFunc(hFile, spec, options)
 	hFile:writeblock(spec.GetLoaderFunc())
 end
 
-function src.WriteExtVariable(hFile, extName, spec, options)
+function src.WriteExtension(hFile, extName, spec, options)
 	hFile:fmt("bool var_%s = false;\n", extName)
 end
 
@@ -308,8 +308,29 @@ void ProcExtsFromExtList()
 	if(indexed) then
 		hFile:write("ProcExtsFromExtList();\n")
 	else
+		--First, check if the GetExtStringFuncName is in the specData.
+		local funcName = spec.GetExtStringFuncName()
+		if(specData.functable[funcName]) then
+			--Create a function pointer and load it.
+			local func = specData.functable[funcName]
+			local typemap = specData.typemap
+			funcName = "InternalGetExtensionString"
+
+			hFile:fmt("typedef %s (%s *MYGETEXTSTRINGPROC)(%s);\n",
+				common.GetFuncReturnType(func, typemap),
+				spec.GetCodegenPtrType(),
+				common.GetFuncParamList(func, typemap))
+			hFile:fmt('MYGETEXTSTRINGPROC %s = (MYGETEXTSTRINGPROC)%s("%s%s");\n',
+				funcName,
+				spec.GetPtrLoaderFuncName(),
+				spec.FuncNamePrefix(),
+				func.name)
+			hFile:fmt("if(!%s) return;\n", funcName)
+			hFile:write "\n"
+		end
+		
 		hFile:fmt("ProcExtsFromExtString((const char *)%s(%s));\n",
-			spec.GetExtStringFuncName(),
+			funcName,
 			spec.GetExtStringParamList(
 				function (name) return spec.FuncNamePrefix() .. "::" .. name end))
 	end
@@ -363,6 +384,41 @@ function switch.WriteFunction(hFile, func, typemap, spec, options, funcSeen)
 	end
 	hFile:dec()
 	hFile:write "}\n\n"
+end
+
+function switch.WriteGetExtString(hFile, specData, spec, options, funcSeen)
+	if(funcSeen[spec.GetExtStringFuncName()]) then
+		return
+	end
+
+	local func = specData.funcdefs[spec.GetExtStringFuncName()]
+	if(func) then
+		hFile:write "\n"
+		hFile:fmt("static %s %s(%s)\n",
+			common.GetFuncReturnType(func, typemap),
+			func.name,
+			common.GetFuncParamList(func, specData.funcData.typemap, true))
+		hFile:write "{\n"
+		hFile:inc()
+		hFile:fmt('%s = (%s)%s("%s%s");\n',
+			GetFuncPtrName(func, spec, options),
+			GetFuncPtrTypedefName(func, spec, options),
+			spec.GetPtrLoaderFuncName(),
+			spec.FuncNamePrefix(),
+			func.name)
+			
+		if(common.DoesFuncReturnSomething(func, typemap)) then
+			hFile:fmt('%s(%s);\n',
+				GetFuncPtrName(func, spec, options),
+				common.GetFuncParamCallList(func, typemap))
+		else
+			hFile:fmt('return %s(%s);\n',
+				GetFuncPtrName(func, spec, options),
+				common.GetFuncParamCallList(func, typemap))
+		end
+		hFile:dec()
+		hFile:write "}\n\n"
+	end
 end
 
 local init = {}
