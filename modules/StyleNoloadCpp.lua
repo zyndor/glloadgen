@@ -450,7 +450,7 @@ end
 
 
 local function Create()
-	return common.DeepCopyTable(my_style), struct
+	return util.DeepCopyTable(my_style), struct
 end
 
 return { Create = Create }

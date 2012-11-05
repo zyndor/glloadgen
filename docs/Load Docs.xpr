@@ -591,6 +591,7 @@
         <file name="Common_Extension_Files.xml"/>
         <file name="Extension_Files.xml"/>
         <file name="Home.xml"/>
+        <file name="New_Style_Step_By_Step.xml"/>
         <file name="Structure_Reference.xml"/>
         <file name="Style_Creation.xml"/>
         <file name="Style_No_Load_CPP.xml"/>
