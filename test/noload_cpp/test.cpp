@@ -172,7 +172,9 @@ int main(int argc, char** argv)
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
 
 	gl::sys::CheckExtensions();
+#ifdef _WIN32
 	wgl::sys::CheckExtensions(wglGetCurrentDC());
+#endif
 
 	if(gl::exts::var_EXT_texture_compression_s3tc)
 		printf("Yay!\n");
