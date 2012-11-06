@@ -8,6 +8,7 @@ solution "test"
 local tests =
 {
 	{name = "ptr_cpp"},
+	{name = "ptr_c"},
 	{name = "glload_c", include = "include"},
 	{name = "glload_cpp", include = "include"},
 	{name = "noload_cpp"},
