@@ -14,6 +14,7 @@
     <xsl:output name="text" method="text" encoding="UTF-8"/>
     
     <xsl:param name="filePrefix"/>
+    <xsl:param name="basename"/>
     
     
     <xsl:template match="/">
@@ -60,14 +61,17 @@
     
     <!-- Process the actual text data. -->
     <xsl:template match="db:para" mode="file">
+        <xsl:variable name="listCount" select="count(ancestor::db:listitem)"/>
         <xsl:if test="ancestor::db:blockquote or ancestor::db:epigraph">
             <xsl:text>-></xsl:text>
         </xsl:if>
         <xsl:if test="ancestor::db:itemizedlist and not(preceding-sibling::*)">
-            <xsl:text>* </xsl:text>
+            <xsl:value-of select="pg:dup('*', $listCount)"/>
+            <xsl:text> </xsl:text>
         </xsl:if>
         <xsl:if test="ancestor::db:orderedlist and not(preceding-sibling::*)">
-            <xsl:text># </xsl:text>
+            <xsl:value-of select="pg:dup('#', $listCount)"/>
+            <xsl:text> </xsl:text>
         </xsl:if>
         <xsl:apply-templates select="*|text()" mode="#current"/>
         <xsl:choose>
@@ -75,8 +79,14 @@
                 <xsl:text>
 </xsl:text>
             </xsl:when>
-            <xsl:when test="ancestor::db:listitem and following-sibling::*">
+            <xsl:when test="ancestor::db:listitem and following-sibling::* and
+                not(following-sibling::db:itemizedlist or following-sibling::db:orderedlist)">
                 <xsl:text>\\</xsl:text>
+            </xsl:when>
+            <xsl:when test="ancestor::db:listitem and
+                (following-sibling::db:itemizedlist or following-sibling::db:orderedlist)">
+                <xsl:text>
+</xsl:text>
             </xsl:when>
             <xsl:when test="parent::db:glossdef or following-sibling::*">
                 <xsl:text>
@@ -217,10 +227,6 @@
         <xsl:text>**//</xsl:text>
     </xsl:template>
     
-    <xsl:template match="db:phrase[@role='toc']" mode="file">
-        <xsl:text><![CDATA[<<toc>>]]></xsl:text>
-    </xsl:template>
-    
     <xsl:template match="db:citetitle" mode="file">
         <xsl:text>//**</xsl:text>
         <xsl:apply-templates select="*|text()" mode="#current"/>
@@ -276,4 +282,48 @@
     </xsl:template>
     
     <xsl:template match="db:title" mode="file"/>
+
+    <xsl:template match="db:phrase[@role='toc']" mode="file">
+        <xsl:apply-templates select="/descendant::db:section" mode="toc"/>
+    </xsl:template>
+    
+    <xsl:template match="db:section" mode="toc">
+        <xsl:variable name="title" select="db:title/text()"/>
+        <xsl:variable name="link" select="lower-case(replace($title, ' ', '-'))"/>
+        <xsl:variable name="starCount" select="count(ancestor-or-self::db:section)"/>
+        <xsl:value-of select="pg:dup('*', $starCount)"/>
+        <xsl:text> </xsl:text>
+        <xsl:text>[[</xsl:text>
+        <xsl:value-of select="$basename"/>
+        <xsl:text>#!</xsl:text>
+        <xsl:value-of select="$link"/>
+        <xsl:text>|</xsl:text>
+        <xsl:value-of select="$title"/>
+        <xsl:text>]]</xsl:text>
+        <xsl:text>
+</xsl:text>
+    </xsl:template>
+    
+    <xsl:function name="pg:dup">
+        <xsl:param name="input"/>
+        <xsl:param name="count"/>
+        <xsl:sequence select="string-join(for $l in 1 to $count return $input, '')"/>
+    </xsl:function>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </xsl:transform>
