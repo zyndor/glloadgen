@@ -164,7 +164,7 @@ int main(int argc, char** argv)
 
 	glutInitDisplayMode(displayMode);
 	glutInitContextVersion (3, 3);
-	glutInitContextProfile(GLUT_CORE_PROFILE);
+	glutInitContextProfile(GLUT_COMPATIBILITY_PROFILE);
 	glutInitWindowSize (width, height); 
 	glutInitWindowPosition (300, 200);
 	glutCreateWindow (argv[0]);
