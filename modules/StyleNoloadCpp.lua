@@ -235,7 +235,10 @@ struct ClearEntry
 };
 
 ]]
-	hFile:write("MapEntry g_mappingTable[] =\n")
+	local arrayLength = #options.extensions
+	if(arrayLength == 0) then arrayLength = 1 end
+
+	hFile:fmt("MapEntry g_mappingTable[%i] =\n", arrayLength)
 	hFile:write "{\n"
 	hFile:inc()
 	for _, extName in ipairs(options.extensions) do

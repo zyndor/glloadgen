@@ -14,6 +14,7 @@ local tests =
 	{name = "glload_c", include = "include"},
 	{name = "glload_cpp", include = "include"},
 	{name = "noload_cpp"},
+	{name = "noload_cpp_noext"},
 }
 
 local oldDir = os.getcwd()
