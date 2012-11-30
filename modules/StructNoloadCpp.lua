@@ -13,6 +13,7 @@ local sys_functions =
 local my_struct =
 {
 	{ type="file", style="hdr", name="GetFilename(basename, spec, options)",
+		{ type="write", name="FilePreamble", optional=true} ,
 		{ type="block", name="IncludeGuard",
 			{ type="blank"},
 			{ type="write", name="Guards(hFile, spec, options)",},
