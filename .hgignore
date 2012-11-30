@@ -17,3 +17,4 @@ allwgl.txt
 allglx.txt
 allgl.txt
 test/*
+modules/UserStyles.lua
