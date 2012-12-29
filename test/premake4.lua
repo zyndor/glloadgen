@@ -11,8 +11,6 @@ local tests =
 	{name = "ptr_c"},
 	{name = "ptr_cpp_comp"},
 	{name = "ptr_c_comp"},
-	{name = "glload_c", include = "include"},
-	{name = "glload_cpp", include = "include"},
 	{name = "noload_cpp"},
 	{name = "noload_cpp_noext"},
 }
