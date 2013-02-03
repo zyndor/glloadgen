@@ -78820,10 +78820,9 @@ return {
 				["offset"] = [==[?]==],
 				["return"] = [==[UInt64]==],
 				["glxflags"] = [==[ignore]==],
-				["glxsingle"] = [==[?]==],
 				["name"] = [==[GetTextureHandleNV]==],
 				["category"] = [==[NV_bindless_texture]==],
-				["version"] = [==[4.0]==],
+				["glxsingle"] = [==[?]==],
 				["param"] = [==[texture]==],
 				["dlflags"] = [==[notlistable]==],
 				["params"] = {
@@ -78839,10 +78838,9 @@ return {
 				["offset"] = [==[?]==],
 				["return"] = [==[UInt64]==],
 				["glxflags"] = [==[ignore]==],
-				["glxsingle"] = [==[?]==],
 				["name"] = [==[GetTextureSamplerHandleNV]==],
 				["category"] = [==[NV_bindless_texture]==],
-				["version"] = [==[4.0]==],
+				["glxsingle"] = [==[?]==],
 				["param"] = [==[sampler]==],
 				["dlflags"] = [==[notlistable]==],
 				["params"] = {
@@ -78862,12 +78860,11 @@ return {
 			},
 			{
 				["offset"] = [==[?]==],
+				["param"] = [==[handle]==],
+				["name"] = [==[MakeTextureHandleResidentNV]==],
 				["return"] = [==[void]==],
 				["glxropcode"] = [==[?]==],
-				["name"] = [==[MakeTextureHandleResidentNV]==],
 				["category"] = [==[NV_bindless_texture]==],
-				["param"] = [==[handle]==],
-				["version"] = [==[4.0]==],
 				["glxflags"] = [==[ignore]==],
 				["params"] = {
 					{
@@ -78880,12 +78877,11 @@ return {
 			},
 			{
 				["offset"] = [==[?]==],
+				["param"] = [==[handle]==],
+				["name"] = [==[MakeTextureHandleNonResidentNV]==],
 				["return"] = [==[void]==],
 				["glxropcode"] = [==[?]==],
-				["name"] = [==[MakeTextureHandleNonResidentNV]==],
 				["category"] = [==[NV_bindless_texture]==],
-				["param"] = [==[handle]==],
-				["version"] = [==[4.0]==],
 				["glxflags"] = [==[ignore]==],
 				["params"] = {
 					{
@@ -78900,10 +78896,9 @@ return {
 				["offset"] = [==[?]==],
 				["return"] = [==[UInt64]==],
 				["glxflags"] = [==[ignore]==],
-				["glxsingle"] = [==[?]==],
 				["name"] = [==[GetImageHandleNV]==],
 				["category"] = [==[NV_bindless_texture]==],
-				["version"] = [==[4.0]==],
+				["glxsingle"] = [==[?]==],
 				["param"] = [==[format]==],
 				["dlflags"] = [==[notlistable]==],
 				["params"] = {
@@ -78941,12 +78936,11 @@ return {
 			},
 			{
 				["offset"] = [==[?]==],
+				["param"] = [==[access]==],
+				["name"] = [==[MakeImageHandleResidentNV]==],
 				["return"] = [==[void]==],
 				["glxropcode"] = [==[?]==],
-				["name"] = [==[MakeImageHandleResidentNV]==],
 				["category"] = [==[NV_bindless_texture]==],
-				["param"] = [==[access]==],
-				["version"] = [==[4.0]==],
 				["glxflags"] = [==[ignore]==],
 				["params"] = {
 					{
@@ -78965,12 +78959,11 @@ return {
 			},
 			{
 				["offset"] = [==[?]==],
+				["param"] = [==[handle]==],
+				["name"] = [==[MakeImageHandleNonResidentNV]==],
 				["return"] = [==[void]==],
 				["glxropcode"] = [==[?]==],
-				["name"] = [==[MakeImageHandleNonResidentNV]==],
 				["category"] = [==[NV_bindless_texture]==],
-				["param"] = [==[handle]==],
-				["version"] = [==[4.0]==],
 				["glxflags"] = [==[ignore]==],
 				["params"] = {
 					{
@@ -78983,12 +78976,11 @@ return {
 			},
 			{
 				["offset"] = [==[?]==],
+				["param"] = [==[value]==],
+				["name"] = [==[UniformHandleui64NV]==],
 				["return"] = [==[void]==],
 				["glxropcode"] = [==[?]==],
-				["name"] = [==[UniformHandleui64NV]==],
 				["category"] = [==[NV_bindless_texture]==],
-				["param"] = [==[value]==],
-				["version"] = [==[4.0]==],
 				["glxflags"] = [==[ignore]==],
 				["params"] = {
 					{
@@ -79007,12 +78999,11 @@ return {
 			},
 			{
 				["offset"] = [==[?]==],
+				["param"] = [==[value]==],
+				["name"] = [==[UniformHandleui64vNV]==],
 				["return"] = [==[void]==],
 				["glxropcode"] = [==[?]==],
-				["name"] = [==[UniformHandleui64vNV]==],
 				["category"] = [==[NV_bindless_texture]==],
-				["param"] = [==[value]==],
-				["version"] = [==[4.0]==],
 				["glxflags"] = [==[ignore]==],
 				["params"] = {
 					{
@@ -79038,12 +79029,11 @@ return {
 			},
 			{
 				["offset"] = [==[?]==],
+				["param"] = [==[value]==],
+				["name"] = [==[ProgramUniformHandleui64NV]==],
 				["return"] = [==[void]==],
 				["glxropcode"] = [==[?]==],
-				["name"] = [==[ProgramUniformHandleui64NV]==],
 				["category"] = [==[NV_bindless_texture]==],
-				["param"] = [==[value]==],
-				["version"] = [==[4.0]==],
 				["glxflags"] = [==[ignore]==],
 				["params"] = {
 					{
@@ -79068,12 +79058,11 @@ return {
 			},
 			{
 				["offset"] = [==[?]==],
+				["param"] = [==[values]==],
+				["name"] = [==[ProgramUniformHandleui64vNV]==],
 				["return"] = [==[void]==],
 				["glxropcode"] = [==[?]==],
-				["name"] = [==[ProgramUniformHandleui64vNV]==],
 				["category"] = [==[NV_bindless_texture]==],
-				["param"] = [==[values]==],
-				["version"] = [==[4.0]==],
 				["glxflags"] = [==[ignore]==],
 				["params"] = {
 					{
@@ -79105,30 +79094,11 @@ return {
 			},
 			{
 				["offset"] = [==[?]==],
-				["return"] = [==[Boolean]==],
-				["glxropcode"] = [==[?]==],
+				["param"] = [==[handle]==],
 				["name"] = [==[IsTextureHandleResidentNV]==],
-				["category"] = [==[NV_bindless_texture]==],
-				["param"] = [==[handle]==],
-				["version"] = [==[4.0]==],
-				["glxflags"] = [==[ignore]==],
-				["params"] = {
-					{
-						["input"] = true,
-						["type"] = [==[UInt64]==],
-						["name"] = [==[handle]==],
-						["kind"] = [==[value]==],
-					},
-				},
-			},
-			{
-				["offset"] = [==[?]==],
 				["return"] = [==[Boolean]==],
 				["glxropcode"] = [==[?]==],
-				["name"] = [==[IsImageHandleResidentNV]==],
 				["category"] = [==[NV_bindless_texture]==],
-				["param"] = [==[handle]==],
-				["version"] = [==[4.0]==],
 				["glxflags"] = [==[ignore]==],
 				["params"] = {
 					{
@@ -79141,12 +79111,28 @@ return {
 			},
 			{
 				["offset"] = [==[?]==],
+				["param"] = [==[handle]==],
+				["name"] = [==[IsImageHandleResidentNV]==],
+				["return"] = [==[Boolean]==],
+				["glxropcode"] = [==[?]==],
+				["category"] = [==[NV_bindless_texture]==],
+				["glxflags"] = [==[ignore]==],
+				["params"] = {
+					{
+						["input"] = true,
+						["type"] = [==[UInt64]==],
+						["name"] = [==[handle]==],
+						["kind"] = [==[value]==],
+					},
+				},
+			},
+			{
+				["offset"] = [==[?]==],
+				["param"] = [==[flags]==],
+				["name"] = [==[TexStorageSparseAMD]==],
 				["return"] = [==[void]==],
 				["glxropcode"] = [==[?]==],
-				["name"] = [==[TexStorageSparseAMD]==],
 				["category"] = [==[AMD_sparse_texture]==],
-				["param"] = [==[flags]==],
-				["version"] = [==[4.3]==],
 				["glxflags"] = [==[ignore]==],
 				["params"] = {
 					{
@@ -79195,12 +79181,11 @@ return {
 			},
 			{
 				["offset"] = [==[?]==],
+				["param"] = [==[flags]==],
+				["name"] = [==[TextureStorageSparseAMD]==],
 				["return"] = [==[void]==],
 				["glxropcode"] = [==[?]==],
-				["name"] = [==[TextureStorageSparseAMD]==],
 				["category"] = [==[AMD_sparse_texture]==],
-				["param"] = [==[flags]==],
-				["version"] = [==[4.3]==],
 				["glxflags"] = [==[ignore]==],
 				["params"] = {
 					{

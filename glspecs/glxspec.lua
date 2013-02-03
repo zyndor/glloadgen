@@ -3138,6 +3138,7 @@ return {
 		[==[NV_multisample_coverage]==],
 		[==[AMD_gpu_association]==],
 		[==[EXT_create_context_es2_profile]==],
+		[==[EXT_create_context_es_profile]==],
 		[==[EXT_swap_control_tear]==],
 		[==[EXT_buffer_age]==],
 	},
@@ -4867,6 +4868,14 @@ return {
 				[==[EXT_create_context_es2_profile]==],
 			},
 			["name"] = [==[CONTEXT_ES2_PROFILE_BIT_EXT]==],
+		},
+		{
+			["value"] = [==[0x00000004]==],
+			["copy"] = false,
+			["extensions"] = {
+				[==[EXT_create_context_es_profile]==],
+			},
+			["name"] = [==[CONTEXT_ES_PROFILE_BIT_EXT]==],
 		},
 		{
 			["value"] = [==[0x20F3]==],
