@@ -1,5 +1,5 @@
 local util = require "util"
-local struct = require "StructSample"
+local struct = require "Sample_Struct"
 local common = require "CommonStyle"
 
 local function GetIncludeGuard(spec, options)
