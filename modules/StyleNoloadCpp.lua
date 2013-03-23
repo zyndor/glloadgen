@@ -185,6 +185,7 @@ function src.WriteIncludes(hFile, basename, spec, options)
 	hFile:writeblock([[
 #include <algorithm>
 #include <string.h>
+#include <stddef.h>
 ]])
 
 	local base = util.ParsePath(hdr.GetFilename(basename, spec, options))
