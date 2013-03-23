@@ -11,6 +11,8 @@ local tests =
 	{name = "ptr_c"},
 	{name = "ptr_cpp_comp"},
 	{name = "ptr_c_comp"},
+	{name = "func_cpp"},
+	{name = "func_cpp_comp"},
 	{name = "noload_cpp"},
 	{name = "noload_cpp_noext"},
 }
