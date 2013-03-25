@@ -61,6 +61,28 @@
                                     <String xml:space="preserve">XSL</String>
                                 </field>
                                 <field name="url">
+                                    <String xml:space="preserve">Style_No_Load_C.xml</String>
+                                </field>
+                            </scenarioAssociation>
+                            <scenarioAssociation>
+                                <field name="name">
+                                    <String xml:space="preserve">ToCreole</String>
+                                </field>
+                                <field name="type">
+                                    <String xml:space="preserve">XSL</String>
+                                </field>
+                                <field name="url">
+                                    <String xml:space="preserve">Style_Function_CPP.xml</String>
+                                </field>
+                            </scenarioAssociation>
+                            <scenarioAssociation>
+                                <field name="name">
+                                    <String xml:space="preserve">ToCreole</String>
+                                </field>
+                                <field name="type">
+                                    <String xml:space="preserve">XSL</String>
+                                </field>
+                                <field name="url">
                                     <String xml:space="preserve">Style_Creation.xml</String>
                                 </field>
                             </scenarioAssociation>
@@ -132,13 +154,13 @@
                             </scenarioAssociation>
                             <scenarioAssociation>
                                 <field name="name">
-                                    <String xml:space="preserve">ToCreole</String>
+                                    <String xml:space="preserve">ToMarkdown</String>
                                 </field>
                                 <field name="type">
                                     <String xml:space="preserve">XSL</String>
                                 </field>
                                 <field name="url">
-                                    <String xml:space="preserve">ToCreole.xsl</String>
+                                    <String xml:space="preserve">ToMarkdown.xsl</String>
                                 </field>
                             </scenarioAssociation>
                             <scenarioAssociation>
@@ -149,7 +171,7 @@
                                     <String xml:space="preserve">XSL</String>
                                 </field>
                                 <field name="url">
-                                    <String xml:space="preserve">Style%20Pointer%20C.xml</String>
+                                    <String xml:space="preserve">Extension%20Files.xml</String>
                                 </field>
                             </scenarioAssociation>
                             <scenarioAssociation>
@@ -171,18 +193,18 @@
                                     <String xml:space="preserve">XSL</String>
                                 </field>
                                 <field name="url">
-                                    <String xml:space="preserve">Extension%20Files.xml</String>
+                                    <String xml:space="preserve">Style%20Pointer%20C.xml</String>
                                 </field>
                             </scenarioAssociation>
                             <scenarioAssociation>
                                 <field name="name">
-                                    <String xml:space="preserve">ToMarkdown</String>
+                                    <String xml:space="preserve">ToCreole</String>
                                 </field>
                                 <field name="type">
                                     <String xml:space="preserve">XSL</String>
                                 </field>
                                 <field name="url">
-                                    <String xml:space="preserve">ToMarkdown.xsl</String>
+                                    <String xml:space="preserve">ToCreole.xsl</String>
                                 </field>
                             </scenarioAssociation>
                         </scenarioAssociation-array>
@@ -749,6 +771,8 @@
         <file name="New_Style_Step_By_Step.xml"/>
         <file name="Structure_Reference.xml"/>
         <file name="Style_Creation.xml"/>
+        <file name="Style_Function_CPP.xml"/>
+        <file name="Style_No_Load_C.xml"/>
         <file name="Style_No_Load_CPP.xml"/>
         <file name="Style_Pointer_C.xml"/>
         <file name="Style_Pointer_CPP.xml"/>
