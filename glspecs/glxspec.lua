@@ -2450,6 +2450,7 @@ return {
 				},
 			},
 			{
+				["glxvendorglx"] = [==[1313]==],
 				["name"] = [==[GetVideoDeviceNV]==],
 				["return"] = [==[int]==],
 				["param"] = [==[pVideoDevice]==],
@@ -2484,6 +2485,7 @@ return {
 				},
 			},
 			{
+				["glxvendorglx"] = [==[1314]==],
 				["name"] = [==[ReleaseVideoDeviceNV]==],
 				["return"] = [==[int]==],
 				["param"] = [==[VideoDevice]==],
@@ -2511,6 +2513,7 @@ return {
 				},
 			},
 			{
+				["glxvendorglx"] = [==[1315]==],
 				["name"] = [==[BindVideoImageNV]==],
 				["return"] = [==[int]==],
 				["param"] = [==[iVideoBuffer]==],
@@ -2544,6 +2547,7 @@ return {
 				},
 			},
 			{
+				["glxvendorglx"] = [==[1316]==],
 				["name"] = [==[ReleaseVideoImageNV]==],
 				["return"] = [==[int]==],
 				["param"] = [==[pbuf]==],
@@ -2565,6 +2569,7 @@ return {
 				},
 			},
 			{
+				["glxvendorglx"] = [==[1317]==],
 				["name"] = [==[SendPbufferToVideoNV]==],
 				["return"] = [==[int]==],
 				["param"] = [==[bBlock]==],
@@ -2604,6 +2609,7 @@ return {
 				},
 			},
 			{
+				["glxvendorglx"] = [==[1318]==],
 				["name"] = [==[GetVideoInfoNV]==],
 				["return"] = [==[int]==],
 				["param"] = [==[pulCounterOutputVideo]==],
@@ -2969,6 +2975,7 @@ return {
 				},
 			},
 			{
+				["glxvendorglx"] = [==[1360]==],
 				["name"] = [==[CopyImageSubDataNV]==],
 				["return"] = [==[void]==],
 				["param"] = [==[depth]==],
