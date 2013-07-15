@@ -239,17 +239,22 @@ struct ClearEntry
 	local arrayLength = #options.extensions
 	if(arrayLength == 0) then arrayLength = 1 end
 
-	hFile:fmt("MapEntry g_mappingTable[%i] =\n", arrayLength)
-	hFile:write "{\n"
-	hFile:inc()
-	for _, extName in ipairs(options.extensions) do
-		hFile:fmt('{"%s%s", &exts::var_%s},\n',
-			spec.ExtNamePrefix(),
-			extName,
-			extName)
+	hFile:fmt("MapEntry g_mappingTable[%i]", arrayLength)
+	if(arrayLength == 1) then
+		hFile:rawwrite "; //This is intensionally left uninitialized. \n"
+	else
+		hFile:rawwrite " =\n"
+		hFile:write "{\n"
+		hFile:inc()
+		for _, extName in ipairs(options.extensions) do
+			hFile:fmt('{"%s%s", &exts::var_%s},\n',
+				spec.ExtNamePrefix(),
+				extName,
+				extName)
+		end
+		hFile:dec()
+		hFile:write "};\n"
 	end
-	hFile:dec()
-	hFile:write "};\n"
 	
 	hFile:write "\n"
 	hFile:fmtblock([[
