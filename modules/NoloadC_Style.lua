@@ -222,19 +222,24 @@ typedef struct ]] .. mapTableName .. [[_s
 	local arrayLength = #options.extensions
 	if(arrayLength == 0) then arrayLength = 1 end
 
-	hFile:fmt("static %s g_mappingTable[%i] =\n", mapTableName, arrayLength)
-	hFile:write "{\n"
-	hFile:inc()
-	for _, extName in ipairs(options.extensions) do
-		hFile:fmt('{"%s%s", &%s%sext_%s},\n',
-			spec.ExtNamePrefix(),
-			extName,
-			options.prefix,
-			spec.DeclPrefix(),
-			extName)
+	hFile:fmt("static %s g_mappingTable[%i]", mapTableName, arrayLength)
+	if(arrayLength == 1) then
+		hFile:rawwrite "; //This is intensionally left uninitialized. \n"
+	else
+		hFile:rawwrite " = \n"
+		hFile:write "{\n"
+		hFile:inc()
+		for _, extName in ipairs(options.extensions) do
+			hFile:fmt('{"%s%s", &%s%sext_%s},\n',
+				spec.ExtNamePrefix(),
+				extName,
+				options.prefix,
+				spec.DeclPrefix(),
+				extName)
+		end
+		hFile:dec()
+		hFile:write "};\n"
 	end
-	hFile:dec()
-	hFile:write "};\n"
 	
 	hFile:write "\n"
 	hFile:fmtblock([[

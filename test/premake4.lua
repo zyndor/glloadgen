@@ -17,6 +17,7 @@ local tests =
 	{name = "noload_cpp_noext"},
 	{name = "noload_c"},
 	{name = "noload_c_old"},
+	{name = "noload_c_noext"},
 }
 
 local oldDir = os.getcwd()
