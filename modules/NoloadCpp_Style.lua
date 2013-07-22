@@ -18,23 +18,23 @@ local function GetFuncPtrTypedefName(func, spec, options)
 	return "PFN" .. GetFuncPtrName(func, spec, options):upper() .. "PROC"
 end
 
-local function WriteFuncPtrTypedefStmt(hFile, func, typemap, spec, options)
+local function WriteFuncPtrTypedefStmt(hFile, func, spec, options)
 	hFile:fmt("typedef %s (%s *%s)(%s);\n",
-		common.GetFuncReturnType(func, typemap),
+		common.GetFuncReturnType(func),
 		spec.GetCodegenPtrType(),
 		GetFuncPtrTypedefName(func, spec, options),
-		common.GetFuncParamList(func, typemap))
+		common.GetFuncParamList(func))
 end
 
-local function GetFuncPtrDefDirect(func, typemap, spec, options)
+local function GetFuncPtrDefDirect(func, spec, options)
 	return string.format("%s (%s *%s)(%s)",
-		common.GetFuncReturnType(func, typemap),
+		common.GetFuncReturnType(func),
 		spec.GetCodegenPtrType(),
 		GetFuncPtrName(func, spec, options),
-		common.GetFuncParamList(func, typemap, true))
+		common.GetFuncParamList(func, true))
 end
 
-local function GetFuncPtrDefTypedef(func, typemap, spec, options)
+local function GetFuncPtrDefTypedef(func, spec, options)
 	return string.format("%s %s",
 		GetFuncPtrTypedefName(func, spec, options),
 		GetFuncPtrName(func, spec, options))
@@ -158,10 +158,10 @@ function hdr.WriteEnumerator(hFile, enum, enumTable, spec, options, enumSeen)
 	end
 end
 
-function hdr.WriteFunction(hFile, func, typemap, spec, options, funcSeen)
+function hdr.WriteFunction(hFile, func, spec, options, funcSeen)
 	if(funcSeen[func.name]) then return end
 	
-	hFile:write("extern ", GetFuncPtrDefDirect(func, typemap, spec, options), ";\n")
+	hFile:write("extern ", GetFuncPtrDefDirect(func, spec, options), ";\n")
 end
 
 function hdr.WriteSetupFunction(hFile, specData, spec, options)
@@ -274,7 +274,7 @@ void LoadExtByName(const char *extensionName)
 	if(indexed) then
 		indexed[1] = specData.functable[indexed[1]]
 		indexed[3] = specData.functable[indexed[3]]
-		for _, enum in ipairs(specData.enumerations) do
+		for _, enum in ipairs(specData.enumerators) do
 			if(indexed[2] == enum.name) then
 				indexed[2] = enum
 			end
@@ -322,13 +322,12 @@ void ProcExtsFromExtList()
 		if(specData.functable[funcName]) then
 			--Create a function pointer and load it.
 			local func = specData.functable[funcName]
-			local typemap = specData.typemap
 			funcName = "InternalGetExtensionString"
 
 			hFile:fmt("typedef %s (%s *MYGETEXTSTRINGPROC)(%s);\n",
-				common.GetFuncReturnType(func, typemap),
+				common.GetFuncReturnType(func),
 				spec.GetCodegenPtrType(),
-				common.GetFuncParamList(func, typemap))
+				common.GetFuncParamList(func))
 			hFile:fmt('MYGETEXTSTRINGPROC %s = (MYGETEXTSTRINGPROC)%s("%s%s");\n',
 				funcName,
 				spec.GetPtrLoaderFuncName(),
@@ -353,26 +352,29 @@ end
 local typedefs = {}
 src.typedefs = typedefs
 
-function typedefs.WriteFunction(hFile, func, typemap, spec, options, funcSeen)
-	WriteFuncPtrTypedefStmt(hFile, func, typemap, spec, options)
+function typedefs.WriteFunction(hFile, func, spec, options, funcSeen)
+	if(funcSeen[func.name]) then return end
+	WriteFuncPtrTypedefStmt(hFile, func, spec, options)
 end
 
 local defs = {}
 src.defs = defs
 
-function defs.WriteFunction(hFile, func, typemap, spec, options, funcSeen)
-	hFile:write(GetFuncPtrDefTypedef(func, typemap, spec, options), ";\n")
+function defs.WriteFunction(hFile, func, spec, options, funcSeen)
+	if(funcSeen[func.name]) then return end
+	hFile:write(GetFuncPtrDefTypedef(func, spec, options), ";\n")
 end
 
 local switch = {}
 src.switch = switch
 
-function switch.WriteFunction(hFile, func, typemap, spec, options, funcSeen)
+function switch.WriteFunction(hFile, func, spec, options, funcSeen)
+	if(funcSeen[func.name]) then return end
 	hFile:fmt("static %s %s Switch_%s(%s)\n",
-		common.GetFuncReturnType(func, typemap),
+		common.GetFuncReturnType(func),
 		spec.GetCodegenPtrType(),
 		func.name,
-		common.GetFuncParamList(func, typemap, true))
+		common.GetFuncParamList(func, true))
 	hFile:write "{\n"
 	hFile:inc()
 	hFile:fmt('%s = (%s)%s("%s%s");\n',
@@ -382,14 +384,14 @@ function switch.WriteFunction(hFile, func, typemap, spec, options, funcSeen)
 		spec.FuncNamePrefix(),
 		func.name)
 		
-	if(common.DoesFuncReturnSomething(func, typemap)) then
+	if(common.DoesFuncReturnSomething(func)) then
 		hFile:fmt('%s(%s);\n',
 			GetFuncPtrName(func, spec, options),
-			common.GetFuncParamCallList(func, typemap))
+			common.GetFuncParamCallList(func))
 	else
 		hFile:fmt('return %s(%s);\n',
 			GetFuncPtrName(func, spec, options),
-			common.GetFuncParamCallList(func, typemap))
+			common.GetFuncParamCallList(func))
 	end
 	hFile:dec()
 	hFile:write "}\n\n"
@@ -404,9 +406,9 @@ function switch.WriteGetExtString(hFile, specData, spec, options, funcSeen)
 	if(func) then
 		hFile:write "\n"
 		hFile:fmt("static %s %s(%s)\n",
-			common.GetFuncReturnType(func, typemap),
+			common.GetFuncReturnType(func),
 			func.name,
-			common.GetFuncParamList(func, specData.funcData.typemap, true))
+			common.GetFuncParamList(func, true))
 		hFile:write "{\n"
 		hFile:inc()
 		hFile:fmt('%s = (%s)%s("%s%s");\n',
@@ -416,14 +418,14 @@ function switch.WriteGetExtString(hFile, specData, spec, options, funcSeen)
 			spec.FuncNamePrefix(),
 			func.name)
 			
-		if(common.DoesFuncReturnSomething(func, typemap)) then
+		if(common.DoesFuncReturnSomething(func)) then
 			hFile:fmt('%s(%s);\n',
 				GetFuncPtrName(func, spec, options),
-				common.GetFuncParamCallList(func, typemap))
+				common.GetFuncParamCallList(func))
 		else
 			hFile:fmt('return %s(%s);\n',
 				GetFuncPtrName(func, spec, options),
-				common.GetFuncParamCallList(func, typemap))
+				common.GetFuncParamCallList(func))
 		end
 		hFile:dec()
 		hFile:write "}\n\n"
@@ -453,7 +455,9 @@ function init.WriteBlockEndStruct(hFile, spec, options)
 	common.WriteNamespaceEnd(hFile, "")
 end
 
-function init.WriteFunction(hFile, func, typemap, spec, options, funcSeen)
+function init.WriteFunction(hFile, func, spec, options, funcSeen)
+	if(funcSeen[func.name]) then return end
+
 	hFile:fmt("%s = Switch_%s;\n", func.name, func.name)
 end
 

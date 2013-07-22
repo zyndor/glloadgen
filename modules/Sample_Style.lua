@@ -20,19 +20,19 @@ local function GetFuncPtrName(func, spec, options)
   return options.prefix .. "_testc_".. spec.FuncNamePrefix() .. func.name
 end
 
-local function GetFuncPtrDef(hFile, func, typemap, spec, options)
+local function GetFuncPtrDef(hFile, func, spec, options)
   return string.format("%s (%s *%s)(%s)",
-    common.GetFuncReturnType(func, typemap),
+    common.GetFuncReturnType(func),
     spec.GetCodegenPtrType(),
     GetFuncPtrName(func, spec, options),
-    common.GetFuncParamList(func, typemap))
+    common.GetFuncParamList(func))
 end
 
-local function GetFuncPtrType(hFile, func, typemap, spec, options)
+local function GetFuncPtrType(hFile, func, spec, options)
   return string.format("%s (%s *)(%s)",
-    common.GetFuncReturnType(func, typemap),
+    common.GetFuncReturnType(func),
     spec.GetCodegenPtrType(),
-    common.GetFuncParamList(func, typemap))
+    common.GetFuncParamList(func))
 end
 
 local function GetMainLoaderFuncName(spec, options)
@@ -115,11 +115,11 @@ function hdr.WriteEnumerator(hFile, enum, enumTable, spec, options, enumSeen)
     common.ResolveEnumValue(enum, enumTable))
 end
 
-function hdr.WriteFunction(hFile, func, typemap, spec, options, funcSeen)
+function hdr.WriteFunction(hFile, func, spec, options, funcSeen)
   if(funcSeen[func.name]) then return end
 
   hFile:fmt("extern %s;\n",
-    GetFuncPtrDef(hFile, func, typemap, spec, options))
+    GetFuncPtrDef(hFile, func, spec, options))
 
   hFile:fmt("#define %s %s\n",
     common.GetOpenGLFuncName(func, spec),
@@ -157,9 +157,9 @@ function src.WriteExtension(hFile, extName, spec, options)
   hFile:fmt("int %s = 0;\n", GetExtensionVarName(extName, spec, options));
 end
 
-function src.WriteFunction(hFile, func, typemap, spec, options, funcSeen)
+function src.WriteFunction(hFile, func, spec, options, funcSeen)
   if(funcSeen[func.name]) then return end
-  hFile:fmt("%s = NULL;\n", GetFuncPtrDef(hFile, func, typemap, spec, options));
+  hFile:fmt("%s = NULL;\n", GetFuncPtrDef(hFile, func, spec, options));
 end
 
 function src.WriteBlockBeginExtFuncLoader(hFile, extName, spec, options)
@@ -173,10 +173,10 @@ function src.WriteBlockEndExtFuncLoader(hFile, extName, spec, options)
   hFile:write("}\n")
 end
 
-function src.WriteLoadFunction(hFile, func, typemap, spec, options)
+function src.WriteLoadFunction(hFile, func, spec, options)
   hFile:fmt('%s = (%s)%s("%s%s");\n',
     GetFuncPtrName(func, spec, options),
-	GetFuncPtrType(hFile, func, typemap, spec, options),
+	GetFuncPtrType(hFile, func, spec, options),
     spec.GetPtrLoaderFuncName(),
     spec.FuncNamePrefix(),
     func.name)

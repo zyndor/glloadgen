@@ -203,31 +203,31 @@ end
 		return "PFN" .. GenFuncPtrName(func, spec, options):upper()
 	end
 
-	local function WriteFuncPtrTypedefStmt(hFile, func, typemap, spec, options)
+	local function WriteFuncPtrTypedefStmt(hFile, func, spec, options)
 		hFile:fmt("typedef %s (%s *%s)(%s);\n",
-			common.GetFuncReturnType(func, typemap),
+			common.GetFuncReturnType(func),
 			spec.GetCodegenPtrType(),
 			GenFuncPtrTypedefName(func, spec, options),
-			common.GetFuncParamList(func, typemap))
+			common.GetFuncParamList(func))
 	end
 
-	local function GenFuncPtrDefDirect(func, typemap, spec, options)
+	local function GenFuncPtrDefDirect(func, spec, options)
 		return string.format("%s (%s *%s)(%s)",
-			common.GetFuncReturnType(func, typemap),
+			common.GetFuncReturnType(func),
 			spec.GetCodegenPtrType(),
 			GenFuncPtrName(func, spec, options),
-			common.GetFuncParamList(func, typemap, true))
+			common.GetFuncParamList(func, true))
 	end
 
-	local function GenFuncPtrDefTypedef(func, typemap, spec, options)
+	local function GenFuncPtrDefTypedef(func, spec, options)
 		return string.format("%s %s",
 			GenFuncPtrTypedefName(func, spec, options),
 			GenFuncPtrName(func, spec, options))
 	end
 
-function my_style.header.WriteFuncDecl(hFile, func, typemap, spec, options)
+function my_style.header.WriteFuncDecl(hFile, func, spec, options)
 	hFile:write("extern ",
-		GenFuncPtrDefDirect(func, typemap, spec, options),
+		GenFuncPtrDefDirect(func, spec, options),
 		";\n")
 end
 
@@ -315,10 +315,12 @@ function my_style.source.WriteBlockEndExtFuncDef(hFile, extName, spec, options)
 	--for the functions in the extension `extName`.
 end
 
-function my_style.source.WriteFuncDef(hFile, func, typemap, spec, options)
-	WriteFuncPtrTypedefStmt(hFile, func, typemap, spec, options)
-	hFile:write(GenFuncPtrDefTypedef(func, typemap, spec, options),
-		" = 0;\n")
+function my_style.source.WriteFuncDef(hFile, func, spec, options, funcSeen)
+	if(not funcSeen[func.name]) then
+		WriteFuncPtrTypedefStmt(hFile, func, spec, options)
+		hFile:write(GenFuncPtrDefTypedef(func, spec, options),
+			" = 0;\n")
+	end
 end
 
 	local function GenExtLoaderFuncName(extName, spec, options)
@@ -338,7 +340,7 @@ function my_style.source.WriteBlockEndExtLoader(hFile, extName, spec, options)
 	hFile:write("}\n")
 end
 
-function my_style.source.WriteExtFuncLoader(hFile, func, typemap, spec, options)
+function my_style.source.WriteExtFuncLoader(hFile, func, spec, options)
 	hFile:fmt('%s = reinterpret_cast<%s>(%s("%s%s"));\n',
 		GenFuncPtrName(func, spec, options),
 		GenFuncPtrTypedefName(func, spec, options),
@@ -374,7 +376,7 @@ function my_style.source.WriteBlockEndCoreLoader(hFile, version, spec, options)
 	hFile:write("}\n")
 end
 
-function my_style.source.WriteCoreFuncLoader(hFile, func, typemap, spec, options)
+function my_style.source.WriteCoreFuncLoader(hFile, func, spec, options)
 	hFile:fmt('%s = reinterpret_cast<%s>(%s("%s%s"));\n',
 		GenFuncPtrName(func, spec, options),
 		GenFuncPtrTypedefName(func, spec, options),
@@ -410,9 +412,8 @@ function my_style.source.WriteExtStringFuncDef(hFile, specData, spec, options, f
 
 	if(extStringFunc) then
 		hFile:write("\n")
-		local typemap = specData.typemap
-		WriteFuncPtrTypedefStmt(hFile, extStringFunc, typemap, spec, options)
-		hFile:write("static ", GenFuncPtrDefTypedef(extStringFunc, typemap, spec, options),
+		WriteFuncPtrTypedefStmt(hFile, extStringFunc, spec, options)
+		hFile:write("static ", GenFuncPtrDefTypedef(extStringFunc, spec, options),
 			" = 0;\n")
 		hFile:write("\n")
 	end
@@ -540,7 +541,7 @@ end
 					indexed[3] = func
 				end
 			end
-			for _, enum in ipairs(specData.enumerations) do
+			for _, enum in ipairs(specData.enumerators) do
 				if(indexed[2] == enum.name) then
 					indexed[2] = enum
 				end
