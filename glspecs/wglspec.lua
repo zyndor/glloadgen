@@ -141,16 +141,16 @@ return {
 			},
 			{
 				["extensions"] = {
-					[==[NV_vertex_array_range]==],
+					[==[NV_video_output]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[pointer]==],
-						["ctype"] = [==[void *]==],
+						["name"] = [==[hVideoDevice]==],
+						["ctype"] = [==[HPVIDEODEV]==],
 					},
 				},
-				["name"] = [==[FreeMemoryNV]==],
-				["return_ctype"] = [==[void]==],
+				["name"] = [==[ReleaseVideoDeviceNV]==],
+				["return_ctype"] = [==[BOOL]==],
 			},
 			{
 				["extensions"] = {
@@ -228,20 +228,16 @@ return {
 						["ctype"] = [==[HANDLE]==],
 					},
 					{
-						["name"] = [==[count]==],
-						["ctype"] = [==[GLint]==],
-					},
-					{
-						["name"] = [==[hObjects]==],
-						["ctype"] = [==[HANDLE *]==],
+						["name"] = [==[hObject]==],
+						["ctype"] = [==[HANDLE]==],
 					},
 				},
-				["name"] = [==[DXUnlockObjectsNV]==],
+				["name"] = [==[DXUnregisterObjectNV]==],
 				["return_ctype"] = [==[BOOL]==],
 			},
 			{
 				["extensions"] = {
-					[==[ARB_pixel_format]==],
+					[==[OML_sync_control]==],
 				},
 				["parameters"] = {
 					{
@@ -249,45 +245,62 @@ return {
 						["ctype"] = [==[HDC]==],
 					},
 					{
-						["name"] = [==[iPixelFormat]==],
+						["name"] = [==[fuPlanes]==],
 						["ctype"] = [==[int]==],
 					},
 					{
-						["name"] = [==[iLayerPlane]==],
-						["ctype"] = [==[int]==],
+						["name"] = [==[target_msc]==],
+						["ctype"] = [==[INT64]==],
 					},
 					{
-						["name"] = [==[nAttributes]==],
-						["ctype"] = [==[UINT]==],
+						["name"] = [==[divisor]==],
+						["ctype"] = [==[INT64]==],
 					},
 					{
-						["name"] = [==[piAttributes]==],
-						["ctype"] = [==[const int *]==],
-					},
-					{
-						["name"] = [==[pfValues]==],
-						["ctype"] = [==[FLOAT *]==],
+						["name"] = [==[remainder]==],
+						["ctype"] = [==[INT64]==],
 					},
 				},
-				["name"] = [==[GetPixelFormatAttribfvARB]==],
-				["return_ctype"] = [==[BOOL]==],
+				["name"] = [==[SwapLayerBuffersMscOML]==],
+				["return_ctype"] = [==[INT64]==],
 			},
 			{
 				["extensions"] = {
-					[==[NV_DX_interop]==],
+					[==[OML_sync_control]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[hObject]==],
-						["ctype"] = [==[HANDLE]==],
+						["name"] = [==[hdc]==],
+						["ctype"] = [==[HDC]==],
 					},
 					{
-						["name"] = [==[access]==],
-						["ctype"] = [==[GLenum]==],
+						["name"] = [==[target_msc]==],
+						["ctype"] = [==[INT64]==],
+					},
+					{
+						["name"] = [==[divisor]==],
+						["ctype"] = [==[INT64]==],
+					},
+					{
+						["name"] = [==[remainder]==],
+						["ctype"] = [==[INT64]==],
 					},
 				},
-				["name"] = [==[DXObjectAccessNV]==],
-				["return_ctype"] = [==[BOOL]==],
+				["name"] = [==[SwapBuffersMscOML]==],
+				["return_ctype"] = [==[INT64]==],
+			},
+			{
+				["extensions"] = {
+					[==[EXT_display_color_table]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[id]==],
+						["ctype"] = [==[GLushort]==],
+					},
+				},
+				["name"] = [==[BindDisplayColorTableEXT]==],
+				["return_ctype"] = [==[GLboolean]==],
 			},
 			{
 				["extensions"] = {
@@ -312,19 +325,27 @@ return {
 			},
 			{
 				["extensions"] = {
-					[==[NV_DX_interop]==],
+					[==[OML_sync_control]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[hDevice]==],
-						["ctype"] = [==[HANDLE]==],
+						["name"] = [==[hdc]==],
+						["ctype"] = [==[HDC]==],
 					},
 					{
-						["name"] = [==[hObject]==],
-						["ctype"] = [==[HANDLE]==],
+						["name"] = [==[ust]==],
+						["ctype"] = [==[INT64 *]==],
+					},
+					{
+						["name"] = [==[msc]==],
+						["ctype"] = [==[INT64 *]==],
+					},
+					{
+						["name"] = [==[sbc]==],
+						["ctype"] = [==[INT64 *]==],
 					},
 				},
-				["name"] = [==[DXUnregisterObjectNV]==],
+				["name"] = [==[GetSyncValuesOML]==],
 				["return_ctype"] = [==[BOOL]==],
 			},
 			{
@@ -393,32 +414,16 @@ return {
 			},
 			{
 				["extensions"] = {
-					[==[NV_DX_interop]==],
+					[==[NV_vertex_array_range]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[hDevice]==],
-						["ctype"] = [==[HANDLE]==],
-					},
-					{
-						["name"] = [==[dxObject]==],
+						["name"] = [==[pointer]==],
 						["ctype"] = [==[void *]==],
 					},
-					{
-						["name"] = [==[name]==],
-						["ctype"] = [==[GLuint]==],
-					},
-					{
-						["name"] = [==[type]==],
-						["ctype"] = [==[GLenum]==],
-					},
-					{
-						["name"] = [==[access]==],
-						["ctype"] = [==[GLenum]==],
-					},
 				},
-				["name"] = [==[DXRegisterObjectNV]==],
-				["return_ctype"] = [==[HANDLE]==],
+				["name"] = [==[FreeMemoryNV]==],
+				["return_ctype"] = [==[void]==],
 			},
 			{
 				["extensions"] = {
@@ -535,74 +540,94 @@ return {
 			},
 			{
 				["extensions"] = {
-					[==[OML_sync_control]==],
+					[==[ARB_buffer_region]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[hdc]==],
-						["ctype"] = [==[HDC]==],
+						["name"] = [==[hRegion]==],
+						["ctype"] = [==[HANDLE]==],
 					},
 					{
-						["name"] = [==[ust]==],
-						["ctype"] = [==[INT64 *]==],
+						["name"] = [==[x]==],
+						["ctype"] = [==[int]==],
 					},
 					{
-						["name"] = [==[msc]==],
-						["ctype"] = [==[INT64 *]==],
+						["name"] = [==[y]==],
+						["ctype"] = [==[int]==],
 					},
 					{
-						["name"] = [==[sbc]==],
-						["ctype"] = [==[INT64 *]==],
+						["name"] = [==[width]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[height]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[xSrc]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[ySrc]==],
+						["ctype"] = [==[int]==],
 					},
 				},
-				["name"] = [==[GetSyncValuesOML]==],
+				["name"] = [==[RestoreBufferRegionARB]==],
 				["return_ctype"] = [==[BOOL]==],
 			},
 			{
 				["extensions"] = {
-					[==[NV_swap_group]==],
+					[==[NV_gpu_affinity]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[hGpu]==],
+						["ctype"] = [==[HGPUNV]==],
+					},
+					{
+						["name"] = [==[iDeviceIndex]==],
+						["ctype"] = [==[UINT]==],
+					},
+					{
+						["name"] = [==[lpGpuDevice]==],
+						["ctype"] = [==[PGPU_DEVICE]==],
+					},
+				},
+				["name"] = [==[EnumGpuDevicesNV]==],
+				["return_ctype"] = [==[BOOL]==],
+			},
+			{
+				["extensions"] = {
+					[==[NV_video_output]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[hPbuffer]==],
+						["ctype"] = [==[HPBUFFERARB]==],
+					},
+					{
+						["name"] = [==[iVideoBuffer]==],
+						["ctype"] = [==[int]==],
+					},
+				},
+				["name"] = [==[ReleaseVideoImageNV]==],
+				["return_ctype"] = [==[BOOL]==],
+			},
+			{
+				["extensions"] = {
+					[==[NV_delay_before_swap]==],
 				},
 				["parameters"] = {
 					{
 						["name"] = [==[hDC]==],
 						["ctype"] = [==[HDC]==],
 					},
-				},
-				["name"] = [==[ResetFrameCountNV]==],
-				["return_ctype"] = [==[BOOL]==],
-			},
-			{
-				["extensions"] = {
-					[==[NV_DX_interop]==],
-				},
-				["parameters"] = {
 					{
-						["name"] = [==[dxObject]==],
-						["ctype"] = [==[void *]==],
-					},
-					{
-						["name"] = [==[shareHandle]==],
-						["ctype"] = [==[HANDLE]==],
+						["name"] = [==[seconds]==],
+						["ctype"] = [==[GLfloat]==],
 					},
 				},
-				["name"] = [==[DXSetResourceShareHandleNV]==],
-				["return_ctype"] = [==[BOOL]==],
-			},
-			{
-				["extensions"] = {
-					[==[NV_video_capture]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[hDc]==],
-						["ctype"] = [==[HDC]==],
-					},
-					{
-						["name"] = [==[hDevice]==],
-						["ctype"] = [==[HVIDEOINPUTDEVICENV]==],
-					},
-				},
-				["name"] = [==[ReleaseVideoCaptureDeviceNV]==],
+				["name"] = [==[DelayBeforeSwapNV]==],
 				["return_ctype"] = [==[BOOL]==],
 			},
 			{
@@ -684,36 +709,32 @@ return {
 			},
 			{
 				["extensions"] = {
-					[==[I3D_genlock]==],
+					[==[NV_video_output]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[hDC]==],
-						["ctype"] = [==[HDC]==],
+						["name"] = [==[hVideoDevice]==],
+						["ctype"] = [==[HPVIDEODEV]==],
 					},
 					{
-						["name"] = [==[uSource]==],
-						["ctype"] = [==[UINT]==],
+						["name"] = [==[hPbuffer]==],
+						["ctype"] = [==[HPBUFFERARB]==],
+					},
+					{
+						["name"] = [==[iVideoBuffer]==],
+						["ctype"] = [==[int]==],
 					},
 				},
-				["name"] = [==[GenlockSourceI3D]==],
+				["name"] = [==[BindVideoImageNV]==],
 				["return_ctype"] = [==[BOOL]==],
 			},
 			{
 				["extensions"] = {
-					[==[NV_video_capture]==],
+					[==[I3D_swap_frame_usage]==],
 				},
 				["parameters"] = {
-					{
-						["name"] = [==[hDc]==],
-						["ctype"] = [==[HDC]==],
-					},
-					{
-						["name"] = [==[hDevice]==],
-						["ctype"] = [==[HVIDEOINPUTDEVICENV]==],
-					},
 				},
-				["name"] = [==[LockVideoCaptureDeviceNV]==],
+				["name"] = [==[EndFrameTrackingI3D]==],
 				["return_ctype"] = [==[BOOL]==],
 			},
 			{
@@ -731,19 +752,19 @@ return {
 			},
 			{
 				["extensions"] = {
-					[==[NV_swap_group]==],
+					[==[NV_video_capture]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[group]==],
-						["ctype"] = [==[GLuint]==],
+						["name"] = [==[hDc]==],
+						["ctype"] = [==[HDC]==],
 					},
 					{
-						["name"] = [==[barrier]==],
-						["ctype"] = [==[GLuint]==],
+						["name"] = [==[hDevice]==],
+						["ctype"] = [==[HVIDEOINPUTDEVICENV]==],
 					},
 				},
-				["name"] = [==[BindSwapBarrierNV]==],
+				["name"] = [==[ReleaseVideoCaptureDeviceNV]==],
 				["return_ctype"] = [==[BOOL]==],
 			},
 			{
@@ -769,20 +790,20 @@ return {
 			},
 			{
 				["extensions"] = {
-					[==[NV_video_capture]==],
+					[==[EXT_pbuffer]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[uVideoSlot]==],
-						["ctype"] = [==[UINT]==],
+						["name"] = [==[hPbuffer]==],
+						["ctype"] = [==[HPBUFFEREXT]==],
 					},
 					{
-						["name"] = [==[hDevice]==],
-						["ctype"] = [==[HVIDEOINPUTDEVICENV]==],
+						["name"] = [==[hDC]==],
+						["ctype"] = [==[HDC]==],
 					},
 				},
-				["name"] = [==[BindVideoCaptureDeviceNV]==],
-				["return_ctype"] = [==[BOOL]==],
+				["name"] = [==[ReleasePbufferDCEXT]==],
+				["return_ctype"] = [==[int]==],
 			},
 			{
 				["extensions"] = {
@@ -799,72 +820,36 @@ return {
 			},
 			{
 				["extensions"] = {
-					[==[AMD_gpu_association]==],
+					[==[NV_video_capture]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[dstCtx]==],
-						["ctype"] = [==[HGLRC]==],
+						["name"] = [==[hDc]==],
+						["ctype"] = [==[HDC]==],
 					},
 					{
-						["name"] = [==[srcX0]==],
-						["ctype"] = [==[GLint]==],
-					},
-					{
-						["name"] = [==[srcY0]==],
-						["ctype"] = [==[GLint]==],
-					},
-					{
-						["name"] = [==[srcX1]==],
-						["ctype"] = [==[GLint]==],
-					},
-					{
-						["name"] = [==[srcY1]==],
-						["ctype"] = [==[GLint]==],
-					},
-					{
-						["name"] = [==[dstX0]==],
-						["ctype"] = [==[GLint]==],
-					},
-					{
-						["name"] = [==[dstY0]==],
-						["ctype"] = [==[GLint]==],
-					},
-					{
-						["name"] = [==[dstX1]==],
-						["ctype"] = [==[GLint]==],
-					},
-					{
-						["name"] = [==[dstY1]==],
-						["ctype"] = [==[GLint]==],
-					},
-					{
-						["name"] = [==[mask]==],
-						["ctype"] = [==[GLbitfield]==],
-					},
-					{
-						["name"] = [==[filter]==],
-						["ctype"] = [==[GLenum]==],
+						["name"] = [==[hDevice]==],
+						["ctype"] = [==[HVIDEOINPUTDEVICENV]==],
 					},
 				},
-				["name"] = [==[BlitContextFramebufferAMD]==],
-				["return_ctype"] = [==[VOID]==],
+				["name"] = [==[LockVideoCaptureDeviceNV]==],
+				["return_ctype"] = [==[BOOL]==],
 			},
 			{
 				["extensions"] = {
-					[==[ARB_render_texture]==],
+					[==[NV_present_video]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[hPbuffer]==],
-						["ctype"] = [==[HPBUFFERARB]==],
-					},
-					{
-						["name"] = [==[iBuffer]==],
+						["name"] = [==[iAttribute]==],
 						["ctype"] = [==[int]==],
 					},
+					{
+						["name"] = [==[piValue]==],
+						["ctype"] = [==[int *]==],
+					},
 				},
-				["name"] = [==[ReleaseTexImageARB]==],
+				["name"] = [==[QueryCurrentContextNV]==],
 				["return_ctype"] = [==[BOOL]==],
 			},
 			{
@@ -886,23 +871,19 @@ return {
 			},
 			{
 				["extensions"] = {
-					[==[NV_swap_group]==],
+					[==[NV_video_capture]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[hDC]==],
-						["ctype"] = [==[HDC]==],
+						["name"] = [==[uVideoSlot]==],
+						["ctype"] = [==[UINT]==],
 					},
 					{
-						["name"] = [==[maxGroups]==],
-						["ctype"] = [==[GLuint *]==],
-					},
-					{
-						["name"] = [==[maxBarriers]==],
-						["ctype"] = [==[GLuint *]==],
+						["name"] = [==[hDevice]==],
+						["ctype"] = [==[HVIDEOINPUTDEVICENV]==],
 					},
 				},
-				["name"] = [==[QueryMaxSwapGroupsNV]==],
+				["name"] = [==[BindVideoCaptureDeviceNV]==],
 				["return_ctype"] = [==[BOOL]==],
 			},
 			{
@@ -929,75 +910,71 @@ return {
 			},
 			{
 				["extensions"] = {
-					[==[AMD_gpu_association]==],
+					[==[NV_swap_group]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[id]==],
-						["ctype"] = [==[UINT]==],
+						["name"] = [==[hDC]==],
+						["ctype"] = [==[HDC]==],
 					},
 				},
-				["name"] = [==[CreateAssociatedContextAMD]==],
-				["return_ctype"] = [==[HGLRC]==],
+				["name"] = [==[ResetFrameCountNV]==],
+				["return_ctype"] = [==[BOOL]==],
 			},
 			{
 				["extensions"] = {
-					[==[AMD_gpu_association]==],
+					[==[NV_swap_group]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[hglrc]==],
-						["ctype"] = [==[HGLRC]==],
+						["name"] = [==[hDC]==],
+						["ctype"] = [==[HDC]==],
+					},
+					{
+						["name"] = [==[maxGroups]==],
+						["ctype"] = [==[GLuint *]==],
+					},
+					{
+						["name"] = [==[maxBarriers]==],
+						["ctype"] = [==[GLuint *]==],
 					},
 				},
-				["name"] = [==[GetContextGPUIDAMD]==],
-				["return_ctype"] = [==[UINT]==],
+				["name"] = [==[QueryMaxSwapGroupsNV]==],
+				["return_ctype"] = [==[BOOL]==],
 			},
 			{
 				["extensions"] = {
-					[==[AMD_gpu_association]==],
+					[==[NV_swap_group]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[id]==],
-						["ctype"] = [==[UINT]==],
+						["name"] = [==[group]==],
+						["ctype"] = [==[GLuint]==],
 					},
 					{
-						["name"] = [==[property]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[dataType]==],
-						["ctype"] = [==[GLenum]==],
-					},
-					{
-						["name"] = [==[size]==],
-						["ctype"] = [==[UINT]==],
-					},
-					{
-						["name"] = [==[data]==],
-						["ctype"] = [==[void *]==],
+						["name"] = [==[barrier]==],
+						["ctype"] = [==[GLuint]==],
 					},
 				},
-				["name"] = [==[GetGPUInfoAMD]==],
-				["return_ctype"] = [==[INT]==],
+				["name"] = [==[BindSwapBarrierNV]==],
+				["return_ctype"] = [==[BOOL]==],
 			},
 			{
 				["extensions"] = {
-					[==[AMD_gpu_association]==],
+					[==[NV_swap_group]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[maxCount]==],
-						["ctype"] = [==[UINT]==],
+						["name"] = [==[hDC]==],
+						["ctype"] = [==[HDC]==],
 					},
 					{
-						["name"] = [==[ids]==],
-						["ctype"] = [==[UINT *]==],
+						["name"] = [==[group]==],
+						["ctype"] = [==[GLuint]==],
 					},
 				},
-				["name"] = [==[GetGPUIDsAMD]==],
-				["return_ctype"] = [==[UINT]==],
+				["name"] = [==[JoinSwapGroupNV]==],
+				["return_ctype"] = [==[BOOL]==],
 			},
 			{
 				["extensions"] = {
@@ -1073,6 +1050,40 @@ return {
 			},
 			{
 				["extensions"] = {
+					[==[NV_present_video]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[hDC]==],
+						["ctype"] = [==[HDC]==],
+					},
+					{
+						["name"] = [==[uVideoSlot]==],
+						["ctype"] = [==[unsigned int]==],
+					},
+					{
+						["name"] = [==[hVideoDevice]==],
+						["ctype"] = [==[HVIDEOOUTPUTDEVICENV]==],
+					},
+					{
+						["name"] = [==[piAttribList]==],
+						["ctype"] = [==[const int *]==],
+					},
+				},
+				["name"] = [==[BindVideoDeviceNV]==],
+				["return_ctype"] = [==[BOOL]==],
+			},
+			{
+				["extensions"] = {
+					[==[I3D_swap_frame_lock]==],
+				},
+				["parameters"] = {
+				},
+				["name"] = [==[EnableFrameLockI3D]==],
+				["return_ctype"] = [==[BOOL]==],
+			},
+			{
+				["extensions"] = {
 					[==[NV_gpu_affinity]==],
 				},
 				["parameters"] = {
@@ -1083,36 +1094,6 @@ return {
 				},
 				["name"] = [==[CreateAffinityDCNV]==],
 				["return_ctype"] = [==[HDC]==],
-			},
-			{
-				["extensions"] = {
-					[==[NV_gpu_affinity]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[hGpu]==],
-						["ctype"] = [==[HGPUNV]==],
-					},
-					{
-						["name"] = [==[iDeviceIndex]==],
-						["ctype"] = [==[UINT]==],
-					},
-					{
-						["name"] = [==[lpGpuDevice]==],
-						["ctype"] = [==[PGPU_DEVICE]==],
-					},
-				},
-				["name"] = [==[EnumGpuDevicesNV]==],
-				["return_ctype"] = [==[BOOL]==],
-			},
-			{
-				["extensions"] = {
-					[==[I3D_swap_frame_usage]==],
-				},
-				["parameters"] = {
-				},
-				["name"] = [==[EndFrameTrackingI3D]==],
-				["return_ctype"] = [==[BOOL]==],
 			},
 			{
 				["extensions"] = {
@@ -1146,32 +1127,20 @@ return {
 			},
 			{
 				["extensions"] = {
-					[==[OML_sync_control]==],
+					[==[3DL_stereo_control]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[hdc]==],
+						["name"] = [==[hDC]==],
 						["ctype"] = [==[HDC]==],
 					},
 					{
-						["name"] = [==[fuPlanes]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[target_msc]==],
-						["ctype"] = [==[INT64]==],
-					},
-					{
-						["name"] = [==[divisor]==],
-						["ctype"] = [==[INT64]==],
-					},
-					{
-						["name"] = [==[remainder]==],
-						["ctype"] = [==[INT64]==],
+						["name"] = [==[uState]==],
+						["ctype"] = [==[UINT]==],
 					},
 				},
-				["name"] = [==[SwapLayerBuffersMscOML]==],
-				["return_ctype"] = [==[INT64]==],
+				["name"] = [==[SetStereoEmitterState3DL]==],
+				["return_ctype"] = [==[BOOL]==],
 			},
 			{
 				["extensions"] = {
@@ -1188,19 +1157,23 @@ return {
 			},
 			{
 				["extensions"] = {
-					[==[NV_swap_group]==],
+					[==[NV_DX_interop]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[hDC]==],
-						["ctype"] = [==[HDC]==],
+						["name"] = [==[hDevice]==],
+						["ctype"] = [==[HANDLE]==],
 					},
 					{
-						["name"] = [==[group]==],
-						["ctype"] = [==[GLuint]==],
+						["name"] = [==[count]==],
+						["ctype"] = [==[GLint]==],
+					},
+					{
+						["name"] = [==[hObjects]==],
+						["ctype"] = [==[HANDLE *]==],
 					},
 				},
-				["name"] = [==[JoinSwapGroupNV]==],
+				["name"] = [==[DXUnlockObjectsNV]==],
 				["return_ctype"] = [==[BOOL]==],
 			},
 			{
@@ -1285,19 +1258,19 @@ return {
 			},
 			{
 				["extensions"] = {
-					[==[NV_video_output]==],
+					[==[NV_DX_interop]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[hPbuffer]==],
-						["ctype"] = [==[HPBUFFERARB]==],
+						["name"] = [==[hObject]==],
+						["ctype"] = [==[HANDLE]==],
 					},
 					{
-						["name"] = [==[iVideoBuffer]==],
-						["ctype"] = [==[int]==],
+						["name"] = [==[access]==],
+						["ctype"] = [==[GLenum]==],
 					},
 				},
-				["name"] = [==[ReleaseVideoImageNV]==],
+				["name"] = [==[DXObjectAccessNV]==],
 				["return_ctype"] = [==[BOOL]==],
 			},
 			{
@@ -1364,53 +1337,69 @@ return {
 			},
 			{
 				["extensions"] = {
-					[==[NV_video_output]==],
+					[==[NV_DX_interop]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[hVideoDevice]==],
-						["ctype"] = [==[HPVIDEODEV]==],
+						["name"] = [==[hDevice]==],
+						["ctype"] = [==[HANDLE]==],
 					},
 					{
-						["name"] = [==[hPbuffer]==],
-						["ctype"] = [==[HPBUFFERARB]==],
+						["name"] = [==[dxObject]==],
+						["ctype"] = [==[void *]==],
 					},
 					{
-						["name"] = [==[iVideoBuffer]==],
-						["ctype"] = [==[int]==],
+						["name"] = [==[name]==],
+						["ctype"] = [==[GLuint]==],
+					},
+					{
+						["name"] = [==[type]==],
+						["ctype"] = [==[GLenum]==],
+					},
+					{
+						["name"] = [==[access]==],
+						["ctype"] = [==[GLenum]==],
 					},
 				},
-				["name"] = [==[BindVideoImageNV]==],
+				["name"] = [==[DXRegisterObjectNV]==],
+				["return_ctype"] = [==[HANDLE]==],
+			},
+			{
+				["extensions"] = {
+					[==[NV_DX_interop]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dxObject]==],
+						["ctype"] = [==[void *]==],
+					},
+					{
+						["name"] = [==[shareHandle]==],
+						["ctype"] = [==[HANDLE]==],
+					},
+				},
+				["name"] = [==[DXSetResourceShareHandleNV]==],
 				["return_ctype"] = [==[BOOL]==],
 			},
 			{
 				["extensions"] = {
-					[==[NV_video_output]==],
+					[==[I3D_swap_frame_usage]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[hVideoDevice]==],
-						["ctype"] = [==[HPVIDEODEV]==],
-					},
-				},
-				["name"] = [==[ReleaseVideoDeviceNV]==],
-				["return_ctype"] = [==[BOOL]==],
-			},
-			{
-				["extensions"] = {
-					[==[NV_present_video]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[iAttribute]==],
-						["ctype"] = [==[int]==],
+						["name"] = [==[pFrameCount]==],
+						["ctype"] = [==[DWORD *]==],
 					},
 					{
-						["name"] = [==[piValue]==],
-						["ctype"] = [==[int *]==],
+						["name"] = [==[pMissedFrames]==],
+						["ctype"] = [==[DWORD *]==],
+					},
+					{
+						["name"] = [==[pLastMissedUsage]==],
+						["ctype"] = [==[float *]==],
 					},
 				},
-				["name"] = [==[QueryCurrentContextNV]==],
+				["name"] = [==[QueryFrameTrackingI3D]==],
 				["return_ctype"] = [==[BOOL]==],
 			},
 			{
@@ -1436,7 +1425,7 @@ return {
 			},
 			{
 				["extensions"] = {
-					[==[NV_present_video]==],
+					[==[I3D_image_buffer]==],
 				},
 				["parameters"] = {
 					{
@@ -1444,36 +1433,11 @@ return {
 						["ctype"] = [==[HDC]==],
 					},
 					{
-						["name"] = [==[uVideoSlot]==],
-						["ctype"] = [==[unsigned int]==],
-					},
-					{
-						["name"] = [==[hVideoDevice]==],
-						["ctype"] = [==[HVIDEOOUTPUTDEVICENV]==],
-					},
-					{
-						["name"] = [==[piAttribList]==],
-						["ctype"] = [==[const int *]==],
+						["name"] = [==[pAddress]==],
+						["ctype"] = [==[LPVOID]==],
 					},
 				},
-				["name"] = [==[BindVideoDeviceNV]==],
-				["return_ctype"] = [==[BOOL]==],
-			},
-			{
-				["extensions"] = {
-					[==[3DL_stereo_control]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[hDC]==],
-						["ctype"] = [==[HDC]==],
-					},
-					{
-						["name"] = [==[uState]==],
-						["ctype"] = [==[UINT]==],
-					},
-				},
-				["name"] = [==[SetStereoEmitterState3DL]==],
+				["name"] = [==[DestroyImageBufferI3D]==],
 				["return_ctype"] = [==[BOOL]==],
 			},
 			{
@@ -1487,6 +1451,19 @@ return {
 					},
 				},
 				["name"] = [==[GetFrameUsageI3D]==],
+				["return_ctype"] = [==[BOOL]==],
+			},
+			{
+				["extensions"] = {
+					[==[I3D_swap_frame_lock]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[pFlag]==],
+						["ctype"] = [==[BOOL *]==],
+					},
+				},
+				["name"] = [==[QueryFrameLockMasterI3D]==],
 				["return_ctype"] = [==[BOOL]==],
 			},
 			{
@@ -1517,24 +1494,32 @@ return {
 			},
 			{
 				["extensions"] = {
-					[==[I3D_swap_frame_usage]==],
+					[==[AMD_gpu_association]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[pFrameCount]==],
-						["ctype"] = [==[DWORD *]==],
+						["name"] = [==[id]==],
+						["ctype"] = [==[UINT]==],
 					},
 					{
-						["name"] = [==[pMissedFrames]==],
-						["ctype"] = [==[DWORD *]==],
+						["name"] = [==[property]==],
+						["ctype"] = [==[int]==],
 					},
 					{
-						["name"] = [==[pLastMissedUsage]==],
-						["ctype"] = [==[float *]==],
+						["name"] = [==[dataType]==],
+						["ctype"] = [==[GLenum]==],
+					},
+					{
+						["name"] = [==[size]==],
+						["ctype"] = [==[UINT]==],
+					},
+					{
+						["name"] = [==[data]==],
+						["ctype"] = [==[void *]==],
 					},
 				},
-				["name"] = [==[QueryFrameTrackingI3D]==],
-				["return_ctype"] = [==[BOOL]==],
+				["name"] = [==[GetGPUInfoAMD]==],
+				["return_ctype"] = [==[INT]==],
 			},
 			{
 				["extensions"] = {
@@ -1585,15 +1570,31 @@ return {
 			},
 			{
 				["extensions"] = {
-					[==[I3D_swap_frame_lock]==],
+					[==[I3D_image_buffer]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[pFlag]==],
-						["ctype"] = [==[BOOL *]==],
+						["name"] = [==[hDC]==],
+						["ctype"] = [==[HDC]==],
+					},
+					{
+						["name"] = [==[pEvent]==],
+						["ctype"] = [==[const HANDLE *]==],
+					},
+					{
+						["name"] = [==[pAddress]==],
+						["ctype"] = [==[const LPVOID *]==],
+					},
+					{
+						["name"] = [==[pSize]==],
+						["ctype"] = [==[const DWORD *]==],
+					},
+					{
+						["name"] = [==[count]==],
+						["ctype"] = [==[UINT]==],
 					},
 				},
-				["name"] = [==[QueryFrameLockMasterI3D]==],
+				["name"] = [==[AssociateImageBufferEventsI3D]==],
 				["return_ctype"] = [==[BOOL]==],
 			},
 			{
@@ -1633,12 +1634,24 @@ return {
 			},
 			{
 				["extensions"] = {
-					[==[I3D_swap_frame_lock]==],
+					[==[I3D_image_buffer]==],
 				},
 				["parameters"] = {
+					{
+						["name"] = [==[hDC]==],
+						["ctype"] = [==[HDC]==],
+					},
+					{
+						["name"] = [==[dwSize]==],
+						["ctype"] = [==[DWORD]==],
+					},
+					{
+						["name"] = [==[uFlags]==],
+						["ctype"] = [==[UINT]==],
+					},
 				},
-				["name"] = [==[EnableFrameLockI3D]==],
-				["return_ctype"] = [==[BOOL]==],
+				["name"] = [==[CreateImageBufferI3D]==],
+				["return_ctype"] = [==[LPVOID]==],
 			},
 			{
 				["extensions"] = {
@@ -1755,16 +1768,20 @@ return {
 			},
 			{
 				["extensions"] = {
-					[==[EXT_display_color_table]==],
+					[==[I3D_genlock]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[id]==],
-						["ctype"] = [==[GLushort]==],
+						["name"] = [==[hDC]==],
+						["ctype"] = [==[HDC]==],
+					},
+					{
+						["name"] = [==[uDelay]==],
+						["ctype"] = [==[UINT *]==],
 					},
 				},
-				["name"] = [==[BindDisplayColorTableEXT]==],
-				["return_ctype"] = [==[GLboolean]==],
+				["name"] = [==[GetGenlockSourceDelayI3D]==],
+				["return_ctype"] = [==[BOOL]==],
 			},
 			{
 				["extensions"] = {
@@ -1818,61 +1835,6 @@ return {
 			},
 			{
 				["extensions"] = {
-					[==[I3D_image_buffer]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[hDC]==],
-						["ctype"] = [==[HDC]==],
-					},
-					{
-						["name"] = [==[pAddress]==],
-						["ctype"] = [==[LPVOID]==],
-					},
-				},
-				["name"] = [==[DestroyImageBufferI3D]==],
-				["return_ctype"] = [==[BOOL]==],
-			},
-			{
-				["extensions"] = {
-					[==[I3D_image_buffer]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[hDC]==],
-						["ctype"] = [==[HDC]==],
-					},
-					{
-						["name"] = [==[dwSize]==],
-						["ctype"] = [==[DWORD]==],
-					},
-					{
-						["name"] = [==[uFlags]==],
-						["ctype"] = [==[UINT]==],
-					},
-				},
-				["name"] = [==[CreateImageBufferI3D]==],
-				["return_ctype"] = [==[LPVOID]==],
-			},
-			{
-				["extensions"] = {
-					[==[I3D_genlock]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[hDC]==],
-						["ctype"] = [==[HDC]==],
-					},
-					{
-						["name"] = [==[uDelay]==],
-						["ctype"] = [==[UINT *]==],
-					},
-				},
-				["name"] = [==[GetGenlockSourceDelayI3D]==],
-				["return_ctype"] = [==[BOOL]==],
-			},
-			{
-				["extensions"] = {
 					[==[I3D_genlock]==],
 				},
 				["parameters"] = {
@@ -1904,6 +1866,65 @@ return {
 				},
 				["name"] = [==[GetGenlockSourceEdgeI3D]==],
 				["return_ctype"] = [==[BOOL]==],
+			},
+			{
+				["extensions"] = {
+					[==[I3D_genlock]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[hDC]==],
+						["ctype"] = [==[HDC]==],
+					},
+					{
+						["name"] = [==[uSource]==],
+						["ctype"] = [==[UINT]==],
+					},
+				},
+				["name"] = [==[GenlockSourceI3D]==],
+				["return_ctype"] = [==[BOOL]==],
+			},
+			{
+				["extensions"] = {
+					[==[ARB_pixel_format]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[hdc]==],
+						["ctype"] = [==[HDC]==],
+					},
+					{
+						["name"] = [==[iPixelFormat]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[iLayerPlane]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[nAttributes]==],
+						["ctype"] = [==[UINT]==],
+					},
+					{
+						["name"] = [==[piAttributes]==],
+						["ctype"] = [==[const int *]==],
+					},
+					{
+						["name"] = [==[pfValues]==],
+						["ctype"] = [==[FLOAT *]==],
+					},
+				},
+				["name"] = [==[GetPixelFormatAttribfvARB]==],
+				["return_ctype"] = [==[BOOL]==],
+			},
+			{
+				["extensions"] = {
+					[==[EXT_swap_control]==],
+				},
+				["parameters"] = {
+				},
+				["name"] = [==[GetSwapIntervalEXT]==],
+				["return_ctype"] = [==[int]==],
 			},
 			{
 				["extensions"] = {
@@ -1957,20 +1978,16 @@ return {
 			},
 			{
 				["extensions"] = {
-					[==[ARB_render_texture]==],
+					[==[AMD_gpu_association]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[hPbuffer]==],
-						["ctype"] = [==[HPBUFFERARB]==],
-					},
-					{
-						["name"] = [==[piAttribList]==],
-						["ctype"] = [==[const int *]==],
+						["name"] = [==[hglrc]==],
+						["ctype"] = [==[HGLRC]==],
 					},
 				},
-				["name"] = [==[SetPbufferAttribARB]==],
-				["return_ctype"] = [==[BOOL]==],
+				["name"] = [==[GetContextGPUIDAMD]==],
+				["return_ctype"] = [==[UINT]==],
 			},
 			{
 				["extensions"] = {
@@ -1999,20 +2016,16 @@ return {
 			},
 			{
 				["extensions"] = {
-					[==[EXT_pbuffer]==],
+					[==[ARB_extensions_string]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[hPbuffer]==],
-						["ctype"] = [==[HPBUFFEREXT]==],
-					},
-					{
-						["name"] = [==[hDC]==],
+						["name"] = [==[hdc]==],
 						["ctype"] = [==[HDC]==],
 					},
 				},
-				["name"] = [==[ReleasePbufferDCEXT]==],
-				["return_ctype"] = [==[int]==],
+				["name"] = [==[GetExtensionsStringARB]==],
+				["return_ctype"] = [==[const char *]==],
 			},
 			{
 				["extensions"] = {
@@ -2029,41 +2042,41 @@ return {
 			},
 			{
 				["extensions"] = {
-					[==[OML_sync_control]==],
+					[==[EXT_pbuffer]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[hdc]==],
-						["ctype"] = [==[HDC]==],
+						["name"] = [==[hPbuffer]==],
+						["ctype"] = [==[HPBUFFEREXT]==],
 					},
 					{
-						["name"] = [==[target_msc]==],
-						["ctype"] = [==[INT64]==],
+						["name"] = [==[iAttribute]==],
+						["ctype"] = [==[int]==],
 					},
 					{
-						["name"] = [==[divisor]==],
-						["ctype"] = [==[INT64]==],
-					},
-					{
-						["name"] = [==[remainder]==],
-						["ctype"] = [==[INT64]==],
+						["name"] = [==[piValue]==],
+						["ctype"] = [==[int *]==],
 					},
 				},
-				["name"] = [==[SwapBuffersMscOML]==],
-				["return_ctype"] = [==[INT64]==],
+				["name"] = [==[QueryPbufferEXT]==],
+				["return_ctype"] = [==[BOOL]==],
 			},
 			{
 				["extensions"] = {
-					[==[ARB_extensions_string]==],
+					[==[ARB_render_texture]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[hdc]==],
-						["ctype"] = [==[HDC]==],
+						["name"] = [==[hPbuffer]==],
+						["ctype"] = [==[HPBUFFERARB]==],
+					},
+					{
+						["name"] = [==[piAttribList]==],
+						["ctype"] = [==[const int *]==],
 					},
 				},
-				["name"] = [==[GetExtensionsStringARB]==],
-				["return_ctype"] = [==[const char *]==],
+				["name"] = [==[SetPbufferAttribARB]==],
+				["return_ctype"] = [==[BOOL]==],
 			},
 			{
 				["extensions"] = {
@@ -2097,6 +2110,89 @@ return {
 			},
 			{
 				["extensions"] = {
+					[==[ARB_render_texture]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[hPbuffer]==],
+						["ctype"] = [==[HPBUFFERARB]==],
+					},
+					{
+						["name"] = [==[iBuffer]==],
+						["ctype"] = [==[int]==],
+					},
+				},
+				["name"] = [==[ReleaseTexImageARB]==],
+				["return_ctype"] = [==[BOOL]==],
+			},
+			{
+				["extensions"] = {
+					[==[EXT_pbuffer]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[hPbuffer]==],
+						["ctype"] = [==[HPBUFFEREXT]==],
+					},
+				},
+				["name"] = [==[DestroyPbufferEXT]==],
+				["return_ctype"] = [==[BOOL]==],
+			},
+			{
+				["extensions"] = {
+					[==[AMD_gpu_association]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dstCtx]==],
+						["ctype"] = [==[HGLRC]==],
+					},
+					{
+						["name"] = [==[srcX0]==],
+						["ctype"] = [==[GLint]==],
+					},
+					{
+						["name"] = [==[srcY0]==],
+						["ctype"] = [==[GLint]==],
+					},
+					{
+						["name"] = [==[srcX1]==],
+						["ctype"] = [==[GLint]==],
+					},
+					{
+						["name"] = [==[srcY1]==],
+						["ctype"] = [==[GLint]==],
+					},
+					{
+						["name"] = [==[dstX0]==],
+						["ctype"] = [==[GLint]==],
+					},
+					{
+						["name"] = [==[dstY0]==],
+						["ctype"] = [==[GLint]==],
+					},
+					{
+						["name"] = [==[dstX1]==],
+						["ctype"] = [==[GLint]==],
+					},
+					{
+						["name"] = [==[dstY1]==],
+						["ctype"] = [==[GLint]==],
+					},
+					{
+						["name"] = [==[mask]==],
+						["ctype"] = [==[GLbitfield]==],
+					},
+					{
+						["name"] = [==[filter]==],
+						["ctype"] = [==[GLenum]==],
+					},
+				},
+				["name"] = [==[BlitContextFramebufferAMD]==],
+				["return_ctype"] = [==[VOID]==],
+			},
+			{
+				["extensions"] = {
 					[==[ARB_make_current_read]==],
 				},
 				["parameters"] = {
@@ -2115,65 +2211,6 @@ return {
 				},
 				["name"] = [==[MakeContextCurrentARB]==],
 				["return_ctype"] = [==[BOOL]==],
-			},
-			{
-				["extensions"] = {
-					[==[EXT_pbuffer]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[hPbuffer]==],
-						["ctype"] = [==[HPBUFFEREXT]==],
-					},
-				},
-				["name"] = [==[DestroyPbufferEXT]==],
-				["return_ctype"] = [==[BOOL]==],
-			},
-			{
-				["extensions"] = {
-					[==[ARB_buffer_region]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[hRegion]==],
-						["ctype"] = [==[HANDLE]==],
-					},
-					{
-						["name"] = [==[x]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[y]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[width]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[height]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[xSrc]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[ySrc]==],
-						["ctype"] = [==[int]==],
-					},
-				},
-				["name"] = [==[RestoreBufferRegionARB]==],
-				["return_ctype"] = [==[BOOL]==],
-			},
-			{
-				["extensions"] = {
-					[==[EXT_swap_control]==],
-				},
-				["parameters"] = {
-				},
-				["name"] = [==[GetSwapIntervalEXT]==],
-				["return_ctype"] = [==[int]==],
 			},
 			{
 				["extensions"] = {
@@ -2282,27 +2319,6 @@ return {
 			},
 			{
 				["extensions"] = {
-					[==[EXT_pbuffer]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[hPbuffer]==],
-						["ctype"] = [==[HPBUFFEREXT]==],
-					},
-					{
-						["name"] = [==[iAttribute]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[piValue]==],
-						["ctype"] = [==[int *]==],
-					},
-				},
-				["name"] = [==[QueryPbufferEXT]==],
-				["return_ctype"] = [==[BOOL]==],
-			},
-			{
-				["extensions"] = {
 					[==[ARB_pbuffer]==],
 				},
 				["parameters"] = {
@@ -2320,87 +2336,90 @@ return {
 			},
 			{
 				["extensions"] = {
-					[==[I3D_image_buffer]==],
+					[==[AMD_gpu_association]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[hDC]==],
-						["ctype"] = [==[HDC]==],
+						["name"] = [==[maxCount]==],
+						["ctype"] = [==[UINT]==],
 					},
 					{
-						["name"] = [==[pEvent]==],
-						["ctype"] = [==[const HANDLE *]==],
+						["name"] = [==[ids]==],
+						["ctype"] = [==[UINT *]==],
 					},
+				},
+				["name"] = [==[GetGPUIDsAMD]==],
+				["return_ctype"] = [==[UINT]==],
+			},
+			{
+				["extensions"] = {
+					[==[AMD_gpu_association]==],
+				},
+				["parameters"] = {
 					{
-						["name"] = [==[pAddress]==],
-						["ctype"] = [==[const LPVOID *]==],
-					},
-					{
-						["name"] = [==[pSize]==],
-						["ctype"] = [==[const DWORD *]==],
-					},
-					{
-						["name"] = [==[count]==],
+						["name"] = [==[id]==],
 						["ctype"] = [==[UINT]==],
 					},
 				},
-				["name"] = [==[AssociateImageBufferEventsI3D]==],
-				["return_ctype"] = [==[BOOL]==],
+				["name"] = [==[CreateAssociatedContextAMD]==],
+				["return_ctype"] = [==[HGLRC]==],
 			},
 		},
 	},
 	["extensions"] = {
+		[==[3DFX_multisample]==],
+		[==[3DL_stereo_control]==],
+		[==[AMD_gpu_association]==],
 		[==[ARB_buffer_region]==],
-		[==[ARB_multisample]==],
-		[==[ARB_extensions_string]==],
-		[==[ARB_pixel_format]==],
-		[==[ARB_make_current_read]==],
-		[==[ARB_pbuffer]==],
-		[==[ARB_render_texture]==],
-		[==[ARB_pixel_format_float]==],
-		[==[ARB_framebuffer_sRGB]==],
+		[==[ARB_context_flush_control]==],
 		[==[ARB_create_context]==],
 		[==[ARB_create_context_profile]==],
 		[==[ARB_create_context_robustness]==],
+		[==[ARB_extensions_string]==],
+		[==[ARB_framebuffer_sRGB]==],
+		[==[ARB_make_current_read]==],
+		[==[ARB_multisample]==],
+		[==[ARB_pbuffer]==],
+		[==[ARB_pixel_format]==],
+		[==[ARB_pixel_format_float]==],
+		[==[ARB_render_texture]==],
 		[==[ARB_robustness_application_isolation]==],
 		[==[ARB_robustness_share_group_isolation]==],
+		[==[ATI_pixel_format_float]==],
+		[==[EXT_create_context_es_profile]==],
+		[==[EXT_create_context_es2_profile]==],
+		[==[EXT_depth_float]==],
 		[==[EXT_display_color_table]==],
 		[==[EXT_extensions_string]==],
+		[==[EXT_framebuffer_sRGB]==],
 		[==[EXT_make_current_read]==],
+		[==[EXT_multisample]==],
 		[==[EXT_pbuffer]==],
 		[==[EXT_pixel_format]==],
+		[==[EXT_pixel_format_packed_float]==],
 		[==[EXT_swap_control]==],
-		[==[EXT_depth_float]==],
-		[==[NV_vertex_array_range]==],
-		[==[3DFX_multisample]==],
-		[==[EXT_multisample]==],
-		[==[OML_sync_control]==],
+		[==[EXT_swap_control_tear]==],
 		[==[I3D_digital_video_control]==],
 		[==[I3D_gamma]==],
 		[==[I3D_genlock]==],
 		[==[I3D_image_buffer]==],
 		[==[I3D_swap_frame_lock]==],
 		[==[I3D_swap_frame_usage]==],
-		[==[ATI_pixel_format_float]==],
+		[==[NV_copy_image]==],
+		[==[NV_delay_before_swap]==],
+		[==[NV_DX_interop]==],
+		[==[NV_DX_interop2]==],
 		[==[NV_float_buffer]==],
-		[==[3DL_stereo_control]==],
-		[==[EXT_pixel_format_packed_float]==],
-		[==[EXT_framebuffer_sRGB]==],
+		[==[NV_gpu_affinity]==],
+		[==[NV_multisample_coverage]==],
 		[==[NV_present_video]==],
-		[==[NV_video_output]==],
 		[==[NV_render_depth_texture]==],
 		[==[NV_render_texture_rectangle]==],
 		[==[NV_swap_group]==],
-		[==[NV_gpu_affinity]==],
-		[==[AMD_gpu_association]==],
 		[==[NV_video_capture]==],
-		[==[NV_copy_image]==],
-		[==[NV_multisample_coverage]==],
-		[==[EXT_create_context_es_profile]==],
-		[==[EXT_create_context_es2_profile]==],
-		[==[NV_DX_interop]==],
-		[==[NV_DX_interop2]==],
-		[==[EXT_swap_control_tear]==],
+		[==[NV_video_output]==],
+		[==[NV_vertex_array_range]==],
+		[==[OML_sync_control]==],
 	},
 	["enumerators"] = {
 		{
@@ -2408,6 +2427,20 @@ return {
 			["name"] = [==[STEREO_EXT]==],
 			["extensions"] = {
 				[==[EXT_pixel_format]==],
+			},
+		},
+		{
+			["value"] = [==[0x20CC]==],
+			["name"] = [==[VIDEO_OUT_STACKED_FIELDS_2_1]==],
+			["extensions"] = {
+				[==[NV_video_output]==],
+			},
+		},
+		{
+			["value"] = [==[0x20C7]==],
+			["name"] = [==[VIDEO_OUT_COLOR_AND_DEPTH_NV]==],
+			["extensions"] = {
+				[==[NV_video_output]==],
 			},
 		},
 		{
@@ -2439,17 +2472,24 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x2095]==],
-			["name"] = [==[ERROR_INVALID_VERSION_ARB]==],
+			["value"] = [==[0x20CA]==],
+			["name"] = [==[VIDEO_OUT_FIELD_2]==],
 			["extensions"] = {
-				[==[ARB_create_context]==],
+				[==[NV_video_output]==],
 			},
 		},
 		{
-			["value"] = [==[0x00000001]==],
-			["name"] = [==[ACCESS_READ_WRITE_NV]==],
+			["value"] = [==[0x2021]==],
+			["name"] = [==[ACCUM_ALPHA_BITS_EXT]==],
 			["extensions"] = {
-				[==[NV_DX_interop]==],
+				[==[EXT_pixel_format]==],
+			},
+		},
+		{
+			["value"] = [==[0x20C8]==],
+			["name"] = [==[VIDEO_OUT_FRAME]==],
+			["extensions"] = {
+				[==[NV_video_output]==],
 			},
 		},
 		{
@@ -2474,10 +2514,10 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x203B]==],
-			["name"] = [==[TRANSPARENT_INDEX_VALUE_ARB]==],
+			["value"] = [==[0x1F01]==],
+			["name"] = [==[GPU_RENDERER_STRING_AMD]==],
 			["extensions"] = {
-				[==[ARB_pixel_format]==],
+				[==[AMD_gpu_association]==],
 			},
 		},
 		{
@@ -2509,17 +2549,17 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x00000000]==],
-			["name"] = [==[ACCESS_READ_ONLY_NV]==],
+			["value"] = [==[0x2051]==],
+			["name"] = [==[DIGITAL_VIDEO_CURSOR_ALPHA_VALUE_I3D]==],
 			["extensions"] = {
-				[==[NV_DX_interop]==],
+				[==[I3D_digital_video_control]==],
 			},
 		},
 		{
-			["value"] = [==[0x21A4]==],
-			["name"] = [==[GPU_CLOCK_AMD]==],
+			["value"] = [==[0x20C4]==],
+			["name"] = [==[VIDEO_OUT_ALPHA_NV]==],
 			["extensions"] = {
-				[==[AMD_gpu_association]==],
+				[==[NV_video_output]==],
 			},
 		},
 		{
@@ -2551,24 +2591,24 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x00000004]==],
-			["name"] = [==[CONTEXT_ES_PROFILE_BIT_EXT]==],
+			["value"] = [==[0x20C3]==],
+			["name"] = [==[VIDEO_OUT_COLOR_NV]==],
 			["extensions"] = {
-				[==[EXT_create_context_es_profile]==],
+				[==[NV_video_output]==],
 			},
 		},
 		{
-			["value"] = [==[0x20B9]==],
-			["name"] = [==[COLOR_SAMPLES_NV]==],
+			["value"] = [==[0x2024]==],
+			["name"] = [==[AUX_BUFFERS_EXT]==],
 			["extensions"] = {
-				[==[NV_multisample_coverage]==],
+				[==[EXT_pixel_format]==],
 			},
 		},
 		{
-			["value"] = [==[0x8252]==],
-			["name"] = [==[LOSE_CONTEXT_ON_RESET_ARB]==],
+			["value"] = [==[0x21A5]==],
+			["name"] = [==[GPU_NUM_PIPES_AMD]==],
 			["extensions"] = {
-				[==[ARB_create_context_robustness]==],
+				[==[AMD_gpu_association]==],
 			},
 		},
 		{
@@ -2607,24 +2647,24 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x20B1]==],
-			["name"] = [==[BIND_TO_TEXTURE_RECTANGLE_FLOAT_R_NV]==],
+			["value"] = [==[0x2055]==],
+			["name"] = [==[STEREO_EMITTER_ENABLE_3DL]==],
 			["extensions"] = {
-				[==[NV_float_buffer]==],
+				[==[3DL_stereo_control]==],
 			},
 		},
 		{
-			["value"] = [==[0x2042]==],
-			["name"] = [==[COVERAGE_SAMPLES_NV]==],
+			["value"] = [==[0x20C1]==],
+			["name"] = [==[BIND_TO_VIDEO_RGBA_NV]==],
 			["extensions"] = {
-				[==[NV_multisample_coverage]==],
+				[==[NV_video_output]==],
 			},
 		},
 		{
-			["value"] = [==[0x20CF]==],
-			["name"] = [==[NUM_VIDEO_CAPTURE_SLOTS_NV]==],
+			["value"] = [==[0x20C0]==],
+			["name"] = [==[BIND_TO_VIDEO_RGB_NV]==],
 			["extensions"] = {
-				[==[NV_video_capture]==],
+				[==[NV_video_output]==],
 			},
 		},
 		{
@@ -2642,10 +2682,10 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x21A8]==],
-			["name"] = [==[GPU_NUM_SPI_AMD]==],
+			["value"] = [==[0x20CF]==],
+			["name"] = [==[NUM_VIDEO_CAPTURE_SLOTS_NV]==],
 			["extensions"] = {
-				[==[AMD_gpu_association]==],
+				[==[NV_video_capture]==],
 			},
 		},
 		{
@@ -2663,10 +2703,10 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x00000001]==],
-			["name"] = [==[IMAGE_BUFFER_MIN_ACCESS_I3D]==],
+			["value"] = [==[0x20A2]==],
+			["name"] = [==[TEXTURE_RECTANGLE_NV]==],
 			["extensions"] = {
-				[==[I3D_image_buffer]==],
+				[==[NV_render_texture_rectangle]==],
 			},
 		},
 		{
@@ -2677,10 +2717,10 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x2073]==],
-			["name"] = [==[TEXTURE_TARGET_ARB]==],
+			["value"] = [==[0x21A3]==],
+			["name"] = [==[GPU_RAM_AMD]==],
 			["extensions"] = {
-				[==[ARB_render_texture]==],
+				[==[AMD_gpu_association]==],
 			},
 		},
 		{
@@ -2712,17 +2752,17 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x20B2]==],
-			["name"] = [==[BIND_TO_TEXTURE_RECTANGLE_FLOAT_RG_NV]==],
+			["value"] = [==[0x20A1]==],
+			["name"] = [==[BIND_TO_TEXTURE_RECTANGLE_RGBA_NV]==],
 			["extensions"] = {
-				[==[NV_float_buffer]==],
+				[==[NV_render_texture_rectangle]==],
 			},
 		},
 		{
-			["value"] = [==[0x21A5]==],
-			["name"] = [==[GPU_NUM_PIPES_AMD]==],
+			["value"] = [==[0x20A0]==],
+			["name"] = [==[BIND_TO_TEXTURE_RECTANGLE_RGB_NV]==],
 			["extensions"] = {
-				[==[AMD_gpu_association]==],
+				[==[NV_render_texture_rectangle]==],
 			},
 		},
 		{
@@ -2733,10 +2773,10 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x21A3]==],
-			["name"] = [==[GPU_RAM_AMD]==],
+			["value"] = [==[0x20A7]==],
+			["name"] = [==[DEPTH_COMPONENT_NV]==],
 			["extensions"] = {
-				[==[AMD_gpu_association]==],
+				[==[NV_render_depth_texture]==],
 			},
 		},
 		{
@@ -2754,17 +2794,17 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x21A2]==],
-			["name"] = [==[GPU_FASTEST_TARGET_GPUS_AMD]==],
+			["value"] = [==[0x2028]==],
+			["name"] = [==[SWAP_EXCHANGE_EXT]==],
 			["extensions"] = {
-				[==[AMD_gpu_association]==],
+				[==[EXT_pixel_format]==],
 			},
 		},
 		{
-			["value"] = [==[0x1F02]==],
-			["name"] = [==[GPU_OPENGL_VERSION_STRING_AMD]==],
+			["value"] = [==[0x2098]==],
+			["name"] = [==[CONTEXT_RELEASE_BEHAVIOR_FLUSH_ARB]==],
 			["extensions"] = {
-				[==[AMD_gpu_association]==],
+				[==[ARB_context_flush_control]==],
 			},
 		},
 		{
@@ -2775,17 +2815,17 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x1F01]==],
-			["name"] = [==[GPU_RENDERER_STRING_AMD]==],
+			["value"] = [==[0x20A5]==],
+			["name"] = [==[DEPTH_TEXTURE_FORMAT_NV]==],
 			["extensions"] = {
-				[==[AMD_gpu_association]==],
+				[==[NV_render_depth_texture]==],
 			},
 		},
 		{
-			["value"] = [==[0x1F00]==],
-			["name"] = [==[GPU_VENDOR_AMD]==],
+			["value"] = [==[0x20A3]==],
+			["name"] = [==[BIND_TO_TEXTURE_DEPTH_NV]==],
 			["extensions"] = {
-				[==[AMD_gpu_association]==],
+				[==[NV_render_depth_texture]==],
 			},
 		},
 		{
@@ -2796,17 +2836,17 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x20D1]==],
-			["name"] = [==[ERROR_MISSING_AFFINITY_MASK_NV]==],
+			["value"] = [==[0x20F0]==],
+			["name"] = [==[NUM_VIDEO_SLOTS_NV]==],
 			["extensions"] = {
-				[==[NV_gpu_affinity]==],
+				[==[NV_present_video]==],
 			},
 		},
 		{
-			["value"] = [==[0x20D0]==],
-			["name"] = [==[ERROR_INCOMPATIBLE_AFFINITY_MASKS_NV]==],
+			["value"] = [==[0x20B9]==],
+			["name"] = [==[COLOR_SAMPLES_NV]==],
 			["extensions"] = {
-				[==[NV_gpu_affinity]==],
+				[==[NV_multisample_coverage]==],
 			},
 		},
 		{
@@ -2817,10 +2857,10 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x20A2]==],
-			["name"] = [==[TEXTURE_RECTANGLE_NV]==],
+			["value"] = [==[0x2042]==],
+			["name"] = [==[COVERAGE_SAMPLES_NV]==],
 			["extensions"] = {
-				[==[NV_render_texture_rectangle]==],
+				[==[NV_multisample_coverage]==],
 			},
 		},
 		{
@@ -2853,15 +2893,15 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x20A1]==],
-			["name"] = [==[BIND_TO_TEXTURE_RECTANGLE_RGBA_NV]==],
+			["value"] = [==[0x20D1]==],
+			["name"] = [==[ERROR_MISSING_AFFINITY_MASK_NV]==],
 			["extensions"] = {
-				[==[NV_render_texture_rectangle]==],
+				[==[NV_gpu_affinity]==],
 			},
 		},
 		{
-			["value"] = [==[0x2006]==],
-			["name"] = [==[SWAP_LAYER_BUFFERS_ARB]==],
+			["value"] = [==[0x2003]==],
+			["name"] = [==[ACCELERATION_ARB]==],
 			["extensions"] = {
 				[==[ARB_pixel_format]==],
 			},
@@ -2888,17 +2928,17 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x2002]==],
-			["name"] = [==[DRAW_TO_BITMAP_EXT]==],
+			["value"] = [==[0x2060]==],
+			["name"] = [==[SAMPLE_BUFFERS_3DFX]==],
 			["extensions"] = {
-				[==[EXT_pixel_format]==],
+				[==[3DFX_multisample]==],
 			},
 		},
 		{
-			["value"] = [==[0x20A0]==],
-			["name"] = [==[BIND_TO_TEXTURE_RECTANGLE_RGB_NV]==],
+			["value"] = [==[0x20D0]==],
+			["name"] = [==[ERROR_INCOMPATIBLE_AFFINITY_MASKS_NV]==],
 			["extensions"] = {
-				[==[NV_render_texture_rectangle]==],
+				[==[NV_gpu_affinity]==],
 			},
 		},
 		{
@@ -2923,10 +2963,10 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x20A7]==],
-			["name"] = [==[DEPTH_COMPONENT_NV]==],
+			["value"] = [==[0x2079]==],
+			["name"] = [==[TEXTURE_1D_ARB]==],
 			["extensions"] = {
-				[==[NV_render_depth_texture]==],
+				[==[ARB_render_texture]==],
 			},
 		},
 		{
@@ -2958,10 +2998,10 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x20B0]==],
-			["name"] = [==[FLOAT_COMPONENTS_NV]==],
+			["value"] = [==[0x2035]==],
+			["name"] = [==[PBUFFER_HEIGHT_EXT]==],
 			["extensions"] = {
-				[==[NV_float_buffer]==],
+				[==[EXT_pbuffer]==],
 			},
 		},
 		{
@@ -3000,17 +3040,17 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x2018]==],
-			["name"] = [==[GREEN_SHIFT_ARB]==],
+			["value"] = [==[0x21A8]==],
+			["name"] = [==[GPU_NUM_SPI_AMD]==],
 			["extensions"] = {
-				[==[ARB_pixel_format]==],
+				[==[AMD_gpu_association]==],
 			},
 		},
 		{
-			["value"] = [==[0x20A5]==],
-			["name"] = [==[DEPTH_TEXTURE_FORMAT_NV]==],
+			["value"] = [==[0x20B4]==],
+			["name"] = [==[BIND_TO_TEXTURE_RECTANGLE_FLOAT_RGBA_NV]==],
 			["extensions"] = {
-				[==[NV_render_depth_texture]==],
+				[==[NV_float_buffer]==],
 			},
 		},
 		{
@@ -3021,10 +3061,10 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x20A3]==],
-			["name"] = [==[BIND_TO_TEXTURE_DEPTH_NV]==],
+			["value"] = [==[0x20B3]==],
+			["name"] = [==[BIND_TO_TEXTURE_RECTANGLE_FLOAT_RGB_NV]==],
 			["extensions"] = {
-				[==[NV_render_depth_texture]==],
+				[==[NV_float_buffer]==],
 			},
 		},
 		{
@@ -3042,10 +3082,10 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x201D]==],
-			["name"] = [==[ACCUM_BITS_EXT]==],
+			["value"] = [==[0x2041]==],
+			["name"] = [==[SAMPLE_BUFFERS_EXT]==],
 			["extensions"] = {
-				[==[EXT_pixel_format]==],
+				[==[EXT_multisample]==],
 			},
 		},
 		{
@@ -3056,10 +3096,10 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x20CC]==],
-			["name"] = [==[VIDEO_OUT_STACKED_FIELDS_2_1]==],
+			["value"] = [==[0x20B2]==],
+			["name"] = [==[BIND_TO_TEXTURE_RECTANGLE_FLOAT_RG_NV]==],
 			["extensions"] = {
-				[==[NV_video_output]==],
+				[==[NV_float_buffer]==],
 			},
 		},
 		{
@@ -3070,17 +3110,17 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x20CA]==],
-			["name"] = [==[VIDEO_OUT_FIELD_2]==],
+			["value"] = [==[0x20B1]==],
+			["name"] = [==[BIND_TO_TEXTURE_RECTANGLE_FLOAT_R_NV]==],
 			["extensions"] = {
-				[==[NV_video_output]==],
+				[==[NV_float_buffer]==],
 			},
 		},
 		{
-			["value"] = [==[0x204A]==],
-			["name"] = [==[GENLOCK_SOURCE_EDGE_FALLING_I3D]==],
+			["value"] = [==[0x20B0]==],
+			["name"] = [==[FLOAT_COMPONENTS_NV]==],
 			["extensions"] = {
-				[==[I3D_genlock]==],
+				[==[NV_float_buffer]==],
 			},
 		},
 		{
@@ -3098,10 +3138,10 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x20C8]==],
-			["name"] = [==[VIDEO_OUT_FRAME]==],
+			["value"] = [==[0x2052]==],
+			["name"] = [==[DIGITAL_VIDEO_CURSOR_INCLUDED_I3D]==],
 			["extensions"] = {
-				[==[NV_video_output]==],
+				[==[I3D_digital_video_control]==],
 			},
 		},
 		{
@@ -3133,17 +3173,17 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x20C7]==],
-			["name"] = [==[VIDEO_OUT_COLOR_AND_DEPTH_NV]==],
+			["value"] = [==[0x00000001]==],
+			["name"] = [==[ACCESS_READ_WRITE_NV]==],
 			["extensions"] = {
-				[==[NV_video_output]==],
+				[==[NV_DX_interop]==],
 			},
 		},
 		{
-			["value"] = [==[0x201F]==],
-			["name"] = [==[ACCUM_GREEN_BITS_EXT]==],
+			["value"] = [==[0x00000000]==],
+			["name"] = [==[ACCESS_READ_ONLY_NV]==],
 			["extensions"] = {
-				[==[EXT_pixel_format]==],
+				[==[NV_DX_interop]==],
 			},
 		},
 		{
@@ -3154,10 +3194,10 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x20C4]==],
-			["name"] = [==[VIDEO_OUT_ALPHA_NV]==],
+			["value"] = [==[0x00000002]==],
+			["name"] = [==[IMAGE_BUFFER_LOCK_I3D]==],
 			["extensions"] = {
-				[==[NV_video_output]==],
+				[==[I3D_image_buffer]==],
 			},
 		},
 		{
@@ -3175,24 +3215,24 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x2029]==],
-			["name"] = [==[SWAP_COPY_ARB]==],
+			["value"] = [==[0x21A2]==],
+			["name"] = [==[GPU_FASTEST_TARGET_GPUS_AMD]==],
 			["extensions"] = {
-				[==[ARB_pixel_format]==],
+				[==[AMD_gpu_association]==],
 			},
 		},
 		{
-			["value"] = [==[0x20C3]==],
-			["name"] = [==[VIDEO_OUT_COLOR_NV]==],
-			["extensions"] = {
-				[==[NV_video_output]==],
-			},
-		},
-		{
-			["value"] = [==[0x00000002]==],
-			["name"] = [==[IMAGE_BUFFER_LOCK_I3D]==],
+			["value"] = [==[0x00000001]==],
+			["name"] = [==[IMAGE_BUFFER_MIN_ACCESS_I3D]==],
 			["extensions"] = {
 				[==[I3D_image_buffer]==],
+			},
+		},
+		{
+			["value"] = [==[0x204B]==],
+			["name"] = [==[GENLOCK_SOURCE_EDGE_RISING_I3D]==],
+			["extensions"] = {
+				[==[I3D_genlock]==],
 			},
 		},
 		{
@@ -3210,31 +3250,31 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x20C1]==],
-			["name"] = [==[BIND_TO_VIDEO_RGBA_NV]==],
+			["value"] = [==[0x204A]==],
+			["name"] = [==[GENLOCK_SOURCE_EDGE_FALLING_I3D]==],
 			["extensions"] = {
-				[==[NV_video_output]==],
+				[==[I3D_genlock]==],
 			},
 		},
 		{
-			["value"] = [==[0x20C0]==],
-			["name"] = [==[BIND_TO_VIDEO_RGB_NV]==],
-			["extensions"] = {
-				[==[NV_video_output]==],
-			},
-		},
-		{
-			["value"] = [==[0x20F0]==],
-			["name"] = [==[NUM_VIDEO_SLOTS_NV]==],
-			["extensions"] = {
-				[==[NV_present_video]==],
-			},
-		},
-		{
-			["value"] = [==[0x2018]==],
-			["name"] = [==[GREEN_SHIFT_EXT]==],
+			["value"] = [==[0x2016]==],
+			["name"] = [==[RED_SHIFT_EXT]==],
 			["extensions"] = {
 				[==[EXT_pixel_format]==],
+			},
+		},
+		{
+			["value"] = [==[0x2047]==],
+			["name"] = [==[GENLOCK_SOURCE_EXTERNAL_TTL_I3D]==],
+			["extensions"] = {
+				[==[I3D_genlock]==],
+			},
+		},
+		{
+			["value"] = [==[0x2045]==],
+			["name"] = [==[GENLOCK_SOURCE_EXTERNAL_SYNC_I3D]==],
+			["extensions"] = {
+				[==[I3D_genlock]==],
 			},
 		},
 		{
@@ -3259,24 +3299,24 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x2020]==],
-			["name"] = [==[ACCUM_BLUE_BITS_EXT]==],
+			["value"] = [==[0x2044]==],
+			["name"] = [==[GENLOCK_SOURCE_MULTIVIEW_I3D]==],
 			["extensions"] = {
-				[==[EXT_pixel_format]==],
+				[==[I3D_genlock]==],
 			},
 		},
 		{
-			["value"] = [==[0x2042]==],
-			["name"] = [==[SAMPLES_ARB]==],
+			["value"] = [==[0x2095]==],
+			["name"] = [==[ERROR_INVALID_VERSION_ARB]==],
 			["extensions"] = {
-				[==[ARB_multisample]==],
+				[==[ARB_create_context]==],
 			},
 		},
 		{
-			["value"] = [==[0x2057]==],
-			["name"] = [==[STEREO_POLARITY_NORMAL_3DL]==],
+			["value"] = [==[0x204F]==],
+			["name"] = [==[GAMMA_EXCLUDE_DESKTOP_I3D]==],
 			["extensions"] = {
-				[==[3DL_stereo_control]==],
+				[==[I3D_gamma]==],
 			},
 		},
 		{
@@ -3287,10 +3327,10 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x2060]==],
-			["name"] = [==[SAMPLE_BUFFERS_3DFX]==],
+			["value"] = [==[0x204E]==],
+			["name"] = [==[GAMMA_TABLE_SIZE_I3D]==],
 			["extensions"] = {
-				[==[3DFX_multisample]==],
+				[==[I3D_gamma]==],
 			},
 		},
 		{
@@ -3301,10 +3341,10 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x2055]==],
-			["name"] = [==[STEREO_EMITTER_ENABLE_3DL]==],
+			["value"] = [==[0x2083]==],
+			["name"] = [==[FRONT_LEFT_ARB]==],
 			["extensions"] = {
-				[==[3DL_stereo_control]==],
+				[==[ARB_render_texture]==],
 			},
 		},
 		{
@@ -3350,10 +3390,10 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x20B4]==],
-			["name"] = [==[BIND_TO_TEXTURE_RECTANGLE_FLOAT_RGBA_NV]==],
+			["value"] = [==[0x2050]==],
+			["name"] = [==[DIGITAL_VIDEO_CURSOR_ALPHA_FRAMEBUFFER_I3D]==],
 			["extensions"] = {
-				[==[NV_float_buffer]==],
+				[==[I3D_digital_video_control]==],
 			},
 		},
 		{
@@ -3364,10 +3404,10 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x20B3]==],
-			["name"] = [==[BIND_TO_TEXTURE_RECTANGLE_FLOAT_RGB_NV]==],
+			["value"] = [==[0x2000]==],
+			["name"] = [==[NUMBER_PIXEL_FORMATS_EXT]==],
 			["extensions"] = {
-				[==[NV_float_buffer]==],
+				[==[EXT_pixel_format]==],
 			},
 		},
 		{
@@ -3406,10 +3446,10 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x21A0]==],
-			["name"] = [==[TYPE_RGBA_FLOAT_ATI]==],
+			["value"] = [==[0x208E]==],
+			["name"] = [==[AUX7_ARB]==],
 			["extensions"] = {
-				[==[ATI_pixel_format_float]==],
+				[==[ARB_render_texture]==],
 			},
 		},
 		{
@@ -3455,10 +3495,10 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x204B]==],
-			["name"] = [==[GENLOCK_SOURCE_EDGE_RISING_I3D]==],
+			["value"] = [==[0x2022]==],
+			["name"] = [==[DEPTH_BITS_EXT]==],
 			["extensions"] = {
-				[==[I3D_genlock]==],
+				[==[EXT_pixel_format]==],
 			},
 		},
 		{
@@ -3497,8 +3537,8 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x2006]==],
-			["name"] = [==[SWAP_LAYER_BUFFERS_EXT]==],
+			["value"] = [==[0x2020]==],
+			["name"] = [==[ACCUM_BLUE_BITS_EXT]==],
 			["extensions"] = {
 				[==[EXT_pixel_format]==],
 			},
@@ -3518,38 +3558,38 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x2047]==],
-			["name"] = [==[GENLOCK_SOURCE_EXTERNAL_TTL_I3D]==],
+			["value"] = [==[0x201F]==],
+			["name"] = [==[ACCUM_GREEN_BITS_EXT]==],
 			["extensions"] = {
-				[==[I3D_genlock]==],
+				[==[EXT_pixel_format]==],
 			},
 		},
 		{
-			["value"] = [==[0x2045]==],
-			["name"] = [==[GENLOCK_SOURCE_EXTERNAL_SYNC_I3D]==],
+			["value"] = [==[0x201D]==],
+			["name"] = [==[ACCUM_BITS_EXT]==],
 			["extensions"] = {
-				[==[I3D_genlock]==],
+				[==[EXT_pixel_format]==],
 			},
 		},
 		{
-			["value"] = [==[0x2083]==],
-			["name"] = [==[FRONT_LEFT_ARB]==],
+			["value"] = [==[0x2082]==],
+			["name"] = [==[TEXTURE_CUBE_MAP_NEGATIVE_Z_ARB]==],
 			["extensions"] = {
 				[==[ARB_render_texture]==],
 			},
 		},
 		{
-			["value"] = [==[0x2044]==],
-			["name"] = [==[GENLOCK_SOURCE_MULTIVIEW_I3D]==],
+			["value"] = [==[0x201A]==],
+			["name"] = [==[BLUE_SHIFT_EXT]==],
 			["extensions"] = {
-				[==[I3D_genlock]==],
+				[==[EXT_pixel_format]==],
 			},
 		},
 		{
-			["value"] = [==[0x204F]==],
-			["name"] = [==[GAMMA_EXCLUDE_DESKTOP_I3D]==],
+			["value"] = [==[0x2019]==],
+			["name"] = [==[BLUE_BITS_EXT]==],
 			["extensions"] = {
-				[==[I3D_gamma]==],
+				[==[EXT_pixel_format]==],
 			},
 		},
 		{
@@ -3560,10 +3600,10 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x204E]==],
-			["name"] = [==[GAMMA_TABLE_SIZE_I3D]==],
+			["value"] = [==[0x2018]==],
+			["name"] = [==[GREEN_SHIFT_EXT]==],
 			["extensions"] = {
-				[==[I3D_gamma]==],
+				[==[EXT_pixel_format]==],
 			},
 		},
 		{
@@ -3602,24 +3642,24 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x2052]==],
-			["name"] = [==[DIGITAL_VIDEO_CURSOR_INCLUDED_I3D]==],
+			["value"] = [==[0x21A4]==],
+			["name"] = [==[GPU_CLOCK_AMD]==],
 			["extensions"] = {
-				[==[I3D_digital_video_control]==],
+				[==[AMD_gpu_association]==],
 			},
 		},
 		{
-			["value"] = [==[0x2051]==],
-			["name"] = [==[DIGITAL_VIDEO_CURSOR_ALPHA_VALUE_I3D]==],
+			["value"] = [==[0x2010]==],
+			["name"] = [==[SUPPORT_OPENGL_EXT]==],
 			["extensions"] = {
-				[==[I3D_digital_video_control]==],
+				[==[EXT_pixel_format]==],
 			},
 		},
 		{
-			["value"] = [==[0x2050]==],
-			["name"] = [==[DIGITAL_VIDEO_CURSOR_ALPHA_FRAMEBUFFER_I3D]==],
+			["value"] = [==[0x200F]==],
+			["name"] = [==[SUPPORT_GDI_EXT]==],
 			["extensions"] = {
-				[==[I3D_digital_video_control]==],
+				[==[EXT_pixel_format]==],
 			},
 		},
 		{
@@ -3630,10 +3670,10 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x2041]==],
-			["name"] = [==[SAMPLE_BUFFERS_EXT]==],
+			["value"] = [==[0x200E]==],
+			["name"] = [==[SHARE_ACCUM_EXT]==],
 			["extensions"] = {
-				[==[EXT_multisample]==],
+				[==[EXT_pixel_format]==],
 			},
 		},
 		{
@@ -3651,8 +3691,8 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x2028]==],
-			["name"] = [==[SWAP_EXCHANGE_EXT]==],
+			["value"] = [==[0x200C]==],
+			["name"] = [==[SHARE_DEPTH_EXT]==],
 			["extensions"] = {
 				[==[EXT_pixel_format]==],
 			},
@@ -3665,15 +3705,15 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x200E]==],
-			["name"] = [==[SHARE_ACCUM_EXT]==],
+			["value"] = [==[0]==],
+			["name"] = [==[CONTEXT_RELEASE_BEHAVIOR_NONE_ARB]==],
 			["extensions"] = {
-				[==[EXT_pixel_format]==],
+				[==[ARB_context_flush_control]==],
 			},
 		},
 		{
-			["value"] = [==[0x2024]==],
-			["name"] = [==[AUX_BUFFERS_EXT]==],
+			["value"] = [==[0x2009]==],
+			["name"] = [==[NUMBER_UNDERLAYS_EXT]==],
 			["extensions"] = {
 				[==[EXT_pixel_format]==],
 			},
@@ -3700,8 +3740,8 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x2022]==],
-			["name"] = [==[DEPTH_BITS_EXT]==],
+			["value"] = [==[0x2008]==],
+			["name"] = [==[NUMBER_OVERLAYS_EXT]==],
 			["extensions"] = {
 				[==[EXT_pixel_format]==],
 			},
@@ -3714,8 +3754,8 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x2021]==],
-			["name"] = [==[ACCUM_ALPHA_BITS_EXT]==],
+			["value"] = [==[0x2006]==],
+			["name"] = [==[SWAP_LAYER_BUFFERS_EXT]==],
 			["extensions"] = {
 				[==[EXT_pixel_format]==],
 			},
@@ -3770,8 +3810,8 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x201A]==],
-			["name"] = [==[BLUE_SHIFT_EXT]==],
+			["value"] = [==[0x2003]==],
+			["name"] = [==[ACCELERATION_EXT]==],
 			["extensions"] = {
 				[==[EXT_pixel_format]==],
 			},
@@ -3798,8 +3838,8 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x2019]==],
-			["name"] = [==[BLUE_BITS_EXT]==],
+			["value"] = [==[0x2002]==],
+			["name"] = [==[DRAW_TO_BITMAP_EXT]==],
 			["extensions"] = {
 				[==[EXT_pixel_format]==],
 			},
@@ -3833,17 +3873,17 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x2016]==],
-			["name"] = [==[RED_SHIFT_EXT]==],
+			["value"] = [==[0x202F]==],
+			["name"] = [==[MAX_PBUFFER_WIDTH_EXT]==],
 			["extensions"] = {
-				[==[EXT_pixel_format]==],
+				[==[EXT_pbuffer]==],
 			},
 		},
 		{
-			["value"] = [==[0x00000001]==],
-			["name"] = [==[CONTEXT_DEBUG_BIT_ARB]==],
+			["value"] = [==[0x00000004]==],
+			["name"] = [==[CONTEXT_ES_PROFILE_BIT_EXT]==],
 			["extensions"] = {
-				[==[ARB_create_context]==],
+				[==[EXT_create_context_es_profile]==],
 			},
 		},
 		{
@@ -3854,17 +3894,17 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x2010]==],
-			["name"] = [==[SUPPORT_OPENGL_EXT]==],
+			["value"] = [==[0x21A0]==],
+			["name"] = [==[TYPE_RGBA_FLOAT_ATI]==],
 			["extensions"] = {
-				[==[EXT_pixel_format]==],
+				[==[ATI_pixel_format_float]==],
 			},
 		},
 		{
-			["value"] = [==[0x200F]==],
-			["name"] = [==[SUPPORT_GDI_EXT]==],
+			["value"] = [==[0x2057]==],
+			["name"] = [==[STEREO_POLARITY_NORMAL_3DL]==],
 			["extensions"] = {
-				[==[EXT_pixel_format]==],
+				[==[3DL_stereo_control]==],
 			},
 		},
 		{
@@ -3910,10 +3950,10 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x2013]==],
-			["name"] = [==[PIXEL_TYPE_ARB]==],
+			["value"] = [==[0x2092]==],
+			["name"] = [==[CONTEXT_MINOR_VERSION_ARB]==],
 			["extensions"] = {
-				[==[ARB_pixel_format]==],
+				[==[ARB_create_context]==],
 			},
 		},
 		{
@@ -3924,24 +3964,24 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x00000004]==],
-			["name"] = [==[DEPTH_BUFFER_BIT_ARB]==],
+			["value"] = [==[0x200F]==],
+			["name"] = [==[SUPPORT_GDI_ARB]==],
 			["extensions"] = {
-				[==[ARB_buffer_region]==],
+				[==[ARB_pixel_format]==],
 			},
 		},
 		{
-			["value"] = [==[0x200C]==],
-			["name"] = [==[SHARE_DEPTH_EXT]==],
+			["value"] = [==[0x2097]==],
+			["name"] = [==[CONTEXT_RELEASE_BEHAVIOR_ARB]==],
 			["extensions"] = {
-				[==[EXT_pixel_format]==],
+				[==[ARB_context_flush_control]==],
 			},
 		},
 		{
-			["value"] = [==[0x2035]==],
-			["name"] = [==[PBUFFER_HEIGHT_EXT]==],
+			["value"] = [==[0x208B]==],
+			["name"] = [==[AUX4_ARB]==],
 			["extensions"] = {
-				[==[EXT_pbuffer]==],
+				[==[ARB_render_texture]==],
 			},
 		},
 		{
@@ -3959,17 +3999,17 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x2009]==],
-			["name"] = [==[NUMBER_UNDERLAYS_EXT]==],
+			["value"] = [==[0x2088]==],
+			["name"] = [==[AUX1_ARB]==],
 			["extensions"] = {
-				[==[EXT_pixel_format]==],
+				[==[ARB_render_texture]==],
 			},
 		},
 		{
-			["value"] = [==[0x2008]==],
-			["name"] = [==[NUMBER_OVERLAYS_EXT]==],
+			["value"] = [==[0x1F02]==],
+			["name"] = [==[GPU_OPENGL_VERSION_STRING_AMD]==],
 			["extensions"] = {
-				[==[EXT_pixel_format]==],
+				[==[AMD_gpu_association]==],
 			},
 		},
 		{
@@ -3980,10 +4020,10 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x2003]==],
-			["name"] = [==[ACCELERATION_EXT]==],
+			["value"] = [==[0x21A0]==],
+			["name"] = [==[TYPE_RGBA_FLOAT_ARB]==],
 			["extensions"] = {
-				[==[EXT_pixel_format]==],
+				[==[ARB_pixel_format_float]==],
 			},
 		},
 		{
@@ -4001,10 +4041,10 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x2000]==],
-			["name"] = [==[NUMBER_PIXEL_FORMATS_EXT]==],
+			["value"] = [==[0x2013]==],
+			["name"] = [==[PIXEL_TYPE_ARB]==],
 			["extensions"] = {
-				[==[EXT_pixel_format]==],
+				[==[ARB_pixel_format]==],
 			},
 		},
 		{
@@ -4015,10 +4055,10 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x202F]==],
-			["name"] = [==[MAX_PBUFFER_WIDTH_EXT]==],
+			["value"] = [==[0x2030]==],
+			["name"] = [==[MAX_PBUFFER_HEIGHT_ARB]==],
 			["extensions"] = {
-				[==[EXT_pbuffer]==],
+				[==[ARB_pbuffer]==],
 			},
 		},
 		{
@@ -4029,17 +4069,17 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x2030]==],
-			["name"] = [==[MAX_PBUFFER_HEIGHT_ARB]==],
+			["value"] = [==[0x207C]==],
+			["name"] = [==[CUBE_MAP_FACE_ARB]==],
 			["extensions"] = {
-				[==[ARB_pbuffer]==],
+				[==[ARB_render_texture]==],
 			},
 		},
 		{
-			["value"] = [==[0x2082]==],
-			["name"] = [==[TEXTURE_CUBE_MAP_NEGATIVE_Z_ARB]==],
+			["value"] = [==[0x8252]==],
+			["name"] = [==[LOSE_CONTEXT_ON_RESET_ARB]==],
 			["extensions"] = {
-				[==[ARB_render_texture]==],
+				[==[ARB_create_context_robustness]==],
 			},
 		},
 		{
@@ -4050,10 +4090,10 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x208B]==],
-			["name"] = [==[AUX4_ARB]==],
+			["value"] = [==[0x1F00]==],
+			["name"] = [==[GPU_VENDOR_AMD]==],
 			["extensions"] = {
-				[==[ARB_render_texture]==],
+				[==[AMD_gpu_association]==],
 			},
 		},
 		{
@@ -4064,10 +4104,10 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x207C]==],
-			["name"] = [==[CUBE_MAP_FACE_ARB]==],
+			["value"] = [==[0x203B]==],
+			["name"] = [==[TRANSPARENT_INDEX_VALUE_ARB]==],
 			["extensions"] = {
-				[==[ARB_render_texture]==],
+				[==[ARB_pixel_format]==],
 			},
 		},
 		{
@@ -4078,17 +4118,17 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x2092]==],
-			["name"] = [==[CONTEXT_MINOR_VERSION_ARB]==],
+			["value"] = [==[0x2074]==],
+			["name"] = [==[MIPMAP_TEXTURE_ARB]==],
 			["extensions"] = {
-				[==[ARB_create_context]==],
+				[==[ARB_render_texture]==],
 			},
 		},
 		{
-			["value"] = [==[0x21A0]==],
-			["name"] = [==[TYPE_RGBA_FLOAT_ARB]==],
+			["value"] = [==[0x2073]==],
+			["name"] = [==[TEXTURE_TARGET_ARB]==],
 			["extensions"] = {
-				[==[ARB_pixel_format_float]==],
+				[==[ARB_render_texture]==],
 			},
 		},
 		{
@@ -4106,50 +4146,15 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x208E]==],
-			["name"] = [==[AUX7_ARB]==],
-			["extensions"] = {
-				[==[ARB_render_texture]==],
-			},
-		},
-		{
-			["value"] = [==[0x200D]==],
-			["name"] = [==[SHARE_STENCIL_ARB]==],
+			["value"] = [==[0x2029]==],
+			["name"] = [==[SWAP_COPY_ARB]==],
 			["extensions"] = {
 				[==[ARB_pixel_format]==],
 			},
 		},
 		{
-			["value"] = [==[0x2088]==],
-			["name"] = [==[AUX1_ARB]==],
-			["extensions"] = {
-				[==[ARB_render_texture]==],
-			},
-		},
-		{
-			["value"] = [==[0x2074]==],
-			["name"] = [==[MIPMAP_TEXTURE_ARB]==],
-			["extensions"] = {
-				[==[ARB_render_texture]==],
-			},
-		},
-		{
-			["value"] = [==[0x200F]==],
-			["name"] = [==[SUPPORT_GDI_ARB]==],
-			["extensions"] = {
-				[==[ARB_pixel_format]==],
-			},
-		},
-		{
-			["value"] = [==[0x2079]==],
-			["name"] = [==[TEXTURE_1D_ARB]==],
-			["extensions"] = {
-				[==[ARB_render_texture]==],
-			},
-		},
-		{
-			["value"] = [==[0x2003]==],
-			["name"] = [==[ACCELERATION_ARB]==],
+			["value"] = [==[0x201B]==],
+			["name"] = [==[ALPHA_BITS_ARB]==],
 			["extensions"] = {
 				[==[ARB_pixel_format]==],
 			},
@@ -4162,10 +4167,45 @@ return {
 			},
 		},
 		{
-			["value"] = [==[0x201B]==],
-			["name"] = [==[ALPHA_BITS_ARB]==],
+			["value"] = [==[0x2006]==],
+			["name"] = [==[SWAP_LAYER_BUFFERS_ARB]==],
 			["extensions"] = {
 				[==[ARB_pixel_format]==],
+			},
+		},
+		{
+			["value"] = [==[0x00000001]==],
+			["name"] = [==[CONTEXT_DEBUG_BIT_ARB]==],
+			["extensions"] = {
+				[==[ARB_create_context]==],
+			},
+		},
+		{
+			["value"] = [==[0x2018]==],
+			["name"] = [==[GREEN_SHIFT_ARB]==],
+			["extensions"] = {
+				[==[ARB_pixel_format]==],
+			},
+		},
+		{
+			["value"] = [==[0x00000004]==],
+			["name"] = [==[DEPTH_BUFFER_BIT_ARB]==],
+			["extensions"] = {
+				[==[ARB_buffer_region]==],
+			},
+		},
+		{
+			["value"] = [==[0x200D]==],
+			["name"] = [==[SHARE_STENCIL_ARB]==],
+			["extensions"] = {
+				[==[ARB_pixel_format]==],
+			},
+		},
+		{
+			["value"] = [==[0x2042]==],
+			["name"] = [==[SAMPLES_ARB]==],
+			["extensions"] = {
+				[==[ARB_multisample]==],
 			},
 		},
 	},

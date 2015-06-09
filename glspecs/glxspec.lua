@@ -51,6 +51,16 @@ typedef unsigned __int64 uint64_t;
 			[==[typedef struct __GLXFBConfigRec *GLXFBConfigSGIX;]==],
 			[==[typedef XID GLXPbufferSGIX;]==],
 			[==[typedef struct {
+    int type;
+    unsigned long serial;
+    Bool send_event;
+    Display *display;
+    int extension;
+    int evtype;
+    GLXDrawable window;
+    Bool stereo_tree;
+} GLXStereoNotifyEventEXT;]==],
+			[==[typedef struct {
     char    pipeName[80]; /* Should be [GLX_HYPERPIPE_PIPE_NAME_LENGTH_SGIX] */
     int     networkId;
 } GLXHyperpipeNetworkSGIX;]==],
@@ -336,40 +346,12 @@ typedef unsigned __int64 uint64_t;
 			},
 			{
 				["extensions"] = {
-					[==[SGIX_video_resize]==],
+					[==[SGI_make_current_read]==],
 				},
 				["parameters"] = {
-					{
-						["name"] = [==[display]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[screen]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[channel]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[x]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[y]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[w]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[h]==],
-						["ctype"] = [==[int]==],
-					},
 				},
-				["name"] = [==[ChannelRectSGIX]==],
-				["return_ctype"] = [==[int]==],
+				["name"] = [==[GetCurrentReadDrawableSGI]==],
+				["return_ctype"] = [==[GLXDrawable]==],
 			},
 			{
 				["extensions"] = {
@@ -433,622 +415,6 @@ typedef unsigned __int64 uint64_t;
 				},
 				["name"] = [==[BindVideoCaptureDeviceNV]==],
 				["return_ctype"] = [==[int]==],
-			},
-			{
-				["extensions"] = {
-					[==[SGIX_fbconfig]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[screen]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[attrib_list]==],
-						["ctype"] = [==[int *]==],
-					},
-					{
-						["name"] = [==[nelements]==],
-						["ctype"] = [==[int *]==],
-					},
-				},
-				["name"] = [==[ChooseFBConfigSGIX]==],
-				["return_ctype"] = [==[GLXFBConfigSGIX *]==],
-			},
-			{
-				["extensions"] = {
-					[==[EXT_import_context]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[context]==],
-						["ctype"] = [==[const GLXContext]==],
-					},
-				},
-				["name"] = [==[GetContextIDEXT]==],
-				["return_ctype"] = [==[GLXContextID]==],
-			},
-			{
-				["extensions"] = {
-					[==[NV_video_capture]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[device]==],
-						["ctype"] = [==[GLXVideoCaptureDeviceNV]==],
-					},
-					{
-						["name"] = [==[attribute]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[value]==],
-						["ctype"] = [==[int *]==],
-					},
-				},
-				["name"] = [==[QueryVideoCaptureDeviceNV]==],
-				["return_ctype"] = [==[int]==],
-			},
-			{
-				["extensions"] = {
-					[==[MESA_agp_offset]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[pointer]==],
-						["ctype"] = [==[const void *]==],
-					},
-				},
-				["name"] = [==[GetAGPOffsetMESA]==],
-				["return_ctype"] = [==[unsigned int]==],
-			},
-			{
-				["extensions"] = {
-					[==[NV_present_video]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[video_slot]==],
-						["ctype"] = [==[unsigned int]==],
-					},
-					{
-						["name"] = [==[video_device]==],
-						["ctype"] = [==[unsigned int]==],
-					},
-					{
-						["name"] = [==[attrib_list]==],
-						["ctype"] = [==[const int *]==],
-					},
-				},
-				["name"] = [==[BindVideoDeviceNV]==],
-				["return_ctype"] = [==[int]==],
-			},
-			{
-				["extensions"] = {
-					[==[SGIX_video_resize]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[display]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[screen]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[channel]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[synctype]==],
-						["ctype"] = [==[GLenum]==],
-					},
-				},
-				["name"] = [==[ChannelRectSyncSGIX]==],
-				["return_ctype"] = [==[int]==],
-			},
-			{
-				["extensions"] = {
-					[==[SGIX_fbconfig]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[vis]==],
-						["ctype"] = [==[XVisualInfo *]==],
-					},
-				},
-				["name"] = [==[GetFBConfigFromVisualSGIX]==],
-				["return_ctype"] = [==[GLXFBConfigSGIX]==],
-			},
-			{
-				["extensions"] = {
-					[==[NV_video_output]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[VideoDevice]==],
-						["ctype"] = [==[GLXVideoDeviceNV]==],
-					},
-					{
-						["name"] = [==[pbuf]==],
-						["ctype"] = [==[GLXPbuffer]==],
-					},
-					{
-						["name"] = [==[iVideoBuffer]==],
-						["ctype"] = [==[int]==],
-					},
-				},
-				["name"] = [==[BindVideoImageNV]==],
-				["return_ctype"] = [==[int]==],
-			},
-			{
-				["extensions"] = {
-					[==[SGI_swap_control]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[interval]==],
-						["ctype"] = [==[int]==],
-					},
-				},
-				["name"] = [==[SwapIntervalSGI]==],
-				["return_ctype"] = [==[int]==],
-			},
-			{
-				["extensions"] = {
-					[==[SGI_make_current_read]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[draw]==],
-						["ctype"] = [==[GLXDrawable]==],
-					},
-					{
-						["name"] = [==[read]==],
-						["ctype"] = [==[GLXDrawable]==],
-					},
-					{
-						["name"] = [==[ctx]==],
-						["ctype"] = [==[GLXContext]==],
-					},
-				},
-				["name"] = [==[MakeCurrentReadSGI]==],
-				["return_ctype"] = [==[Bool]==],
-			},
-			{
-				["extensions"] = {
-					[==[OML_sync_control]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[drawable]==],
-						["ctype"] = [==[GLXDrawable]==],
-					},
-					{
-						["name"] = [==[target_msc]==],
-						["ctype"] = [==[int64_t]==],
-					},
-					{
-						["name"] = [==[divisor]==],
-						["ctype"] = [==[int64_t]==],
-					},
-					{
-						["name"] = [==[remainder]==],
-						["ctype"] = [==[int64_t]==],
-					},
-				},
-				["name"] = [==[SwapBuffersMscOML]==],
-				["return_ctype"] = [==[int64_t]==],
-			},
-			{
-				["extensions"] = {
-					[==[SGIX_pbuffer]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[drawable]==],
-						["ctype"] = [==[GLXDrawable]==],
-					},
-					{
-						["name"] = [==[mask]==],
-						["ctype"] = [==[unsigned long *]==],
-					},
-				},
-				["name"] = [==[GetSelectedEventSGIX]==],
-				["return_ctype"] = [==[void]==],
-			},
-			{
-				["extensions"] = {
-					[==[NV_video_output]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[screen]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[VideoDevice]==],
-						["ctype"] = [==[GLXVideoDeviceNV]==],
-					},
-				},
-				["name"] = [==[ReleaseVideoDeviceNV]==],
-				["return_ctype"] = [==[int]==],
-			},
-			{
-				["extensions"] = {
-					[==[ARB_create_context]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[config]==],
-						["ctype"] = [==[GLXFBConfig]==],
-					},
-					{
-						["name"] = [==[share_context]==],
-						["ctype"] = [==[GLXContext]==],
-					},
-					{
-						["name"] = [==[direct]==],
-						["ctype"] = [==[Bool]==],
-					},
-					{
-						["name"] = [==[attrib_list]==],
-						["ctype"] = [==[const int *]==],
-					},
-				},
-				["name"] = [==[CreateContextAttribsARB]==],
-				["return_ctype"] = [==[GLXContext]==],
-			},
-			{
-				["extensions"] = {
-					[==[EXT_import_context]==],
-				},
-				["parameters"] = {
-				},
-				["name"] = [==[GetCurrentDisplayEXT]==],
-				["return_ctype"] = [==[Display *]==],
-			},
-			{
-				["extensions"] = {
-					[==[SGIX_pbuffer]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[pbuf]==],
-						["ctype"] = [==[GLXPbufferSGIX]==],
-					},
-				},
-				["name"] = [==[DestroyGLXPbufferSGIX]==],
-				["return_ctype"] = [==[void]==],
-			},
-			{
-				["extensions"] = {
-					[==[SGIX_pbuffer]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[config]==],
-						["ctype"] = [==[GLXFBConfigSGIX]==],
-					},
-					{
-						["name"] = [==[width]==],
-						["ctype"] = [==[unsigned int]==],
-					},
-					{
-						["name"] = [==[height]==],
-						["ctype"] = [==[unsigned int]==],
-					},
-					{
-						["name"] = [==[attrib_list]==],
-						["ctype"] = [==[int *]==],
-					},
-				},
-				["name"] = [==[CreateGLXPbufferSGIX]==],
-				["return_ctype"] = [==[GLXPbufferSGIX]==],
-			},
-			{
-				["extensions"] = {
-					[==[NV_video_capture]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[screen]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[nelements]==],
-						["ctype"] = [==[int *]==],
-					},
-				},
-				["name"] = [==[EnumerateVideoCaptureDevicesNV]==],
-				["return_ctype"] = [==[GLXVideoCaptureDeviceNV *]==],
-			},
-			{
-				["extensions"] = {
-					[==[OML_sync_control]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[drawable]==],
-						["ctype"] = [==[GLXDrawable]==],
-					},
-					{
-						["name"] = [==[numerator]==],
-						["ctype"] = [==[int32_t *]==],
-					},
-					{
-						["name"] = [==[denominator]==],
-						["ctype"] = [==[int32_t *]==],
-					},
-				},
-				["name"] = [==[GetMscRateOML]==],
-				["return_ctype"] = [==[Bool]==],
-			},
-			{
-				["extensions"] = {
-					[==[SGIX_pbuffer]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[drawable]==],
-						["ctype"] = [==[GLXDrawable]==],
-					},
-					{
-						["name"] = [==[mask]==],
-						["ctype"] = [==[unsigned long]==],
-					},
-				},
-				["name"] = [==[SelectEventSGIX]==],
-				["return_ctype"] = [==[void]==],
-			},
-			{
-				["extensions"] = {
-					[==[MESA_copy_sub_buffer]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[drawable]==],
-						["ctype"] = [==[GLXDrawable]==],
-					},
-					{
-						["name"] = [==[x]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[y]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[width]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[height]==],
-						["ctype"] = [==[int]==],
-					},
-				},
-				["name"] = [==[CopySubBufferMESA]==],
-				["return_ctype"] = [==[void]==],
-			},
-			{
-				["extensions"] = {
-					[==[SGIX_dmbuffer]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[pbuffer]==],
-						["ctype"] = [==[GLXPbufferSGIX]==],
-					},
-					{
-						["name"] = [==[params]==],
-						["ctype"] = [==[DMparams *]==],
-					},
-					{
-						["name"] = [==[dmbuffer]==],
-						["ctype"] = [==[DMbuffer]==],
-					},
-				},
-				["name"] = [==[AssociateDMPbufferSGIX]==],
-				["return_ctype"] = [==[Bool]==],
-			},
-			{
-				["extensions"] = {
-					[==[SGIX_hyperpipe]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[networkId]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[npipes]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[cfg]==],
-						["ctype"] = [==[GLXHyperpipeConfigSGIX *]==],
-					},
-					{
-						["name"] = [==[hpId]==],
-						["ctype"] = [==[int *]==],
-					},
-				},
-				["name"] = [==[HyperpipeConfigSGIX]==],
-				["return_ctype"] = [==[int]==],
-			},
-			{
-				["extensions"] = {
-					[==[EXT_swap_control]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[drawable]==],
-						["ctype"] = [==[GLXDrawable]==],
-					},
-					{
-						["name"] = [==[interval]==],
-						["ctype"] = [==[int]==],
-					},
-				},
-				["name"] = [==[SwapIntervalEXT]==],
-				["return_ctype"] = [==[void]==],
-			},
-			{
-				["extensions"] = {
-					[==[EXT_import_context]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[context]==],
-						["ctype"] = [==[GLXContext]==],
-					},
-					{
-						["name"] = [==[attribute]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[value]==],
-						["ctype"] = [==[int *]==],
-					},
-				},
-				["name"] = [==[QueryContextInfoEXT]==],
-				["return_ctype"] = [==[int]==],
-			},
-			{
-				["extensions"] = {
-					[==[SGIX_fbconfig]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[config]==],
-						["ctype"] = [==[GLXFBConfigSGIX]==],
-					},
-				},
-				["name"] = [==[GetVisualFromFBConfigSGIX]==],
-				["return_ctype"] = [==[XVisualInfo *]==],
-			},
-			{
-				["extensions"] = {
-					[==[NV_present_video]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[screen]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[nelements]==],
-						["ctype"] = [==[int *]==],
-					},
-				},
-				["name"] = [==[EnumerateVideoDevicesNV]==],
-				["return_ctype"] = [==[unsigned int *]==],
-			},
-			{
-				["extensions"] = {
-					[==[NV_swap_group]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[screen]==],
-						["ctype"] = [==[int]==],
-					},
-				},
-				["name"] = [==[ResetFrameCountNV]==],
-				["return_ctype"] = [==[Bool]==],
 			},
 			{
 				["extensions"] = {
@@ -1133,6 +499,19 @@ typedef unsigned __int64 uint64_t;
 			},
 			{
 				["extensions"] = {
+					[==[EXT_import_context]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[context]==],
+						["ctype"] = [==[const GLXContext]==],
+					},
+				},
+				["name"] = [==[GetContextIDEXT]==],
+				["return_ctype"] = [==[GLXContextID]==],
+			},
+			{
+				["extensions"] = {
 					[==[NV_video_capture]==],
 				},
 				["parameters"] = {
@@ -1144,9 +523,1060 @@ typedef unsigned __int64 uint64_t;
 						["name"] = [==[device]==],
 						["ctype"] = [==[GLXVideoCaptureDeviceNV]==],
 					},
+					{
+						["name"] = [==[attribute]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[value]==],
+						["ctype"] = [==[int *]==],
+					},
 				},
-				["name"] = [==[ReleaseVideoCaptureDeviceNV]==],
+				["name"] = [==[QueryVideoCaptureDeviceNV]==],
+				["return_ctype"] = [==[int]==],
+			},
+			{
+				["extensions"] = {
+					[==[MESA_agp_offset]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[pointer]==],
+						["ctype"] = [==[const void *]==],
+					},
+				},
+				["name"] = [==[GetAGPOffsetMESA]==],
+				["return_ctype"] = [==[unsigned int]==],
+			},
+			{
+				["extensions"] = {
+					[==[NV_present_video]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[video_slot]==],
+						["ctype"] = [==[unsigned int]==],
+					},
+					{
+						["name"] = [==[video_device]==],
+						["ctype"] = [==[unsigned int]==],
+					},
+					{
+						["name"] = [==[attrib_list]==],
+						["ctype"] = [==[const int *]==],
+					},
+				},
+				["name"] = [==[BindVideoDeviceNV]==],
+				["return_ctype"] = [==[int]==],
+			},
+			{
+				["extensions"] = {
+					[==[MESA_query_renderer]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[attribute]==],
+						["ctype"] = [==[int]==],
+					},
+				},
+				["name"] = [==[QueryCurrentRendererStringMESA]==],
+				["return_ctype"] = [==[const char *]==],
+			},
+			{
+				["extensions"] = {
+					[==[NV_swap_group]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[screen]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[count]==],
+						["ctype"] = [==[GLuint *]==],
+					},
+				},
+				["name"] = [==[QueryFrameCountNV]==],
+				["return_ctype"] = [==[Bool]==],
+			},
+			{
+				["extensions"] = {
+					[==[MESA_query_renderer]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[screen]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[renderer]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[attribute]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[value]==],
+						["ctype"] = [==[unsigned int *]==],
+					},
+				},
+				["name"] = [==[QueryRendererIntegerMESA]==],
+				["return_ctype"] = [==[Bool]==],
+			},
+			{
+				["extensions"] = {
+					[==[AMD_gpu_association]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dstCtx]==],
+						["ctype"] = [==[GLXContext]==],
+					},
+					{
+						["name"] = [==[srcX0]==],
+						["ctype"] = [==[GLint]==],
+					},
+					{
+						["name"] = [==[srcY0]==],
+						["ctype"] = [==[GLint]==],
+					},
+					{
+						["name"] = [==[srcX1]==],
+						["ctype"] = [==[GLint]==],
+					},
+					{
+						["name"] = [==[srcY1]==],
+						["ctype"] = [==[GLint]==],
+					},
+					{
+						["name"] = [==[dstX0]==],
+						["ctype"] = [==[GLint]==],
+					},
+					{
+						["name"] = [==[dstY0]==],
+						["ctype"] = [==[GLint]==],
+					},
+					{
+						["name"] = [==[dstX1]==],
+						["ctype"] = [==[GLint]==],
+					},
+					{
+						["name"] = [==[dstY1]==],
+						["ctype"] = [==[GLint]==],
+					},
+					{
+						["name"] = [==[mask]==],
+						["ctype"] = [==[GLbitfield]==],
+					},
+					{
+						["name"] = [==[filter]==],
+						["ctype"] = [==[GLenum]==],
+					},
+				},
+				["name"] = [==[BlitContextFramebufferAMD]==],
 				["return_ctype"] = [==[void]==],
+			},
+			{
+				["extensions"] = {
+					[==[AMD_gpu_association]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[ctx]==],
+						["ctype"] = [==[GLXContext]==],
+					},
+				},
+				["name"] = [==[MakeAssociatedContextCurrentAMD]==],
+				["return_ctype"] = [==[Bool]==],
+			},
+			{
+				["extensions"] = {
+					[==[SGI_swap_control]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[interval]==],
+						["ctype"] = [==[int]==],
+					},
+				},
+				["name"] = [==[SwapIntervalSGI]==],
+				["return_ctype"] = [==[int]==],
+			},
+			{
+				["extensions"] = {
+					[==[SGI_make_current_read]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[draw]==],
+						["ctype"] = [==[GLXDrawable]==],
+					},
+					{
+						["name"] = [==[read]==],
+						["ctype"] = [==[GLXDrawable]==],
+					},
+					{
+						["name"] = [==[ctx]==],
+						["ctype"] = [==[GLXContext]==],
+					},
+				},
+				["name"] = [==[MakeCurrentReadSGI]==],
+				["return_ctype"] = [==[Bool]==],
+			},
+			{
+				["extensions"] = {
+					[==[AMD_gpu_association]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[id]==],
+						["ctype"] = [==[unsigned int]==],
+					},
+					{
+						["name"] = [==[share_list]==],
+						["ctype"] = [==[GLXContext]==],
+					},
+				},
+				["name"] = [==[CreateAssociatedContextAMD]==],
+				["return_ctype"] = [==[GLXContext]==],
+			},
+			{
+				["extensions"] = {
+					[==[OML_sync_control]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[drawable]==],
+						["ctype"] = [==[GLXDrawable]==],
+					},
+					{
+						["name"] = [==[target_msc]==],
+						["ctype"] = [==[int64_t]==],
+					},
+					{
+						["name"] = [==[divisor]==],
+						["ctype"] = [==[int64_t]==],
+					},
+					{
+						["name"] = [==[remainder]==],
+						["ctype"] = [==[int64_t]==],
+					},
+				},
+				["name"] = [==[SwapBuffersMscOML]==],
+				["return_ctype"] = [==[int64_t]==],
+			},
+			{
+				["extensions"] = {
+					[==[SGIX_pbuffer]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[drawable]==],
+						["ctype"] = [==[GLXDrawable]==],
+					},
+					{
+						["name"] = [==[mask]==],
+						["ctype"] = [==[unsigned long *]==],
+					},
+				},
+				["name"] = [==[GetSelectedEventSGIX]==],
+				["return_ctype"] = [==[void]==],
+			},
+			{
+				["extensions"] = {
+					[==[NV_video_out]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[screen]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[VideoDevice]==],
+						["ctype"] = [==[GLXVideoDeviceNV]==],
+					},
+				},
+				["name"] = [==[ReleaseVideoDeviceNV]==],
+				["return_ctype"] = [==[int]==],
+			},
+			{
+				["extensions"] = {
+					[==[ARB_create_context]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[config]==],
+						["ctype"] = [==[GLXFBConfig]==],
+					},
+					{
+						["name"] = [==[share_context]==],
+						["ctype"] = [==[GLXContext]==],
+					},
+					{
+						["name"] = [==[direct]==],
+						["ctype"] = [==[Bool]==],
+					},
+					{
+						["name"] = [==[attrib_list]==],
+						["ctype"] = [==[const int *]==],
+					},
+				},
+				["name"] = [==[CreateContextAttribsARB]==],
+				["return_ctype"] = [==[GLXContext]==],
+			},
+			{
+				["extensions"] = {
+					[==[EXT_import_context]==],
+				},
+				["parameters"] = {
+				},
+				["name"] = [==[GetCurrentDisplayEXT]==],
+				["return_ctype"] = [==[Display *]==],
+			},
+			{
+				["extensions"] = {
+					[==[SGIX_pbuffer]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[pbuf]==],
+						["ctype"] = [==[GLXPbufferSGIX]==],
+					},
+				},
+				["name"] = [==[DestroyGLXPbufferSGIX]==],
+				["return_ctype"] = [==[void]==],
+			},
+			{
+				["extensions"] = {
+					[==[MESA_pixmap_colormap]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[visual]==],
+						["ctype"] = [==[XVisualInfo *]==],
+					},
+					{
+						["name"] = [==[pixmap]==],
+						["ctype"] = [==[Pixmap]==],
+					},
+					{
+						["name"] = [==[cmap]==],
+						["ctype"] = [==[Colormap]==],
+					},
+				},
+				["name"] = [==[CreateGLXPixmapMESA]==],
+				["return_ctype"] = [==[GLXPixmap]==],
+			},
+			{
+				["extensions"] = {
+					[==[NV_video_out]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[screen]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[numVideoDevices]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[pVideoDevice]==],
+						["ctype"] = [==[GLXVideoDeviceNV *]==],
+					},
+				},
+				["name"] = [==[GetVideoDeviceNV]==],
+				["return_ctype"] = [==[int]==],
+			},
+			{
+				["extensions"] = {
+					[==[NV_video_capture]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[screen]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[nelements]==],
+						["ctype"] = [==[int *]==],
+					},
+				},
+				["name"] = [==[EnumerateVideoCaptureDevicesNV]==],
+				["return_ctype"] = [==[GLXVideoCaptureDeviceNV *]==],
+			},
+			{
+				["extensions"] = {
+					[==[OML_sync_control]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[drawable]==],
+						["ctype"] = [==[GLXDrawable]==],
+					},
+					{
+						["name"] = [==[numerator]==],
+						["ctype"] = [==[int32_t *]==],
+					},
+					{
+						["name"] = [==[denominator]==],
+						["ctype"] = [==[int32_t *]==],
+					},
+				},
+				["name"] = [==[GetMscRateOML]==],
+				["return_ctype"] = [==[Bool]==],
+			},
+			{
+				["extensions"] = {
+					[==[SGIX_pbuffer]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[drawable]==],
+						["ctype"] = [==[GLXDrawable]==],
+					},
+					{
+						["name"] = [==[mask]==],
+						["ctype"] = [==[unsigned long]==],
+					},
+				},
+				["name"] = [==[SelectEventSGIX]==],
+				["return_ctype"] = [==[void]==],
+			},
+			{
+				["extensions"] = {
+					[==[NV_swap_group]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[group]==],
+						["ctype"] = [==[GLuint]==],
+					},
+					{
+						["name"] = [==[barrier]==],
+						["ctype"] = [==[GLuint]==],
+					},
+				},
+				["name"] = [==[BindSwapBarrierNV]==],
+				["return_ctype"] = [==[Bool]==],
+			},
+			{
+				["extensions"] = {
+					[==[SGIX_video_source]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[display]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[screen]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[server]==],
+						["ctype"] = [==[VLServer]==],
+					},
+					{
+						["name"] = [==[path]==],
+						["ctype"] = [==[VLPath]==],
+					},
+					{
+						["name"] = [==[nodeClass]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[drainNode]==],
+						["ctype"] = [==[VLNode]==],
+					},
+				},
+				["name"] = [==[CreateGLXVideoSourceSGIX]==],
+				["return_ctype"] = [==[GLXVideoSourceSGIX]==],
+			},
+			{
+				["extensions"] = {
+					[==[MESA_copy_sub_buffer]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[drawable]==],
+						["ctype"] = [==[GLXDrawable]==],
+					},
+					{
+						["name"] = [==[x]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[y]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[width]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[height]==],
+						["ctype"] = [==[int]==],
+					},
+				},
+				["name"] = [==[CopySubBufferMESA]==],
+				["return_ctype"] = [==[void]==],
+			},
+			{
+				["extensions"] = {
+					[==[SGI_video_sync]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[divisor]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[remainder]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[count]==],
+						["ctype"] = [==[unsigned int *]==],
+					},
+				},
+				["name"] = [==[WaitVideoSyncSGI]==],
+				["return_ctype"] = [==[int]==],
+			},
+			{
+				["extensions"] = {
+					[==[SGIX_video_resize]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[display]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[screen]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[channel]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[synctype]==],
+						["ctype"] = [==[GLenum]==],
+					},
+				},
+				["name"] = [==[ChannelRectSyncSGIX]==],
+				["return_ctype"] = [==[int]==],
+			},
+			{
+				["extensions"] = {
+					[==[NV_delay_before_swap]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[drawable]==],
+						["ctype"] = [==[GLXDrawable]==],
+					},
+					{
+						["name"] = [==[seconds]==],
+						["ctype"] = [==[GLfloat]==],
+					},
+				},
+				["name"] = [==[DelayBeforeSwapNV]==],
+				["return_ctype"] = [==[Bool]==],
+			},
+			{
+				["extensions"] = {
+					[==[SGIX_hyperpipe]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[networkId]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[npipes]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[cfg]==],
+						["ctype"] = [==[GLXHyperpipeConfigSGIX *]==],
+					},
+					{
+						["name"] = [==[hpId]==],
+						["ctype"] = [==[int *]==],
+					},
+				},
+				["name"] = [==[HyperpipeConfigSGIX]==],
+				["return_ctype"] = [==[int]==],
+			},
+			{
+				["extensions"] = {
+					[==[EXT_swap_control]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[drawable]==],
+						["ctype"] = [==[GLXDrawable]==],
+					},
+					{
+						["name"] = [==[interval]==],
+						["ctype"] = [==[int]==],
+					},
+				},
+				["name"] = [==[SwapIntervalEXT]==],
+				["return_ctype"] = [==[void]==],
+			},
+			{
+				["extensions"] = {
+					[==[SGIX_video_resize]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[display]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[screen]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[channel]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[x]==],
+						["ctype"] = [==[int *]==],
+					},
+					{
+						["name"] = [==[y]==],
+						["ctype"] = [==[int *]==],
+					},
+					{
+						["name"] = [==[w]==],
+						["ctype"] = [==[int *]==],
+					},
+					{
+						["name"] = [==[h]==],
+						["ctype"] = [==[int *]==],
+					},
+				},
+				["name"] = [==[QueryChannelDeltasSGIX]==],
+				["return_ctype"] = [==[int]==],
+			},
+			{
+				["extensions"] = {
+					[==[SGIX_video_resize]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[display]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[screen]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[channel]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[x]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[y]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[w]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[h]==],
+						["ctype"] = [==[int]==],
+					},
+				},
+				["name"] = [==[ChannelRectSGIX]==],
+				["return_ctype"] = [==[int]==],
+			},
+			{
+				["extensions"] = {
+					[==[SGIX_video_resize]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[display]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[screen]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[channel]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[window]==],
+						["ctype"] = [==[Window]==],
+					},
+				},
+				["name"] = [==[BindChannelToWindowSGIX]==],
+				["return_ctype"] = [==[int]==],
+			},
+			{
+				["extensions"] = {
+					[==[EXT_import_context]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[context]==],
+						["ctype"] = [==[GLXContext]==],
+					},
+					{
+						["name"] = [==[attribute]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[value]==],
+						["ctype"] = [==[int *]==],
+					},
+				},
+				["name"] = [==[QueryContextInfoEXT]==],
+				["return_ctype"] = [==[int]==],
+			},
+			{
+				["extensions"] = {
+					[==[SGIX_fbconfig]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[config]==],
+						["ctype"] = [==[GLXFBConfigSGIX]==],
+					},
+				},
+				["name"] = [==[GetVisualFromFBConfigSGIX]==],
+				["return_ctype"] = [==[XVisualInfo *]==],
+			},
+			{
+				["extensions"] = {
+					[==[SGIX_fbconfig]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[screen]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[attrib_list]==],
+						["ctype"] = [==[int *]==],
+					},
+					{
+						["name"] = [==[nelements]==],
+						["ctype"] = [==[int *]==],
+					},
+				},
+				["name"] = [==[ChooseFBConfigSGIX]==],
+				["return_ctype"] = [==[GLXFBConfigSGIX *]==],
+			},
+			{
+				["extensions"] = {
+					[==[NV_present_video]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[screen]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[nelements]==],
+						["ctype"] = [==[int *]==],
+					},
+				},
+				["name"] = [==[EnumerateVideoDevicesNV]==],
+				["return_ctype"] = [==[unsigned int *]==],
+			},
+			{
+				["extensions"] = {
+					[==[SGIX_swap_barrier]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[screen]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[max]==],
+						["ctype"] = [==[int *]==],
+					},
+				},
+				["name"] = [==[QueryMaxSwapBarriersSGIX]==],
+				["return_ctype"] = [==[Bool]==],
+			},
+			{
+				["extensions"] = {
+					[==[SGIX_fbconfig]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[config]==],
+						["ctype"] = [==[GLXFBConfigSGIX]==],
+					},
+					{
+						["name"] = [==[render_type]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[share_list]==],
+						["ctype"] = [==[GLXContext]==],
+					},
+					{
+						["name"] = [==[direct]==],
+						["ctype"] = [==[Bool]==],
+					},
+				},
+				["name"] = [==[CreateContextWithConfigSGIX]==],
+				["return_ctype"] = [==[GLXContext]==],
+			},
+			{
+				["extensions"] = {
+					[==[NV_copy_buffer]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[readCtx]==],
+						["ctype"] = [==[GLXContext]==],
+					},
+					{
+						["name"] = [==[writeCtx]==],
+						["ctype"] = [==[GLXContext]==],
+					},
+					{
+						["name"] = [==[readBuffer]==],
+						["ctype"] = [==[GLuint]==],
+					},
+					{
+						["name"] = [==[writeBuffer]==],
+						["ctype"] = [==[GLuint]==],
+					},
+					{
+						["name"] = [==[readOffset]==],
+						["ctype"] = [==[GLintptr]==],
+					},
+					{
+						["name"] = [==[writeOffset]==],
+						["ctype"] = [==[GLintptr]==],
+					},
+					{
+						["name"] = [==[size]==],
+						["ctype"] = [==[GLsizeiptr]==],
+					},
+				},
+				["name"] = [==[NamedCopyBufferSubDataNV]==],
+				["return_ctype"] = [==[void]==],
+			},
+			{
+				["extensions"] = {
+					[==[SGIX_pbuffer]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[config]==],
+						["ctype"] = [==[GLXFBConfigSGIX]==],
+					},
+					{
+						["name"] = [==[width]==],
+						["ctype"] = [==[unsigned int]==],
+					},
+					{
+						["name"] = [==[height]==],
+						["ctype"] = [==[unsigned int]==],
+					},
+					{
+						["name"] = [==[attrib_list]==],
+						["ctype"] = [==[int *]==],
+					},
+				},
+				["name"] = [==[CreateGLXPbufferSGIX]==],
+				["return_ctype"] = [==[GLXPbufferSGIX]==],
+			},
+			{
+				["extensions"] = {
+					[==[SGIX_hyperpipe]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[timeSlice]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[attrib]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[size]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[returnAttribList]==],
+						["ctype"] = [==[void *]==],
+					},
+				},
+				["name"] = [==[QueryHyperpipeAttribSGIX]==],
+				["return_ctype"] = [==[int]==],
+			},
+			{
+				["extensions"] = {
+					[==[SGIX_hyperpipe]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[timeSlice]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[attrib]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[size]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[attribList]==],
+						["ctype"] = [==[void *]==],
+					},
+				},
+				["name"] = [==[HyperpipeAttribSGIX]==],
+				["return_ctype"] = [==[int]==],
+			},
+			{
+				["extensions"] = {
+					[==[AMD_gpu_association]==],
+				},
+				["parameters"] = {
+				},
+				["name"] = [==[GetCurrentAssociatedContextAMD]==],
+				["return_ctype"] = [==[GLXContext]==],
 			},
 			{
 				["extensions"] = {
@@ -1175,24 +1605,24 @@ typedef unsigned __int64 uint64_t;
 			},
 			{
 				["extensions"] = {
-					[==[NV_video_capture]==],
+					[==[MESA_query_renderer]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
+						["name"] = [==[attribute]==],
+						["ctype"] = [==[int]==],
 					},
 					{
-						["name"] = [==[device]==],
-						["ctype"] = [==[GLXVideoCaptureDeviceNV]==],
+						["name"] = [==[value]==],
+						["ctype"] = [==[unsigned int *]==],
 					},
 				},
-				["name"] = [==[LockVideoCaptureDeviceNV]==],
-				["return_ctype"] = [==[void]==],
+				["name"] = [==[QueryCurrentRendererIntegerMESA]==],
+				["return_ctype"] = [==[Bool]==],
 			},
 			{
 				["extensions"] = {
-					[==[NV_video_output]==],
+					[==[NV_video_out]==],
 				},
 				["parameters"] = {
 					{
@@ -1221,7 +1651,7 @@ typedef unsigned __int64 uint64_t;
 			},
 			{
 				["extensions"] = {
-					[==[NV_swap_group]==],
+					[==[SGIX_hyperpipe]==],
 				},
 				["parameters"] = {
 					{
@@ -1229,20 +1659,16 @@ typedef unsigned __int64 uint64_t;
 						["ctype"] = [==[Display *]==],
 					},
 					{
-						["name"] = [==[screen]==],
+						["name"] = [==[hpId]==],
 						["ctype"] = [==[int]==],
 					},
-					{
-						["name"] = [==[count]==],
-						["ctype"] = [==[GLuint *]==],
-					},
 				},
-				["name"] = [==[QueryFrameCountNV]==],
-				["return_ctype"] = [==[Bool]==],
+				["name"] = [==[DestroyHyperpipeConfigSGIX]==],
+				["return_ctype"] = [==[int]==],
 			},
 			{
 				["extensions"] = {
-					[==[NV_swap_group]==],
+					[==[SGIX_hyperpipe]==],
 				},
 				["parameters"] = {
 					{
@@ -1250,20 +1676,16 @@ typedef unsigned __int64 uint64_t;
 						["ctype"] = [==[Display *]==],
 					},
 					{
-						["name"] = [==[group]==],
-						["ctype"] = [==[GLuint]==],
-					},
-					{
-						["name"] = [==[barrier]==],
-						["ctype"] = [==[GLuint]==],
+						["name"] = [==[npipes]==],
+						["ctype"] = [==[int *]==],
 					},
 				},
-				["name"] = [==[BindSwapBarrierNV]==],
-				["return_ctype"] = [==[Bool]==],
+				["name"] = [==[QueryHyperpipeNetworkSGIX]==],
+				["return_ctype"] = [==[GLXHyperpipeNetworkSGIX *]==],
 			},
 			{
 				["extensions"] = {
-					[==[OML_sync_control]==],
+					[==[SGIX_fbconfig]==],
 				},
 				["parameters"] = {
 					{
@@ -1271,36 +1693,12 @@ typedef unsigned __int64 uint64_t;
 						["ctype"] = [==[Display *]==],
 					},
 					{
-						["name"] = [==[drawable]==],
-						["ctype"] = [==[GLXDrawable]==],
-					},
-					{
-						["name"] = [==[target_msc]==],
-						["ctype"] = [==[int64_t]==],
-					},
-					{
-						["name"] = [==[divisor]==],
-						["ctype"] = [==[int64_t]==],
-					},
-					{
-						["name"] = [==[remainder]==],
-						["ctype"] = [==[int64_t]==],
-					},
-					{
-						["name"] = [==[ust]==],
-						["ctype"] = [==[int64_t *]==],
-					},
-					{
-						["name"] = [==[msc]==],
-						["ctype"] = [==[int64_t *]==],
-					},
-					{
-						["name"] = [==[sbc]==],
-						["ctype"] = [==[int64_t *]==],
+						["name"] = [==[vis]==],
+						["ctype"] = [==[XVisualInfo *]==],
 					},
 				},
-				["name"] = [==[WaitForMscOML]==],
-				["return_ctype"] = [==[Bool]==],
+				["name"] = [==[GetFBConfigFromVisualSGIX]==],
+				["return_ctype"] = [==[GLXFBConfigSGIX]==],
 			},
 			{
 				["extensions"] = {
@@ -1355,11 +1753,11 @@ typedef unsigned __int64 uint64_t;
 			},
 			{
 				["extensions"] = {
-					[==[SGIX_video_resize]==],
+					[==[MESA_query_renderer]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[display]==],
+						["name"] = [==[dpy]==],
 						["ctype"] = [==[Display *]==],
 					},
 					{
@@ -1367,16 +1765,16 @@ typedef unsigned __int64 uint64_t;
 						["ctype"] = [==[int]==],
 					},
 					{
-						["name"] = [==[channel]==],
+						["name"] = [==[renderer]==],
 						["ctype"] = [==[int]==],
 					},
 					{
-						["name"] = [==[window]==],
-						["ctype"] = [==[Window]==],
+						["name"] = [==[attribute]==],
+						["ctype"] = [==[int]==],
 					},
 				},
-				["name"] = [==[BindChannelToWindowSGIX]==],
-				["return_ctype"] = [==[int]==],
+				["name"] = [==[QueryRendererStringMESA]==],
+				["return_ctype"] = [==[const char *]==],
 			},
 			{
 				["extensions"] = {
@@ -1398,312 +1796,6 @@ typedef unsigned __int64 uint64_t;
 				},
 				["name"] = [==[JoinSwapGroupSGIX]==],
 				["return_ctype"] = [==[void]==],
-			},
-			{
-				["extensions"] = {
-					[==[NV_video_output]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[pbuf]==],
-						["ctype"] = [==[GLXPbuffer]==],
-					},
-					{
-						["name"] = [==[iBufferType]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[pulCounterPbuffer]==],
-						["ctype"] = [==[unsigned long *]==],
-					},
-					{
-						["name"] = [==[bBlock]==],
-						["ctype"] = [==[GLboolean]==],
-					},
-				},
-				["name"] = [==[SendPbufferToVideoNV]==],
-				["return_ctype"] = [==[int]==],
-			},
-			{
-				["extensions"] = {
-					[==[NV_video_output]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[screen]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[numVideoDevices]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[pVideoDevice]==],
-						["ctype"] = [==[GLXVideoDeviceNV *]==],
-					},
-				},
-				["name"] = [==[GetVideoDeviceNV]==],
-				["return_ctype"] = [==[int]==],
-			},
-			{
-				["extensions"] = {
-					[==[MESA_set_3dfx_mode]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[mode]==],
-						["ctype"] = [==[int]==],
-					},
-				},
-				["name"] = [==[Set3DfxModeMESA]==],
-				["return_ctype"] = [==[Bool]==],
-			},
-			{
-				["extensions"] = {
-					[==[SGIX_hyperpipe]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[timeSlice]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[attrib]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[size]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[returnAttribList]==],
-						["ctype"] = [==[void *]==],
-					},
-				},
-				["name"] = [==[QueryHyperpipeAttribSGIX]==],
-				["return_ctype"] = [==[int]==],
-			},
-			{
-				["extensions"] = {
-					[==[SGIX_hyperpipe]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[npipes]==],
-						["ctype"] = [==[int *]==],
-					},
-				},
-				["name"] = [==[QueryHyperpipeNetworkSGIX]==],
-				["return_ctype"] = [==[GLXHyperpipeNetworkSGIX *]==],
-			},
-			{
-				["extensions"] = {
-					[==[SGI_video_sync]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[divisor]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[remainder]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[count]==],
-						["ctype"] = [==[unsigned int *]==],
-					},
-				},
-				["name"] = [==[WaitVideoSyncSGI]==],
-				["return_ctype"] = [==[int]==],
-			},
-			{
-				["extensions"] = {
-					[==[SGIX_swap_barrier]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[screen]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[max]==],
-						["ctype"] = [==[int *]==],
-					},
-				},
-				["name"] = [==[QueryMaxSwapBarriersSGIX]==],
-				["return_ctype"] = [==[Bool]==],
-			},
-			{
-				["extensions"] = {
-					[==[NV_video_output]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[pbuf]==],
-						["ctype"] = [==[GLXPbuffer]==],
-					},
-				},
-				["name"] = [==[ReleaseVideoImageNV]==],
-				["return_ctype"] = [==[int]==],
-			},
-			{
-				["extensions"] = {
-					[==[SGIX_hyperpipe]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[timeSlice]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[attrib]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[size]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[attribList]==],
-						["ctype"] = [==[void *]==],
-					},
-				},
-				["name"] = [==[HyperpipeAttribSGIX]==],
-				["return_ctype"] = [==[int]==],
-			},
-			{
-				["extensions"] = {
-					[==[SGIX_video_source]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[display]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[screen]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[server]==],
-						["ctype"] = [==[VLServer]==],
-					},
-					{
-						["name"] = [==[path]==],
-						["ctype"] = [==[VLPath]==],
-					},
-					{
-						["name"] = [==[nodeClass]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[drainNode]==],
-						["ctype"] = [==[VLNode]==],
-					},
-				},
-				["name"] = [==[CreateGLXVideoSourceSGIX]==],
-				["return_ctype"] = [==[GLXVideoSourceSGIX]==],
-			},
-			{
-				["extensions"] = {
-					[==[MESA_release_buffers]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[drawable]==],
-						["ctype"] = [==[GLXDrawable]==],
-					},
-				},
-				["name"] = [==[ReleaseBuffersMESA]==],
-				["return_ctype"] = [==[Bool]==],
-			},
-			{
-				["extensions"] = {
-					[==[SGI_make_current_read]==],
-				},
-				["parameters"] = {
-				},
-				["name"] = [==[GetCurrentReadDrawableSGI]==],
-				["return_ctype"] = [==[GLXDrawable]==],
-			},
-			{
-				["extensions"] = {
-					[==[MESA_pixmap_colormap]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[visual]==],
-						["ctype"] = [==[XVisualInfo *]==],
-					},
-					{
-						["name"] = [==[pixmap]==],
-						["ctype"] = [==[Pixmap]==],
-					},
-					{
-						["name"] = [==[cmap]==],
-						["ctype"] = [==[Colormap]==],
-					},
-				},
-				["name"] = [==[CreateGLXPixmapMESA]==],
-				["return_ctype"] = [==[GLXPixmap]==],
-			},
-			{
-				["extensions"] = {
-					[==[SGIX_fbconfig]==],
-				},
-				["parameters"] = {
-					{
-						["name"] = [==[dpy]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[config]==],
-						["ctype"] = [==[GLXFBConfigSGIX]==],
-					},
-					{
-						["name"] = [==[pixmap]==],
-						["ctype"] = [==[Pixmap]==],
-					},
-				},
-				["name"] = [==[CreateGLXPixmapWithConfigSGIX]==],
-				["return_ctype"] = [==[GLXPixmap]==],
 			},
 			{
 				["extensions"] = {
@@ -1732,6 +1824,266 @@ typedef unsigned __int64 uint64_t;
 			},
 			{
 				["extensions"] = {
+					[==[SGIX_dmbuffer]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[pbuffer]==],
+						["ctype"] = [==[GLXPbufferSGIX]==],
+					},
+					{
+						["name"] = [==[params]==],
+						["ctype"] = [==[DMparams *]==],
+					},
+					{
+						["name"] = [==[dmbuffer]==],
+						["ctype"] = [==[DMbuffer]==],
+					},
+				},
+				["name"] = [==[AssociateDMPbufferSGIX]==],
+				["return_ctype"] = [==[Bool]==],
+			},
+			{
+				["extensions"] = {
+					[==[AMD_gpu_association]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[ctx]==],
+						["ctype"] = [==[GLXContext]==],
+					},
+				},
+				["name"] = [==[DeleteAssociatedContextAMD]==],
+				["return_ctype"] = [==[Bool]==],
+			},
+			{
+				["extensions"] = {
+					[==[AMD_gpu_association]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[id]==],
+						["ctype"] = [==[unsigned int]==],
+					},
+					{
+						["name"] = [==[property]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[dataType]==],
+						["ctype"] = [==[GLenum]==],
+					},
+					{
+						["name"] = [==[size]==],
+						["ctype"] = [==[unsigned int]==],
+					},
+					{
+						["name"] = [==[data]==],
+						["ctype"] = [==[void *]==],
+					},
+				},
+				["name"] = [==[GetGPUInfoAMD]==],
+				["return_ctype"] = [==[int]==],
+			},
+			{
+				["extensions"] = {
+					[==[NV_video_out]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[VideoDevice]==],
+						["ctype"] = [==[GLXVideoDeviceNV]==],
+					},
+					{
+						["name"] = [==[pbuf]==],
+						["ctype"] = [==[GLXPbuffer]==],
+					},
+					{
+						["name"] = [==[iVideoBuffer]==],
+						["ctype"] = [==[int]==],
+					},
+				},
+				["name"] = [==[BindVideoImageNV]==],
+				["return_ctype"] = [==[int]==],
+			},
+			{
+				["extensions"] = {
+					[==[NV_video_capture]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[device]==],
+						["ctype"] = [==[GLXVideoCaptureDeviceNV]==],
+					},
+				},
+				["name"] = [==[ReleaseVideoCaptureDeviceNV]==],
+				["return_ctype"] = [==[void]==],
+			},
+			{
+				["extensions"] = {
+					[==[NV_swap_group]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[screen]==],
+						["ctype"] = [==[int]==],
+					},
+				},
+				["name"] = [==[ResetFrameCountNV]==],
+				["return_ctype"] = [==[Bool]==],
+			},
+			{
+				["extensions"] = {
+					[==[NV_copy_buffer]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[readCtx]==],
+						["ctype"] = [==[GLXContext]==],
+					},
+					{
+						["name"] = [==[writeCtx]==],
+						["ctype"] = [==[GLXContext]==],
+					},
+					{
+						["name"] = [==[readTarget]==],
+						["ctype"] = [==[GLenum]==],
+					},
+					{
+						["name"] = [==[writeTarget]==],
+						["ctype"] = [==[GLenum]==],
+					},
+					{
+						["name"] = [==[readOffset]==],
+						["ctype"] = [==[GLintptr]==],
+					},
+					{
+						["name"] = [==[writeOffset]==],
+						["ctype"] = [==[GLintptr]==],
+					},
+					{
+						["name"] = [==[size]==],
+						["ctype"] = [==[GLsizeiptr]==],
+					},
+				},
+				["name"] = [==[CopyBufferSubDataNV]==],
+				["return_ctype"] = [==[void]==],
+			},
+			{
+				["extensions"] = {
+					[==[NV_video_capture]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[device]==],
+						["ctype"] = [==[GLXVideoCaptureDeviceNV]==],
+					},
+				},
+				["name"] = [==[LockVideoCaptureDeviceNV]==],
+				["return_ctype"] = [==[void]==],
+			},
+			{
+				["extensions"] = {
+					[==[AMD_gpu_association]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[maxCount]==],
+						["ctype"] = [==[unsigned int]==],
+					},
+					{
+						["name"] = [==[ids]==],
+						["ctype"] = [==[unsigned int *]==],
+					},
+				},
+				["name"] = [==[GetGPUIDsAMD]==],
+				["return_ctype"] = [==[unsigned int]==],
+			},
+			{
+				["extensions"] = {
+					[==[MESA_release_buffers]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[drawable]==],
+						["ctype"] = [==[GLXDrawable]==],
+					},
+				},
+				["name"] = [==[ReleaseBuffersMESA]==],
+				["return_ctype"] = [==[Bool]==],
+			},
+			{
+				["extensions"] = {
+					[==[AMD_gpu_association]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[ctx]==],
+						["ctype"] = [==[GLXContext]==],
+					},
+				},
+				["name"] = [==[GetContextGPUIDAMD]==],
+				["return_ctype"] = [==[unsigned int]==],
+			},
+			{
+				["extensions"] = {
+					[==[NV_video_out]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[pbuf]==],
+						["ctype"] = [==[GLXPbuffer]==],
+					},
+					{
+						["name"] = [==[iBufferType]==],
+						["ctype"] = [==[int]==],
+					},
+					{
+						["name"] = [==[pulCounterPbuffer]==],
+						["ctype"] = [==[unsigned long *]==],
+					},
+					{
+						["name"] = [==[bBlock]==],
+						["ctype"] = [==[GLboolean]==],
+					},
+				},
+				["name"] = [==[SendPbufferToVideoNV]==],
+				["return_ctype"] = [==[int]==],
+			},
+			{
+				["extensions"] = {
 					[==[SGIX_fbconfig]==],
 				},
 				["parameters"] = {
@@ -1744,20 +2096,74 @@ typedef unsigned __int64 uint64_t;
 						["ctype"] = [==[GLXFBConfigSGIX]==],
 					},
 					{
-						["name"] = [==[render_type]==],
-						["ctype"] = [==[int]==],
+						["name"] = [==[pixmap]==],
+						["ctype"] = [==[Pixmap]==],
+					},
+				},
+				["name"] = [==[CreateGLXPixmapWithConfigSGIX]==],
+				["return_ctype"] = [==[GLXPixmap]==],
+			},
+			{
+				["extensions"] = {
+					[==[AMD_gpu_association]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[id]==],
+						["ctype"] = [==[unsigned int]==],
 					},
 					{
-						["name"] = [==[share_list]==],
+						["name"] = [==[share_context]==],
 						["ctype"] = [==[GLXContext]==],
 					},
 					{
-						["name"] = [==[direct]==],
-						["ctype"] = [==[Bool]==],
+						["name"] = [==[attribList]==],
+						["ctype"] = [==[const int *]==],
 					},
 				},
-				["name"] = [==[CreateContextWithConfigSGIX]==],
+				["name"] = [==[CreateAssociatedContextAttribsAMD]==],
 				["return_ctype"] = [==[GLXContext]==],
+			},
+			{
+				["extensions"] = {
+					[==[OML_sync_control]==],
+				},
+				["parameters"] = {
+					{
+						["name"] = [==[dpy]==],
+						["ctype"] = [==[Display *]==],
+					},
+					{
+						["name"] = [==[drawable]==],
+						["ctype"] = [==[GLXDrawable]==],
+					},
+					{
+						["name"] = [==[target_msc]==],
+						["ctype"] = [==[int64_t]==],
+					},
+					{
+						["name"] = [==[divisor]==],
+						["ctype"] = [==[int64_t]==],
+					},
+					{
+						["name"] = [==[remainder]==],
+						["ctype"] = [==[int64_t]==],
+					},
+					{
+						["name"] = [==[ust]==],
+						["ctype"] = [==[int64_t *]==],
+					},
+					{
+						["name"] = [==[msc]==],
+						["ctype"] = [==[int64_t *]==],
+					},
+					{
+						["name"] = [==[sbc]==],
+						["ctype"] = [==[int64_t *]==],
+					},
+				},
+				["name"] = [==[WaitForMscOML]==],
+				["return_ctype"] = [==[Bool]==],
 			},
 			{
 				["extensions"] = {
@@ -1778,7 +2184,7 @@ typedef unsigned __int64 uint64_t;
 			},
 			{
 				["extensions"] = {
-					[==[SGIX_hyperpipe]==],
+					[==[NV_video_out]==],
 				},
 				["parameters"] = {
 					{
@@ -1786,11 +2192,11 @@ typedef unsigned __int64 uint64_t;
 						["ctype"] = [==[Display *]==],
 					},
 					{
-						["name"] = [==[hpId]==],
-						["ctype"] = [==[int]==],
+						["name"] = [==[pbuf]==],
+						["ctype"] = [==[GLXPbuffer]==],
 					},
 				},
-				["name"] = [==[DestroyHyperpipeConfigSGIX]==],
+				["name"] = [==[ReleaseVideoImageNV]==],
 				["return_ctype"] = [==[int]==],
 			},
 			{
@@ -1853,99 +2259,80 @@ typedef unsigned __int64 uint64_t;
 			},
 			{
 				["extensions"] = {
-					[==[SGIX_video_resize]==],
+					[==[MESA_set_3dfx_mode]==],
 				},
 				["parameters"] = {
 					{
-						["name"] = [==[display]==],
-						["ctype"] = [==[Display *]==],
-					},
-					{
-						["name"] = [==[screen]==],
+						["name"] = [==[mode]==],
 						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[channel]==],
-						["ctype"] = [==[int]==],
-					},
-					{
-						["name"] = [==[x]==],
-						["ctype"] = [==[int *]==],
-					},
-					{
-						["name"] = [==[y]==],
-						["ctype"] = [==[int *]==],
-					},
-					{
-						["name"] = [==[w]==],
-						["ctype"] = [==[int *]==],
-					},
-					{
-						["name"] = [==[h]==],
-						["ctype"] = [==[int *]==],
 					},
 				},
-				["name"] = [==[QueryChannelDeltasSGIX]==],
-				["return_ctype"] = [==[int]==],
+				["name"] = [==[Set3DfxModeMESA]==],
+				["return_ctype"] = [==[Bool]==],
 			},
 		},
 	},
 	["extensions"] = {
-		[==[ARB_get_proc_address]==],
-		[==[ARB_multisample]==],
 		[==[3DFX_multisample]==],
-		[==[ARB_vertex_buffer_object]==],
-		[==[ARB_fbconfig_float]==],
-		[==[ARB_framebuffer_sRGB]==],
+		[==[AMD_gpu_association]==],
+		[==[ARB_context_flush_control]==],
 		[==[ARB_create_context]==],
 		[==[ARB_create_context_profile]==],
 		[==[ARB_create_context_robustness]==],
+		[==[ARB_fbconfig_float]==],
+		[==[ARB_framebuffer_sRGB]==],
+		[==[ARB_get_proc_address]==],
+		[==[ARB_multisample]==],
 		[==[ARB_robustness_application_isolation]==],
 		[==[ARB_robustness_share_group_isolation]==],
-		[==[SGIS_multisample]==],
-		[==[EXT_visual_info]==],
-		[==[SGI_swap_control]==],
-		[==[SGI_video_sync]==],
-		[==[SGI_make_current_read]==],
-		[==[SGIX_video_source]==],
-		[==[EXT_visual_rating]==],
-		[==[EXT_import_context]==],
-		[==[SGIX_fbconfig]==],
-		[==[SGIX_pbuffer]==],
-		[==[SGIS_blended_overlay]==],
-		[==[SGI_cushion]==],
-		[==[SGIS_shared_multisample]==],
-		[==[SGIX_video_resize]==],
-		[==[SGIX_dmbuffer]==],
-		[==[SGIX_swap_group]==],
-		[==[SGIX_swap_barrier]==],
-		[==[SUN_get_transparent_index]==],
-		[==[MESA_copy_sub_buffer]==],
-		[==[MESA_pixmap_colormap]==],
-		[==[MESA_release_buffers]==],
-		[==[MESA_set_3dfx_mode]==],
-		[==[SGIX_visual_select_group]==],
-		[==[OML_swap_method]==],
-		[==[OML_sync_control]==],
-		[==[NV_float_buffer]==],
-		[==[SGIX_hyperpipe]==],
-		[==[MESA_agp_offset]==],
-		[==[EXT_fbconfig_packed_float]==],
-		[==[EXT_framebuffer_sRGB]==],
-		[==[EXT_texture_from_pixmap]==],
-		[==[NV_present_video]==],
-		[==[NV_video_output]==],
-		[==[NV_swap_group]==],
-		[==[NV_video_capture]==],
-		[==[EXT_swap_control]==],
-		[==[NV_copy_image]==],
-		[==[INTEL_swap_event]==],
-		[==[NV_multisample_coverage]==],
-		[==[AMD_gpu_association]==],
+		[==[ARB_vertex_buffer_object]==],
+		[==[EXT_buffer_age]==],
 		[==[EXT_create_context_es_profile]==],
 		[==[EXT_create_context_es2_profile]==],
+		[==[EXT_fbconfig_packed_float]==],
+		[==[EXT_framebuffer_sRGB]==],
+		[==[EXT_import_context]==],
+		[==[EXT_stereo_tree]==],
+		[==[EXT_swap_control]==],
 		[==[EXT_swap_control_tear]==],
-		[==[EXT_buffer_age]==],
+		[==[EXT_texture_from_pixmap]==],
+		[==[EXT_visual_info]==],
+		[==[EXT_visual_rating]==],
+		[==[INTEL_swap_event]==],
+		[==[MESA_agp_offset]==],
+		[==[MESA_copy_sub_buffer]==],
+		[==[MESA_pixmap_colormap]==],
+		[==[MESA_query_renderer]==],
+		[==[MESA_release_buffers]==],
+		[==[MESA_set_3dfx_mode]==],
+		[==[NV_copy_buffer]==],
+		[==[NV_copy_image]==],
+		[==[NV_delay_before_swap]==],
+		[==[NV_float_buffer]==],
+		[==[NV_multisample_coverage]==],
+		[==[NV_present_video]==],
+		[==[NV_swap_group]==],
+		[==[NV_video_capture]==],
+		[==[NV_video_out]==],
+		[==[OML_swap_method]==],
+		[==[OML_sync_control]==],
+		[==[SGI_cushion]==],
+		[==[SGI_make_current_read]==],
+		[==[SGI_swap_control]==],
+		[==[SGI_video_sync]==],
+		[==[SGIS_blended_overlay]==],
+		[==[SGIS_multisample]==],
+		[==[SGIS_shared_multisample]==],
+		[==[SGIX_dmbuffer]==],
+		[==[SGIX_fbconfig]==],
+		[==[SGIX_hyperpipe]==],
+		[==[SGIX_pbuffer]==],
+		[==[SGIX_swap_barrier]==],
+		[==[SGIX_swap_group]==],
+		[==[SGIX_video_resize]==],
+		[==[SGIX_video_source]==],
+		[==[SGIX_visual_select_group]==],
+		[==[SUN_get_transparent_index]==],
 	},
 	["enumerators"] = {
 		{
@@ -1963,10 +2350,10 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x8016]==],
-			["name"] = [==[MAX_PBUFFER_WIDTH_SGIX]==],
+			["value"] = [==[0x00000004]==],
+			["name"] = [==[HYPERPIPE_PIXEL_AVERAGE_SGIX]==],
 			["extensions"] = {
-				[==[SGIX_pbuffer]==],
+				[==[SGIX_hyperpipe]==],
 			},
 		},
 		{
@@ -1998,10 +2385,10 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x8051]==],
-			["name"] = [==[SAMPLES_3DFX]==],
+			["value"] = [==[0x8182]==],
+			["name"] = [==[FLIP_COMPLETE_INTEL]==],
 			["extensions"] = {
-				[==[3DFX_multisample]==],
+				[==[INTEL_swap_event]==],
 			},
 		},
 		{
@@ -2047,6 +2434,13 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
+			["value"] = [==[0x818A]==],
+			["name"] = [==[RENDERER_OPENGL_CORE_PROFILE_VERSION_MESA]==],
+			["extensions"] = {
+				[==[MESA_query_renderer]==],
+			},
+		},
+		{
 			["value"] = [==[0x8061]==],
 			["name"] = [==[SWAP_EXCHANGE_OML]==],
 			["extensions"] = {
@@ -2057,7 +2451,7 @@ typedef unsigned __int64 uint64_t;
 			["value"] = [==[0x20C6]==],
 			["name"] = [==[VIDEO_OUT_COLOR_AND_ALPHA_NV]==],
 			["extensions"] = {
-				[==[NV_video_output]==],
+				[==[NV_video_out]==],
 			},
 		},
 		{
@@ -2082,6 +2476,13 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
+			["value"] = [==[0]==],
+			["name"] = [==[CONTEXT_RELEASE_BEHAVIOR_NONE_ARB]==],
+			["extensions"] = {
+				[==[ARB_context_flush_control]==],
+			},
+		},
+		{
 			["value"] = [==[0x20E3]==],
 			["name"] = [==[AUX1_EXT]==],
 			["extensions"] = {
@@ -2089,10 +2490,10 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x801F]==],
-			["name"] = [==[EVENT_MASK_SGIX]==],
+			["value"] = [==[0x20C9]==],
+			["name"] = [==[VIDEO_OUT_FIELD_1_NV]==],
 			["extensions"] = {
-				[==[SGIX_pbuffer]==],
+				[==[NV_video_out]==],
 			},
 		},
 		{
@@ -2110,17 +2511,18 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x2]==],
-			["name"] = [==[3DFX_FULLSCREEN_MODE_MESA]==],
+			["value"] = [==[0x8000]==],
+			["name"] = [==[NONE_EXT]==],
 			["extensions"] = {
-				[==[MESA_set_3dfx_mode]==],
+				[==[EXT_visual_info]==],
+				[==[EXT_visual_rating]==],
 			},
 		},
 		{
-			["value"] = [==[0x8261]==],
-			["name"] = [==[NO_RESET_NOTIFICATION_ARB]==],
+			["value"] = [==[0x27]==],
+			["name"] = [==[TRANSPARENT_BLUE_VALUE_EXT]==],
 			["extensions"] = {
-				[==[ARB_create_context_robustness]==],
+				[==[EXT_visual_info]==],
 			},
 		},
 		{
@@ -2152,10 +2554,10 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x8017]==],
-			["name"] = [==[MAX_PBUFFER_HEIGHT_SGIX]==],
+			["value"] = [==[0x2098]==],
+			["name"] = [==[CONTEXT_RELEASE_BEHAVIOR_FLUSH_ARB]==],
 			["extensions"] = {
-				[==[SGIX_pbuffer]==],
+				[==[ARB_context_flush_control]==],
 			},
 		},
 		{
@@ -2222,10 +2624,10 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x00000000]==],
-			["name"] = [==[SYNC_FRAME_SGIX]==],
+			["value"] = [==[0x8007]==],
+			["name"] = [==[STATIC_GRAY_EXT]==],
 			["extensions"] = {
-				[==[SGIX_video_resize]==],
+				[==[EXT_visual_info]==],
 			},
 		},
 		{
@@ -2236,10 +2638,10 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x20C8]==],
-			["name"] = [==[VIDEO_OUT_FRAME_NV]==],
+			["value"] = [==[0x8185]==],
+			["name"] = [==[RENDERER_VERSION_MESA]==],
 			["extensions"] = {
-				[==[NV_video_output]==],
+				[==[MESA_query_renderer]==],
 			},
 		},
 		{
@@ -2272,10 +2674,10 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x8256]==],
-			["name"] = [==[CONTEXT_RESET_NOTIFICATION_STRATEGY_ARB]==],
+			["value"] = [==[0x20F3]==],
+			["name"] = [==[LATE_SWAPS_TEAR_EXT]==],
 			["extensions"] = {
-				[==[ARB_create_context_robustness]==],
+				[==[EXT_swap_control_tear]==],
 			},
 		},
 		{
@@ -2321,10 +2723,24 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x8003]==],
-			["name"] = [==[DIRECT_COLOR_EXT]==],
+			["value"] = [==[0x8184]==],
+			["name"] = [==[RENDERER_DEVICE_ID_MESA]==],
 			["extensions"] = {
-				[==[EXT_visual_info]==],
+				[==[MESA_query_renderer]==],
+			},
+		},
+		{
+			["value"] = [==[0x8188]==],
+			["name"] = [==[RENDERER_UNIFIED_MEMORY_ARCHITECTURE_MESA]==],
+			["extensions"] = {
+				[==[MESA_query_renderer]==],
+			},
+		},
+		{
+			["value"] = [==[0x00000004]==],
+			["name"] = [==[TEXTURE_RECTANGLE_BIT_EXT]==],
+			["extensions"] = {
+				[==[EXT_texture_from_pixmap]==],
 			},
 		},
 		{
@@ -2353,6 +2769,13 @@ typedef unsigned __int64 uint64_t;
 			["name"] = [==[AUX0_EXT]==],
 			["extensions"] = {
 				[==[EXT_texture_from_pixmap]==],
+			},
+		},
+		{
+			["value"] = [==[0x8186]==],
+			["name"] = [==[RENDERER_ACCELERATED_MESA]==],
+			["extensions"] = {
+				[==[MESA_query_renderer]==],
 			},
 		},
 		{
@@ -2398,6 +2821,13 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
+			["value"] = [==[0x8187]==],
+			["name"] = [==[RENDERER_VIDEO_MEMORY_MESA]==],
+			["extensions"] = {
+				[==[MESA_query_renderer]==],
+			},
+		},
+		{
 			["value"] = [==[92]==],
 			["name"] = [==[BAD_HYPERPIPE_SGIX]==],
 			["extensions"] = {
@@ -2433,10 +2863,10 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[100001]==],
-			["name"] = [==[SAMPLES_ARB]==],
+			["value"] = [==[0x20E6]==],
+			["name"] = [==[AUX4_EXT]==],
 			["extensions"] = {
-				[==[ARB_multisample]==],
+				[==[EXT_texture_from_pixmap]==],
 			},
 		},
 		{
@@ -2468,17 +2898,45 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x20D6]==],
-			["name"] = [==[TEXTURE_TARGET_EXT]==],
+			["value"] = [==[0x00000000]==],
+			["name"] = [==[SYNC_FRAME_SGIX]==],
 			["extensions"] = {
-				[==[EXT_texture_from_pixmap]==],
+				[==[SGIX_video_resize]==],
 			},
 		},
 		{
-			["value"] = [==[0x00000004]==],
-			["name"] = [==[CONTEXT_ROBUST_ACCESS_BIT_ARB]==],
+			["value"] = [==[0x20F5]==],
+			["name"] = [==[STEREO_TREE_EXT]==],
 			["extensions"] = {
-				[==[ARB_create_context_robustness]==],
+				[==[EXT_stereo_tree]==],
+			},
+		},
+		{
+			["value"] = [==[0x00000002]==],
+			["name"] = [==[COLOR_INDEX_BIT_SGIX]==],
+			["extensions"] = {
+				[==[SGIX_fbconfig]==],
+			},
+		},
+		{
+			["value"] = [==[0x801F]==],
+			["name"] = [==[EVENT_MASK_SGIX]==],
+			["extensions"] = {
+				[==[SGIX_pbuffer]==],
+			},
+		},
+		{
+			["value"] = [==[0x00000008]==],
+			["name"] = [==[RGBA_UNSIGNED_FLOAT_BIT_EXT]==],
+			["extensions"] = {
+				[==[EXT_fbconfig_packed_float]==],
+			},
+		},
+		{
+			["value"] = [==[0x801C]==],
+			["name"] = [==[LARGEST_PBUFFER_SGIX]==],
+			["extensions"] = {
+				[==[SGIX_pbuffer]==],
 			},
 		},
 		{
@@ -2489,6 +2947,27 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
+			["value"] = [==[0x801B]==],
+			["name"] = [==[PRESERVED_CONTENTS_SGIX]==],
+			["extensions"] = {
+				[==[SGIX_pbuffer]==],
+			},
+		},
+		{
+			["value"] = [==[0x8019]==],
+			["name"] = [==[OPTIMAL_PBUFFER_WIDTH_SGIX]==],
+			["extensions"] = {
+				[==[SGIX_pbuffer]==],
+			},
+		},
+		{
+			["value"] = [==[0x8017]==],
+			["name"] = [==[MAX_PBUFFER_HEIGHT_SGIX]==],
+			["extensions"] = {
+				[==[SGIX_pbuffer]==],
+			},
+		},
+		{
 			["value"] = [==[0x1]==],
 			["name"] = [==[3DFX_WINDOW_MODE_MESA]==],
 			["extensions"] = {
@@ -2496,10 +2975,24 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x20E0]==],
-			["name"] = [==[BACK_EXT]==],
+			["value"] = [==[0x20EB]==],
+			["name"] = [==[AUX9_EXT]==],
 			["extensions"] = {
 				[==[EXT_texture_from_pixmap]==],
+			},
+		},
+		{
+			["value"] = [==[0x8016]==],
+			["name"] = [==[MAX_PBUFFER_WIDTH_SGIX]==],
+			["extensions"] = {
+				[==[SGIX_pbuffer]==],
+			},
+		},
+		{
+			["value"] = [==[0x00000100]==],
+			["name"] = [==[SAMPLE_BUFFERS_BIT_SGIX]==],
+			["extensions"] = {
+				[==[SGIX_pbuffer]==],
 			},
 		},
 		{
@@ -2507,6 +3000,13 @@ typedef unsigned __int64 uint64_t;
 			["name"] = [==[TRANSPARENT_INDEX_EXT]==],
 			["extensions"] = {
 				[==[EXT_visual_info]==],
+			},
+		},
+		{
+			["value"] = [==[0x20B2]==],
+			["name"] = [==[FRAMEBUFFER_SRGB_CAPABLE_ARB]==],
+			["extensions"] = {
+				[==[ARB_framebuffer_sRGB]==],
 			},
 		},
 		{
@@ -2524,10 +3024,24 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[100001]==],
-			["name"] = [==[SAMPLES_SGIS]==],
+			["value"] = [==[0x00000020]==],
+			["name"] = [==[DEPTH_BUFFER_BIT_SGIX]==],
 			["extensions"] = {
-				[==[SGIS_multisample]==],
+				[==[SGIX_pbuffer]==],
+			},
+		},
+		{
+			["value"] = [==[0x00000010]==],
+			["name"] = [==[AUX_BUFFERS_BIT_SGIX]==],
+			["extensions"] = {
+				[==[SGIX_pbuffer]==],
+			},
+		},
+		{
+			["value"] = [==[0x1F00]==],
+			["name"] = [==[GPU_VENDOR_AMD]==],
+			["extensions"] = {
+				[==[AMD_gpu_association]==],
 			},
 		},
 		{
@@ -2538,24 +3052,24 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x20F3]==],
-			["name"] = [==[LATE_SWAPS_TEAR_EXT]==],
+			["value"] = [==[0x8003]==],
+			["name"] = [==[DIRECT_COLOR_EXT]==],
 			["extensions"] = {
-				[==[EXT_swap_control_tear]==],
+				[==[EXT_visual_info]==],
+			},
+		},
+		{
+			["value"] = [==[80]==],
+			["name"] = [==[HYPERPIPE_PIPE_NAME_LENGTH_SGIX]==],
+			["extensions"] = {
+				[==[SGIX_hyperpipe]==],
 			},
 		},
 		{
 			["value"] = [==[0x00000004]==],
-			["name"] = [==[TEXTURE_RECTANGLE_BIT_EXT]==],
+			["name"] = [==[CONTEXT_ROBUST_ACCESS_BIT_ARB]==],
 			["extensions"] = {
-				[==[EXT_texture_from_pixmap]==],
-			},
-		},
-		{
-			["value"] = [==[0x2091]==],
-			["name"] = [==[CONTEXT_MAJOR_VERSION_ARB]==],
-			["extensions"] = {
-				[==[ARB_create_context]==],
+				[==[ARB_create_context_robustness]==],
 			},
 		},
 		{
@@ -2580,10 +3094,10 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x8013]==],
-			["name"] = [==[FBCONFIG_ID_SGIX]==],
+			["value"] = [==[0x20C4]==],
+			["name"] = [==[VIDEO_OUT_ALPHA_NV]==],
 			["extensions"] = {
-				[==[SGIX_fbconfig]==],
+				[==[NV_video_out]==],
 			},
 		},
 		{
@@ -2594,45 +3108,45 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x20C4]==],
-			["name"] = [==[VIDEO_OUT_ALPHA_NV]==],
+			["value"] = [==[0x8012]==],
+			["name"] = [==[X_RENDERABLE_SGIX]==],
 			["extensions"] = {
-				[==[NV_video_output]==],
+				[==[SGIX_fbconfig]==],
 			},
 		},
 		{
-			["value"] = [==[0x21A2]==],
-			["name"] = [==[GPU_FASTEST_TARGET_GPUS_AMD]==],
+			["value"] = [==[0x818C]==],
+			["name"] = [==[RENDERER_OPENGL_ES_PROFILE_VERSION_MESA]==],
 			["extensions"] = {
-				[==[AMD_gpu_association]==],
+				[==[MESA_query_renderer]==],
 			},
 		},
 		{
-			["value"] = [==[0x1F01]==],
-			["name"] = [==[GPU_RENDERER_STRING_AMD]==],
+			["value"] = [==[0x818B]==],
+			["name"] = [==[RENDERER_OPENGL_COMPATIBILITY_PROFILE_VERSION_MESA]==],
 			["extensions"] = {
-				[==[AMD_gpu_association]==],
+				[==[MESA_query_renderer]==],
 			},
 		},
 		{
-			["value"] = [==[0x1F00]==],
-			["name"] = [==[GPU_VENDOR_AMD]==],
+			["value"] = [==[0x00000002]==],
+			["name"] = [==[PIPE_RECT_LIMITS_SGIX]==],
 			["extensions"] = {
-				[==[AMD_gpu_association]==],
+				[==[SGIX_hyperpipe]==],
 			},
 		},
 		{
-			["value"] = [==[100001]==],
-			["name"] = [==[COVERAGE_SAMPLES_NV]==],
+			["value"] = [==[0x00000000]==],
+			["name"] = [==[STEREO_NOTIFY_EXT]==],
 			["extensions"] = {
-				[==[NV_multisample_coverage]==],
+				[==[EXT_stereo_tree]==],
 			},
 		},
 		{
-			["value"] = [==[0x8182]==],
-			["name"] = [==[FLIP_COMPLETE_INTEL]==],
+			["value"] = [==[0x00000001]==],
+			["name"] = [==[HYPERPIPE_DISPLAY_PIPE_SGIX]==],
 			["extensions"] = {
-				[==[INTEL_swap_event]==],
+				[==[SGIX_hyperpipe]==],
 			},
 		},
 		{
@@ -2650,10 +3164,10 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x8181]==],
-			["name"] = [==[COPY_COMPLETE_INTEL]==],
+			["value"] = [==[0x8252]==],
+			["name"] = [==[LOSE_CONTEXT_ON_RESET_ARB]==],
 			["extensions"] = {
-				[==[INTEL_swap_event]==],
+				[==[ARB_create_context_robustness]==],
 			},
 		},
 		{
@@ -2664,24 +3178,10 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x00000001]==],
-			["name"] = [==[HYPERPIPE_DISPLAY_PIPE_SGIX]==],
+			["value"] = [==[100001]==],
+			["name"] = [==[COVERAGE_SAMPLES_NV]==],
 			["extensions"] = {
-				[==[SGIX_hyperpipe]==],
-			},
-		},
-		{
-			["value"] = [==[0x20D3]==],
-			["name"] = [==[BIND_TO_TEXTURE_TARGETS_EXT]==],
-			["extensions"] = {
-				[==[EXT_texture_from_pixmap]==],
-			},
-		},
-		{
-			["value"] = [==[0x00000004]==],
-			["name"] = [==[BACK_LEFT_BUFFER_BIT_SGIX]==],
-			["extensions"] = {
-				[==[SGIX_pbuffer]==],
+				[==[NV_multisample_coverage]==],
 			},
 		},
 		{
@@ -2692,6 +3192,20 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
+			["value"] = [==[0x00000004]==],
+			["name"] = [==[BACK_LEFT_BUFFER_BIT_SGIX]==],
+			["extensions"] = {
+				[==[SGIX_pbuffer]==],
+			},
+		},
+		{
+			["value"] = [==[0x20E9]==],
+			["name"] = [==[AUX7_EXT]==],
+			["extensions"] = {
+				[==[EXT_texture_from_pixmap]==],
+			},
+		},
+		{
 			["value"] = [==[0x00000008]==],
 			["name"] = [==[BACK_RIGHT_BUFFER_BIT_SGIX]==],
 			["extensions"] = {
@@ -2699,10 +3213,10 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x8007]==],
-			["name"] = [==[STATIC_GRAY_EXT]==],
+			["value"] = [==[0x8013]==],
+			["name"] = [==[FBCONFIG_ID_SGIX]==],
 			["extensions"] = {
-				[==[EXT_visual_info]==],
+				[==[SGIX_fbconfig]==],
 			},
 		},
 		{
@@ -2720,10 +3234,10 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x20F1]==],
-			["name"] = [==[SWAP_INTERVAL_EXT]==],
+			["value"] = [==[0x20D5]==],
+			["name"] = [==[TEXTURE_FORMAT_EXT]==],
 			["extensions"] = {
-				[==[EXT_swap_control]==],
+				[==[EXT_texture_from_pixmap]==],
 			},
 		},
 		{
@@ -2748,10 +3262,10 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x20CD]==],
-			["name"] = [==[DEVICE_ID_NV]==],
+			["value"] = [==[0x00000001]==],
+			["name"] = [==[RGBA_BIT_SGIX]==],
 			["extensions"] = {
-				[==[NV_video_capture]==],
+				[==[SGIX_fbconfig]==],
 			},
 		},
 		{
@@ -2762,24 +3276,24 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x20CC]==],
-			["name"] = [==[VIDEO_OUT_STACKED_FIELDS_2_1_NV]==],
-			["extensions"] = {
-				[==[NV_video_output]==],
-			},
-		},
-		{
 			["value"] = [==[0x00000002]==],
-			["name"] = [==[PIPE_RECT_LIMITS_SGIX]==],
+			["name"] = [==[PIXMAP_BIT_SGIX]==],
 			["extensions"] = {
-				[==[SGIX_hyperpipe]==],
+				[==[SGIX_fbconfig]==],
 			},
 		},
 		{
-			["value"] = [==[0x20CB]==],
-			["name"] = [==[VIDEO_OUT_STACKED_FIELDS_1_2_NV]==],
+			["value"] = [==[0x8027]==],
+			["name"] = [==[MULTISAMPLE_SUB_RECT_HEIGHT_SGIS]==],
 			["extensions"] = {
-				[==[NV_video_output]==],
+				[==[SGIS_shared_multisample]==],
+			},
+		},
+		{
+			["value"] = [==[0x20F1]==],
+			["name"] = [==[SWAP_INTERVAL_EXT]==],
+			["extensions"] = {
+				[==[EXT_swap_control]==],
 			},
 		},
 		{
@@ -2797,24 +3311,24 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x20C9]==],
-			["name"] = [==[VIDEO_OUT_FIELD_1_NV]==],
+			["value"] = [==[100001]==],
+			["name"] = [==[SAMPLES_SGIS]==],
 			["extensions"] = {
-				[==[NV_video_output]==],
+				[==[SGIS_multisample]==],
 			},
 		},
 		{
-			["value"] = [==[0x20C7]==],
-			["name"] = [==[VIDEO_OUT_COLOR_AND_DEPTH_NV]==],
+			["value"] = [==[0x20CC]==],
+			["name"] = [==[VIDEO_OUT_STACKED_FIELDS_2_1_NV]==],
 			["extensions"] = {
-				[==[NV_video_output]==],
+				[==[NV_video_out]==],
 			},
 		},
 		{
-			["value"] = [==[0x00000010]==],
-			["name"] = [==[AUX_BUFFERS_BIT_SGIX]==],
+			["value"] = [==[0x20CB]==],
+			["name"] = [==[VIDEO_OUT_STACKED_FIELDS_1_2_NV]==],
 			["extensions"] = {
-				[==[SGIX_pbuffer]==],
+				[==[NV_video_out]==],
 			},
 		},
 		{
@@ -2832,38 +3346,17 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x20DD]==],
-			["name"] = [==[TEXTURE_RECTANGLE_EXT]==],
+			["value"] = [==[0x20C8]==],
+			["name"] = [==[VIDEO_OUT_FRAME_NV]==],
 			["extensions"] = {
-				[==[EXT_texture_from_pixmap]==],
+				[==[NV_video_out]==],
 			},
 		},
 		{
-			["value"] = [==[0x20EB]==],
-			["name"] = [==[AUX9_EXT]==],
+			["value"] = [==[0x20C7]==],
+			["name"] = [==[VIDEO_OUT_COLOR_AND_DEPTH_NV]==],
 			["extensions"] = {
-				[==[EXT_texture_from_pixmap]==],
-			},
-		},
-		{
-			["value"] = [==[0x20E9]==],
-			["name"] = [==[AUX7_EXT]==],
-			["extensions"] = {
-				[==[EXT_texture_from_pixmap]==],
-			},
-		},
-		{
-			["value"] = [==[0x20E7]==],
-			["name"] = [==[AUX5_EXT]==],
-			["extensions"] = {
-				[==[EXT_texture_from_pixmap]==],
-			},
-		},
-		{
-			["value"] = [==[0x20E6]==],
-			["name"] = [==[AUX4_EXT]==],
-			["extensions"] = {
-				[==[EXT_texture_from_pixmap]==],
+				[==[NV_video_out]==],
 			},
 		},
 		{
@@ -2874,24 +3367,31 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x20D1]==],
-			["name"] = [==[BIND_TO_TEXTURE_RGBA_EXT]==],
+			["value"] = [==[0x8183]==],
+			["name"] = [==[RENDERER_VENDOR_ID_MESA]==],
 			["extensions"] = {
-				[==[EXT_texture_from_pixmap]==],
+				[==[MESA_query_renderer]==],
 			},
 		},
 		{
-			["value"] = [==[0x00000020]==],
-			["name"] = [==[DEPTH_BUFFER_BIT_SGIX]==],
+			["value"] = [==[100001]==],
+			["name"] = [==[SAMPLES_ARB]==],
 			["extensions"] = {
-				[==[SGIX_pbuffer]==],
+				[==[ARB_multisample]==],
 			},
 		},
 		{
-			["value"] = [==[0x20E0]==],
-			["name"] = [==[BACK_LEFT_EXT]==],
+			["value"] = [==[0x8189]==],
+			["name"] = [==[RENDERER_PREFERRED_PROFILE_MESA]==],
 			["extensions"] = {
-				[==[EXT_texture_from_pixmap]==],
+				[==[MESA_query_renderer]==],
+			},
+		},
+		{
+			["value"] = [==[0x8051]==],
+			["name"] = [==[SAMPLES_3DFX]==],
+			["extensions"] = {
+				[==[3DFX_multisample]==],
 			},
 		},
 		{
@@ -2902,6 +3402,20 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
+			["value"] = [==[0x20CD]==],
+			["name"] = [==[DEVICE_ID_NV]==],
+			["extensions"] = {
+				[==[NV_video_capture]==],
+			},
+		},
+		{
+			["value"] = [==[0x20D6]==],
+			["name"] = [==[TEXTURE_TARGET_EXT]==],
+			["extensions"] = {
+				[==[EXT_texture_from_pixmap]==],
+			},
+		},
+		{
 			["value"] = [==[0x00000002]==],
 			["name"] = [==[FRONT_RIGHT_BUFFER_BIT_SGIX]==],
 			["extensions"] = {
@@ -2909,38 +3423,38 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x00000100]==],
-			["name"] = [==[SAMPLE_BUFFERS_BIT_SGIX]==],
+			["value"] = [==[0x26]==],
+			["name"] = [==[TRANSPARENT_GREEN_VALUE_EXT]==],
 			["extensions"] = {
-				[==[SGIX_pbuffer]==],
+				[==[EXT_visual_info]==],
 			},
 		},
 		{
 			["value"] = [==[0x20C3]==],
 			["name"] = [==[VIDEO_OUT_COLOR_NV]==],
 			["extensions"] = {
-				[==[NV_video_output]==],
+				[==[NV_video_out]==],
 			},
 		},
 		{
-			["value"] = [==[80]==],
-			["name"] = [==[HYPERPIPE_PIPE_NAME_LENGTH_SGIX]==],
+			["value"] = [==[0x2097]==],
+			["name"] = [==[CONTEXT_RELEASE_BEHAVIOR_ARB]==],
 			["extensions"] = {
-				[==[SGIX_hyperpipe]==],
+				[==[ARB_context_flush_control]==],
 			},
 		},
 		{
-			["value"] = [==[0x8019]==],
-			["name"] = [==[OPTIMAL_PBUFFER_WIDTH_SGIX]==],
+			["value"] = [==[0x818E]==],
+			["name"] = [==[RENDERER_ID_MESA]==],
 			["extensions"] = {
-				[==[SGIX_pbuffer]==],
+				[==[MESA_query_renderer]==],
 			},
 		},
 		{
 			["value"] = [==[0x20C5]==],
 			["name"] = [==[VIDEO_OUT_DEPTH_NV]==],
 			["extensions"] = {
-				[==[NV_video_output]==],
+				[==[NV_video_out]==],
 			},
 		},
 		{
@@ -2951,46 +3465,46 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x20B2]==],
-			["name"] = [==[FRAMEBUFFER_SRGB_CAPABLE_ARB]==],
+			["value"] = [==[0x2]==],
+			["name"] = [==[3DFX_FULLSCREEN_MODE_MESA]==],
 			["extensions"] = {
-				[==[ARB_framebuffer_sRGB]==],
+				[==[MESA_set_3dfx_mode]==],
 			},
 		},
 		{
-			["value"] = [==[0x00000001]==],
-			["name"] = [==[RGBA_BIT_SGIX]==],
+			["value"] = [==[0x8181]==],
+			["name"] = [==[COPY_COMPLETE_INTEL]==],
 			["extensions"] = {
-				[==[SGIX_fbconfig]==],
+				[==[INTEL_swap_event]==],
 			},
 		},
 		{
-			["value"] = [==[0x20D5]==],
-			["name"] = [==[TEXTURE_FORMAT_EXT]==],
+			["value"] = [==[0x20E0]==],
+			["name"] = [==[BACK_EXT]==],
 			["extensions"] = {
 				[==[EXT_texture_from_pixmap]==],
 			},
 		},
 		{
-			["value"] = [==[0x00000008]==],
-			["name"] = [==[RGBA_UNSIGNED_FLOAT_BIT_EXT]==],
+			["value"] = [==[0x818D]==],
+			["name"] = [==[RENDERER_OPENGL_ES2_PROFILE_VERSION_MESA]==],
 			["extensions"] = {
-				[==[EXT_fbconfig_packed_float]==],
+				[==[MESA_query_renderer]==],
 			},
 		},
 		{
-			["value"] = [==[0x8000]==],
-			["name"] = [==[NONE_EXT]==],
+			["value"] = [==[0x20DD]==],
+			["name"] = [==[TEXTURE_RECTANGLE_EXT]==],
 			["extensions"] = {
-				[==[EXT_visual_info]==],
-				[==[EXT_visual_rating]==],
+				[==[EXT_texture_from_pixmap]==],
 			},
 		},
 		{
-			["value"] = [==[0x20]==],
-			["name"] = [==[VISUAL_CAVEAT_EXT]==],
+			["value"] = [==[0x800C]==],
+			["name"] = [==[SCREEN_EXT]==],
 			["extensions"] = {
-				[==[EXT_visual_rating]==],
+				[==[EXT_import_context]==],
+				[==[SGIX_fbconfig]==],
 			},
 		},
 		{
@@ -3001,10 +3515,10 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x00000002]==],
-			["name"] = [==[COLOR_INDEX_BIT_SGIX]==],
+			["value"] = [==[0x8261]==],
+			["name"] = [==[NO_RESET_NOTIFICATION_ARB]==],
 			["extensions"] = {
-				[==[SGIX_fbconfig]==],
+				[==[ARB_create_context_robustness]==],
 			},
 		},
 		{
@@ -3029,8 +3543,8 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x00000002]==],
-			["name"] = [==[TEXTURE_2D_BIT_EXT]==],
+			["value"] = [==[0x20D3]==],
+			["name"] = [==[BIND_TO_TEXTURE_TARGETS_EXT]==],
 			["extensions"] = {
 				[==[EXT_texture_from_pixmap]==],
 			},
@@ -3043,17 +3557,17 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x801C]==],
-			["name"] = [==[LARGEST_PBUFFER_SGIX]==],
+			["value"] = [==[0x20D1]==],
+			["name"] = [==[BIND_TO_TEXTURE_RGBA_EXT]==],
 			["extensions"] = {
-				[==[SGIX_pbuffer]==],
+				[==[EXT_texture_from_pixmap]==],
 			},
 		},
 		{
-			["value"] = [==[0x8012]==],
-			["name"] = [==[X_RENDERABLE_SGIX]==],
+			["value"] = [==[0x20]==],
+			["name"] = [==[VISUAL_CAVEAT_EXT]==],
 			["extensions"] = {
-				[==[SGIX_fbconfig]==],
+				[==[EXT_visual_rating]==],
 			},
 		},
 		{
@@ -3064,17 +3578,17 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x00000004]==],
-			["name"] = [==[HYPERPIPE_PIXEL_AVERAGE_SGIX]==],
+			["value"] = [==[0x2091]==],
+			["name"] = [==[CONTEXT_MAJOR_VERSION_ARB]==],
 			["extensions"] = {
-				[==[SGIX_hyperpipe]==],
+				[==[ARB_create_context]==],
 			},
 		},
 		{
 			["value"] = [==[0x20CA]==],
 			["name"] = [==[VIDEO_OUT_FIELD_2_NV]==],
 			["extensions"] = {
-				[==[NV_video_output]==],
+				[==[NV_video_out]==],
 			},
 		},
 		{
@@ -3086,9 +3600,9 @@ typedef unsigned __int64 uint64_t;
 		},
 		{
 			["value"] = [==[0x00000002]==],
-			["name"] = [==[PIXMAP_BIT_SGIX]==],
+			["name"] = [==[TEXTURE_2D_BIT_EXT]==],
 			["extensions"] = {
-				[==[SGIX_fbconfig]==],
+				[==[EXT_texture_from_pixmap]==],
 			},
 		},
 		{
@@ -3120,10 +3634,24 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x801B]==],
-			["name"] = [==[PRESERVED_CONTENTS_SGIX]==],
+			["value"] = [==[0x20E7]==],
+			["name"] = [==[AUX5_EXT]==],
 			["extensions"] = {
-				[==[SGIX_pbuffer]==],
+				[==[EXT_texture_from_pixmap]==],
+			},
+		},
+		{
+			["value"] = [==[0x21A2]==],
+			["name"] = [==[GPU_FASTEST_TARGET_GPUS_AMD]==],
+			["extensions"] = {
+				[==[AMD_gpu_association]==],
+			},
+		},
+		{
+			["value"] = [==[0x8256]==],
+			["name"] = [==[CONTEXT_RESET_NOTIFICATION_STRATEGY_ARB]==],
+			["extensions"] = {
+				[==[ARB_create_context_robustness]==],
 			},
 		},
 		{
@@ -3134,39 +3662,24 @@ typedef unsigned __int64 uint64_t;
 			},
 		},
 		{
-			["value"] = [==[0x8252]==],
-			["name"] = [==[LOSE_CONTEXT_ON_RESET_ARB]==],
+			["value"] = [==[0x20E0]==],
+			["name"] = [==[BACK_LEFT_EXT]==],
 			["extensions"] = {
-				[==[ARB_create_context_robustness]==],
+				[==[EXT_texture_from_pixmap]==],
 			},
 		},
 		{
-			["value"] = [==[0x26]==],
-			["name"] = [==[TRANSPARENT_GREEN_VALUE_EXT]==],
+			["value"] = [==[0x00000001]==],
+			["name"] = [==[STEREO_NOTIFY_MASK_EXT]==],
 			["extensions"] = {
-				[==[EXT_visual_info]==],
+				[==[EXT_stereo_tree]==],
 			},
 		},
 		{
-			["value"] = [==[0x8027]==],
-			["name"] = [==[MULTISAMPLE_SUB_RECT_HEIGHT_SGIS]==],
+			["value"] = [==[0x1F01]==],
+			["name"] = [==[GPU_RENDERER_STRING_AMD]==],
 			["extensions"] = {
-				[==[SGIS_shared_multisample]==],
-			},
-		},
-		{
-			["value"] = [==[0x800C]==],
-			["name"] = [==[SCREEN_EXT]==],
-			["extensions"] = {
-				[==[EXT_import_context]==],
-				[==[SGIX_fbconfig]==],
-			},
-		},
-		{
-			["value"] = [==[0x27]==],
-			["name"] = [==[TRANSPARENT_BLUE_VALUE_EXT]==],
-			["extensions"] = {
-				[==[EXT_visual_info]==],
+				[==[AMD_gpu_association]==],
 			},
 		},
 		{
