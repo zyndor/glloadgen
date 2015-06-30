@@ -54,12 +54,12 @@ local my_style = {}
 
 function my_style.WriteLargeHeader(hFile, value, options)
 	local len = #value
-	hFile:write("///", string.rep("/", len), "///\n")
-	hFile:write("// ", value, "\n")
+	hFile:write("/**", string.rep("*", len), "**/\n")
+	hFile:write("/* ", value, "*/\n")
 end
 
 function my_style.WriteSmallHeader(hFile, value, options)
-	hFile:write("// ", value, "\n")
+	hFile:write("/* ", value, "*/\n")
 end
 
 function my_style.WriteBlockBeginExtVariables(hFile, spec, options)
@@ -91,7 +91,7 @@ function hdr.WriteBlockBeginIncludeGuard(hFile, spec, options)
 end
 
 function hdr.WriteBlockEndIncludeGuard(hFile, spec, options)
-	hFile:fmt("#endif //%s\n", GetIncludeGuard(spec, options))
+	hFile:fmt("#endif /*%s*/\n", GetIncludeGuard(spec, options))
 end
 
 function hdr.WriteGuards(hFile, spec, options)
@@ -133,7 +133,7 @@ end
 function hdr.WriteEnumerator(hFile, enum, enumTable, spec, options, enumSeen)
 	local name = GetEnumName(enum, spec, options)
 	if(enumSeen[enum.name]) then
-		hFile:fmt("//%s seen in %s\n", name, enumSeen[enum.name])
+		hFile:fmt("/*%s seen in %s*/\n", name, enumSeen[enum.name])
 	else
 		hFile:fmt("#define %s%s%s\n",
 			name,
@@ -196,7 +196,7 @@ function src.WriteExtension(hFile, extName, spec, options)
 end
 
 function src.WriteSetupFunction(hFile, specData, spec, options)
-	hFile:write "static void ClearExtensionVariables()\n"
+	hFile:write "static void ClearExtensionVariables(void)\n"
 	hFile:write "{\n"
 	hFile:inc()
 	
@@ -224,7 +224,7 @@ typedef struct ]] .. mapTableName .. [[_s
 
 	hFile:fmt("static %s g_mappingTable[%i]", mapTableName, arrayLength)
 	if(arrayLength == 1) then
-		hFile:rawwrite "; //This is intensionally left uninitialized. \n"
+		hFile:rawwrite "; /*This is intensionally left uninitialized.*/\n"
 	else
 		hFile:rawwrite " = \n"
 		hFile:write "{\n"
@@ -274,7 +274,7 @@ static void LoadExtByName(const char *extensionName)
 		end
 
 		hFile:writeblock([[
-void ProcExtsFromExtList()
+void ProcExtsFromExtList(void)
 {
 	GLint iLoop;
 	GLint iNumExtensions = 0;
