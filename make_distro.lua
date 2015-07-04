@@ -59,7 +59,15 @@ for i, filename in ipairs(toDelete) do
 end
 
 ------------------------------------------------------------
--- Step 3: Create Zip archive of the distro.
+-- Step 3: Create a LoadgenVersion.lua file in modules, which returns the current glLoadGen version number.
+do
+	local hFile = io.open(pathDest / "modules/LoadgenVersion.lua", "w")
+	hFile.write("return \'", versionNum, "\'\n")
+	hFile:close()
+end
+
+------------------------------------------------------------
+-- Step 4: Create Zip archive of the distro.
 local szFilename = "7z.exe"
 local archiveName = buildDirname .. ".7z"
 local pathSZ = ufs.path(FindFileInPath(szFilename))
@@ -76,5 +84,5 @@ local depProc = ex.spawn(tostring(pathSZ),
 depProc:wait(depProc);
 
 ------------------------------------------------------------
--- Step 4: Destroy the directory.
+-- Step 5: Destroy the directory.
 ufs.remove_all(pathDest);
