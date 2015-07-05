@@ -61,8 +61,10 @@ end
 ------------------------------------------------------------
 -- Step 3: Create a LoadgenVersion.lua file in modules, which returns the current glLoadGen version number.
 do
-	local hFile = io.open(pathDest / "modules/LoadgenVersion.lua", "w")
-	hFile.write("return \'", versionNum, "\'\n")
+	local fname = tostring(pathDest / "modules\\LoadgenVersion.lua")
+	print(fname)
+	local hFile = assert(io.open(fname, "w"))
+	hFile:write("return \'", versionNum, "\'\n")
 	hFile:close()
 end
 
