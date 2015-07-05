@@ -13,7 +13,7 @@ local sys_functions =
 local my_struct =
 {
 	{ type="file", style="hdr", name="GetFilename(basename, spec, options)",
-		{ type="write", name="FilePreamble", optional=true} ,
+		{ type="write", name="FilePreamble", optional=true},
 		{ type="block", name="IncludeGuard",
 			{ type="blank"},
 			{ type="write", name="Guards(hFile, spec, options)",},
@@ -38,6 +38,7 @@ local my_struct =
 	},
 	
 	{ type="file", style="src", name="GetFilename(basename, spec, options)",
+		{ type="write", name="FilePreamble", optional=true},
 		{ type="write", name="Includes(hFile, basename, spec, options)", },
 		{ type="blank"},
 		{ type="write", name="LoaderFunc(hFile, spec, options)", },

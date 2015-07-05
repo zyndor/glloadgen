@@ -86,6 +86,14 @@ function my_style.WriteBlockEndSystem(hFile, spec, options)
 	common.WriteNamespaceEnd(hFile, "sys")
 end
 
+function my_style.WriteFilePreamble(hFile, specData, spec, options)
+	common.WriteCPPGeneratorInfo(hFile, specData, spec, options)
+end
+
+function my_style.WriteFilePreamble(hFile, specData, spec, options)
+	common.WriteCPPGeneratorInfo(hFile, specData, spec, options)
+end
+
 
 ---------------------------------------------
 -- Header functions.

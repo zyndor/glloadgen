@@ -18,6 +18,13 @@ function my_style.WriteSmallHeading(hFile, headingName)
 	hFile:write("// ", headingName, "\n")
 end
 
+function my_style.WriteFilePreamble(hFile, specData, spec, options)
+	common.WriteCPPGeneratorInfo(hFile, specData, spec, options)
+end
+
+
+
+
 ------------------------------------------------------
 -- Header styling functions
 

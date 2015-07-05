@@ -74,6 +74,10 @@ end
 function my_style.WriteBlockEndSystem(hFile, spec, options)
 end
 
+function my_style.WriteFilePreamble(hFile, specData, spec, options)
+	common.WriteCGeneratorInfo(hFile, specData, spec, options)
+end
+
 
 ---------------------------------------------
 -- Header functions.
