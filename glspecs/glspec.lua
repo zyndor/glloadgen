@@ -33481,6 +33481,10 @@ typedef unsigned int GLhandleARB;
 						["ctype"] = [==[GLenum]==],
 					},
 					{
+						["name"] = [==[drawbuffer]==],
+						["ctype"] = [==[GLint]==],
+					},
+					{
 						["name"] = [==[depth]==],
 						["ctype"] = [==[const GLfloat]==],
 					},
